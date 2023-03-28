@@ -67,7 +67,7 @@ function App() {
     [wallet]
   );
 
-  function createCollection(values: any) {
+  function createCollection(values) {
     try {
       const idx = JSON.parse(values.colIndexList);
       createCollectionHandle(values.databaseAddr, values.colName, idx);
