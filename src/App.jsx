@@ -15,6 +15,7 @@ import { useAsyncFn } from "react-use";
 
 import { Buffer } from "buffer";
 
+
 globalThis.Buffer = Buffer;
 const wallet = new MetamaskWallet(window);
 
