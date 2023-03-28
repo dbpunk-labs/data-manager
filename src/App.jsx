@@ -1,22 +1,17 @@
 import "./App.css";
-import {
-  Button,
-  Form,
-  Input,
-} from "antd";
+import { Button, Form, Input, Space, Typography } from "antd";
 import {
   DB3Client,
   MetamaskWallet,
   collection,
   DB3Store,
-  getDocs
+  getDocs,
 } from "db3.js";
 import { useEffect, useState } from "react";
 
 import { useAsyncFn } from "react-use";
 
 import { Buffer } from "buffer";
-
 
 globalThis.Buffer = Buffer;
 const wallet = new MetamaskWallet(window);
@@ -78,8 +73,8 @@ function App() {
       alert(error);
     }
   }
-  const index_example = [
-    {
+  const index_example = `[
+   {
       "name": "ownerIndex",
       "id": 1,
       "fields": [
@@ -87,12 +82,12 @@ function App() {
           "fieldPath": "owner",
           "valueMode": {
             "oneofKind": "order",
-            "order": 1
-          }
-        }
-      ]
-    }
-  ]
+            "order": 1,
+          },
+        },
+      ],
+    },
+  ]`;
 
   const [res5, queryDocHandle] = useAsyncFn(
     async (databaseAddr, colName) => {
@@ -101,9 +96,8 @@ function App() {
         const collectionRef = await collection(db, colName);
         const result = await getDocs(collectionRef);
 
-        console.log(result)
-        setResultDoc(result.docs)
-        
+        console.log(result);
+        setResultDoc(result.docs);
       } catch (e) {
         console.log(e);
       }
@@ -117,171 +111,150 @@ function App() {
 
   return (
     <div className="App">
-      <h2>
+      <h1>
         Data Manager base on <a href="https://db3.network"> DB3 Network</a>
-      </h2>
-      <label>
-        <h3> Step1: connect wallet</h3>
-        <Button type="primary" onClick={connectWallet}>
-          connect wallet
-        </Button>
-        <br />
-        <label>Db3 account addr: {db3AccountAddr}</label>
-        <br />
-        <label>EVM account addr: {evmAccountAddr}</label>
-      </label>
-
-      <hr />
-      <label>
-        <h3> Step2: Get or Create a Database</h3>
-
-        <Button type="primary" onClick={createDatabase}>
-          Create Database
-        </Button>
-        <div> Database addr: {databaseAddr}
+      </h1>
+      <Space direction="vertical">
+        <div>
+          <h2> Step1: connect wallet</h2>
+          <p>Db3 account addr: {db3AccountAddr}</p>
+          <p>EVM account addr: {evmAccountAddr}</p>
+          <Button type="primary" onClick={connectWallet}>
+            connect wallet
+          </Button>
         </div>
-        <br />
-
-      </label>
-
-      <hr />
-      <label>
-        <h3> Step3: Create collections under a database</h3>
-
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 50 }}
-          onFinish={createCollection}
-          autoComplete="off"
-          style={{ width: 1000 }}
-        >
-          <Form.Item
-            label="Target Database"
-            name="databaseAddr"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Database address!",
-              },
-            ]}
+        <div>
+          <h2> Step2: Get or Create a Database</h2>
+          <p> Database addr: {databaseAddr} </p>
+          <Button type="primary" onClick={createDatabase}>
+            Create Database
+          </Button>
+          <br />
+        </div>
+        <div>
+          <h2> Step3: Create collections under a database</h2>
+          <Form
+            name="basic"
+            labelCol={{ span: 3 }}
+            wrapperCol={{ span: 12 }}
+            onFinish={createCollection}
+            autoComplete="off"
+            style={{ width: 1000 }}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Collection Name"
-            name="colName"
-            rules={[
-              {
-                required: true,
-                message: "Please input your collection name!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Indexes"
-            name="colIndexList"
-            rules={[
-              {
-                required: true,
-                message: "Please input your description!",
-              },
-            ]}
-          >
-            <div className="twoCol">
-              <Input.TextArea rows={10} placeholder="define index" />
-              <div>
-                <b>Example index</b>
-                <p >{JSON.stringify(index_example)} </p>
-
-              </div>
-
-            </div>
-
-          </Form.Item>
-          <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
+            <Form.Item
+              label="Target Database"
+              name="databaseAddr"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Database address!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Collection Name"
+              name="colName"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your collection name!",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Indexes"
+              name="colIndexList"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your description!",
+                },
+              ]}
+            >
+              <Space align="start" size={20}>
+                <div>
+                  <Input.TextArea rows={15} placeholder="define index" />
+                </div>
+                <div>
+                  <b>Example index</b>
+                  <pre
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      border: "1px solid #ccc",
+                      borderRadius: 4,
+                      padding: 4,
+                      fontSize: 12,
+                      lineHeight: "initial",
+                    }}
+                  >
+                    {index_example}{" "}
+                  </pre>
+                </div>
+              </Space>
+            </Form.Item>
             <Button type="primary" htmlType="submit" loading={res2.loading}>
               Create Collection
             </Button>
-          </Form.Item>
-        </Form>
-        <p>
-          {}
-        </p>
-      </label>
-      <hr></hr>
-      <label>
-        <h3> Step4: Preview a collection</h3>
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 50 }}
-          onFinish={queryDoc}
-          autoComplete="off"
-          style={{ width: 800 }}
-        >
-
-          <Form.Item
-            label=" Databse"
-            name="databaseAddr"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Database address!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Collection Name"
-            name="colName"
-            rules={[
-              {
-                required: true,
-                message: "Please input your collection name!",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-
-          <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
-            <Button type="primary" htmlType="submit" loading={res2.loading}>
-              Query doc
-            </Button>
-          </Form.Item>
-        </Form>
-        <div>
-          <h4>View docs</h4>
-          <p>{resultDoc.map( (item,i) => 
-               <div id = {i}  className="twoCol">
-                  <p> {item.entry.doc.text} </p>
-                  <p> {item.entry.doc.owner}</p>
-                  
-                </div>
-          )}</p>
-
-
-          {/* { 
-
-            resultDoc.map(
-              item=>{
-
-                  <p> {item.entry.doc.text}  {item.entry.doc.owner}</p>
-
-              }
-            )
-            
-          } */}
-
+          </Form>
         </div>
-      </label>
 
+        <div>
+          <h2> Step4: Preview a collection</h2>
+          <Space align="start">
+            <Form
+              name="basic"
+              labelCol={{ span: 6 }}
+              wrapperCol={{ span: 16 }}
+              onFinish={queryDoc}
+              autoComplete="off"
+              style={{ width: 600 }}
+            >
+              <Form.Item
+                label="Database Address"
+                name="databaseAddr"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your Database address!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                label="Collection Name"
+                name="colName"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your collection name!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Button type="primary" htmlType="submit" loading={res2.loading}>
+                Query doc
+              </Button>
+            </Form>
+            <div>
+              <h4 style={{ margin: 0 }}>View docs</h4>
+              <p>
+                {resultDoc.map((item, i) => (
+                  <Space>
+                    <span> {item.entry.doc.text} </span>
+                    <span> {item.entry.doc.owner}</span>
+                  </Space>
+                ))}
+              </p>
+            </div>
+          </Space>
+        </div>
+      </Space>
     </div>
   );
 }
