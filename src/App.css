@@ -4,5 +4,9 @@
   padding: 2rem;
   text-align: center;
 }
+.twoCol{
+  columns: 2 auto;
+}
+
 
 

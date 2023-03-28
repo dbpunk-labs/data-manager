@@ -9,8 +9,10 @@ import {
   MetamaskWallet,
   collection,
   DB3Store,
+  getDocs
 } from "db3.js";
 import { useEffect, useState } from "react";
+
 import { useAsyncFn } from "react-use";
 
 import { Buffer } from "buffer";
@@ -26,6 +28,7 @@ function App() {
   const [databaseAddr, setDatabaseAddr] = useState("");
   const [db3AccountAddr, setDb3AccountAddr] = useState("");
   const [evmAccountAddr, setEvmAccountAddr] = useState("");
+  const [resultDoc, setResultDoc] = useState([]);
   // Step1: connect Metamask wallet and get evm address
   const [res, connectWallet] = useAsyncFn(async () => {
     try {
@@ -58,7 +61,7 @@ function App() {
 
         // if the collection do not exist, the sdk will create it
         const collectionRef = await collection(db, colName, colIndexList);
-        console.log("collection");
+
         console.log(collectionRef);
       } catch (e) {
         console.log(e);
@@ -74,6 +77,42 @@ function App() {
     } catch (error) {
       alert(error);
     }
+  }
+  const index_example = [
+    {
+      "name": "ownerIndex",
+      "id": 1,
+      "fields": [
+        {
+          "fieldPath": "owner",
+          "valueMode": {
+            "oneofKind": "order",
+            "order": 1
+          }
+        }
+      ]
+    }
+  ]
+
+  const [res5, queryDocHandle] = useAsyncFn(
+    async (databaseAddr, colName) => {
+      try {
+        const db = new DB3Store(databaseAddr, client);
+        const collectionRef = await collection(db, colName);
+        const result = await getDocs(collectionRef);
+
+        console.log(result)
+        setResultDoc(result.docs)
+        
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    [client]
+  );
+
+  function queryDoc(values) {
+    queryDocHandle(values.databaseAddr, values.colName);
   }
 
   return (
@@ -99,22 +138,23 @@ function App() {
         <Button type="primary" onClick={createDatabase}>
           Create Database
         </Button>
+        <div> Database addr: {databaseAddr}
+        </div>
         <br />
-        <label>Database addr: {databaseAddr}</label>
-        <br />
+
       </label>
 
-      <hr /> 
+      <hr />
       <label>
         <h3> Step3: Create collections under a database</h3>
 
-      <Form
+        <Form
           name="basic"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 50 }}
           onFinish={createCollection}
           autoComplete="off"
-          style={{ width: 500 }}
+          style={{ width: 1000 }}
         >
           <Form.Item
             label="Target Database"
@@ -151,7 +191,16 @@ function App() {
               },
             ]}
           >
-            <Input.TextArea rows={10} placeholder="define indexes" />
+            <div className="twoCol">
+              <Input.TextArea rows={10} placeholder="define index" />
+              <div>
+                <b>Example index</b>
+                <p >{JSON.stringify(index_example)} </p>
+
+              </div>
+
+            </div>
+
           </Form.Item>
           <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
             <Button type="primary" htmlType="submit" loading={res2.loading}>
@@ -159,7 +208,79 @@ function App() {
             </Button>
           </Form.Item>
         </Form>
-        </label>
+        <p>
+          {}
+        </p>
+      </label>
+      <hr></hr>
+      <label>
+        <h3> Step4: Preview a collection</h3>
+        <Form
+          name="basic"
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 50 }}
+          onFinish={queryDoc}
+          autoComplete="off"
+          style={{ width: 800 }}
+        >
+
+          <Form.Item
+            label=" Databse"
+            name="databaseAddr"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Database address!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Collection Name"
+            name="colName"
+            rules={[
+              {
+                required: true,
+                message: "Please input your collection name!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+
+          <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
+            <Button type="primary" htmlType="submit" loading={res2.loading}>
+              Query doc
+            </Button>
+          </Form.Item>
+        </Form>
+        <div>
+          <h4>View docs</h4>
+          <p>{resultDoc.map( (item,i) => 
+               <div id = {i}  className="twoCol">
+                  <p> {item.entry.doc.text} </p>
+                  <p> {item.entry.doc.owner}</p>
+                  
+                </div>
+          )}</p>
+
+
+          {/* { 
+
+            resultDoc.map(
+              item=>{
+
+                  <p> {item.entry.doc.text}  {item.entry.doc.owner}</p>
+
+              }
+            )
+            
+          } */}
+
+        </div>
+      </label>
 
     </div>
   );
