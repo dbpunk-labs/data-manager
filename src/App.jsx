@@ -116,7 +116,7 @@ function App() {
       </h1>
 
       <Space direction="vertical">
-        <Image width={200}  style={{padding: "left"}} src = "../public/Logo_standard.png" ></Image>
+        <Image width={200}  style={{padding: "left"}} src = "../Logo_standard.png" ></Image>
         <div>
           <h2> Step1: Connect wallet</h2>
           <p>Db3 account addr: {db3AccountAddr}</p>
