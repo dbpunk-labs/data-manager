@@ -1,5 +1,5 @@
 import "./App.css";
-import { Button, Form, Input, Space, Image } from "antd";
+import { Button, Form, Input, Space, Image, Select } from "antd";
 import {
   DB3Client,
   MetamaskWallet,
@@ -8,22 +8,35 @@ import {
   getDocs,
 } from "db3.js";
 import { useEffect, useState } from "react";
-
 import { useAsyncFn } from "react-use";
-
 import { Buffer } from "buffer";
 
 globalThis.Buffer = Buffer;
 const wallet = new MetamaskWallet(window);
-
-const client = new DB3Client("https://grpc.devnet.db3.network", wallet);
-
+const defaultEndpoint = "http://127.0.0.1:26659"
 function App() {
-  const [count, setCount] = useState(0);
   const [databaseAddr, setDatabaseAddr] = useState("");
   const [db3AccountAddr, setDb3AccountAddr] = useState("");
   const [evmAccountAddr, setEvmAccountAddr] = useState("");
   const [resultDoc, setResultDoc] = useState([]);
+  const [messages, setMessages] = useState("")
+  const [height, setHeight] = useState("")
+  const [client, setClient] = useState()
+
+  const [endpoint, setEndpoint] = useState()
+  useEffect(
+   async=> setEndpoint(defaultEndpoint),[]
+  )
+
+  useEffect(
+    async => {
+      setClient(new DB3Client(endpoint, wallet));
+      // if (client){
+      //     client.subscribe(subscription_handle)
+      // }
+    }, [endpoint, wallet]
+  )
+
   // Step1: connect Metamask wallet and get evm address
   const [res, connectWallet] = useAsyncFn(async () => {
     try {
@@ -32,7 +45,6 @@ function App() {
       setDb3AccountAddr(addr);
       const evmAddr = wallet.getEvmAddress();
       setEvmAccountAddr(evmAddr);
-      console.log(wallet);
     } catch (e) {
       console.log(e);
     }
@@ -105,8 +117,62 @@ function App() {
     [client]
   );
 
+
+  const [ctrl, subscribe] = useAsyncFn(async () => {
+    try {
+      return await client.subscribe(subscription_handle)
+    } catch (e) {
+      console.log(e)
+    }
+  }, [client])
+
+  const subscription_handle = (msg) => {
+
+    if (msg.event.oneofKind === 'blockEvent') {
+      setHeight(msg.event.blockEvent.height)
+    } else {
+      try {
+        if (
+          msg.event.mutationEvent.to.length == 0 &&
+          msg.event.mutationEvent.collections.length == 0
+        ) {
+          const new_messages = [
+            {
+              mtype: 'Create Database Done',
+              msg:
+                'create database at height ' +
+                msg.event.mutationEvent.height,
+              key: msg.event.mutationEvent.hash,
+            },
+          ]
+
+          setMessages(new_messages.concat(messages.slice(0, 10)))
+        } else {
+          const new_messages = [
+            {
+              mtype: 'Apply Mutation to collection',
+              msg:
+                'apply crud opertaions to collections ' +
+                msg.event.mutationEvent.collections.join() +
+                ' at height ' +
+                msg.event.mutationEvent.height,
+              key: msg.event.mutationEvent.hash,
+            },
+          ]
+          setMessages(new_messages.concat(messages.slice(0, 10)))
+        }
+      } catch (e) {
+        console.log(e)
+      }
+    }
+  }
+
   function queryDoc(values) {
     queryDocHandle(values.databaseAddr, values.colName);
+  }
+
+  function handleChange(value) {
+    setEndpoint(value)
   }
 
   return (
@@ -116,15 +182,43 @@ function App() {
       </h1>
 
       <Space direction="vertical">
-        <Image width={200}  style={{padding: "left"}} src = "../Logo_standard.png" ></Image>
+        <Image width={250} style={{ padding: "left" }} src="../Logo_standard.png" ></Image>
+
+
+
+        <Space>
+          <p>
+            Choice Endpoint
+          </p>
+          <Select
+            defaultValue={defaultEndpoint}
+            style={{ width: 320 }}
+            onChange={handleChange}
+            options={[
+              { value: 'http://127.0.0.1:26659', label: 'http://127.0.0.1:26659' },
+              { value: 'https://grpc.devnet.db3.network', label: 'https://grpc.devnet.db3.network' },
+            ]}
+          />
+        </Space>
+
+        <Space direction="vertical">
+          <p>Block Height </p>
+          <h2>{height}</h2>
+        </Space>
+
         <div>
           <h2> Step1: Connect wallet</h2>
-          <p>Db3 account addr: {db3AccountAddr}</p>
+          <p>DB3 account addr: {db3AccountAddr}</p>
           <p>EVM account addr: {evmAccountAddr}</p>
           <Button type="primary" onClick={connectWallet}>
             Connect Wallet
           </Button>
         </div>
+
+        <span>Messages: {messages}</span>
+        <Button type="primary" onClick={subscribe}>
+          Subscribe
+        </Button>
         <div>
           <h2> Step2: Get or Create a Database</h2>
           <p> Database addr: {databaseAddr} </p>
@@ -198,7 +292,7 @@ function App() {
                 </div>
               </Space>
             </Form.Item>
-            <Button type="primary"  htmlType="submit" loading={res2.loading}>
+            <Button type="primary" htmlType="submit" loading={res2.loading}>
               Create Collection
             </Button>
           </Form>
