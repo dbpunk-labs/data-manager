@@ -1,5 +1,5 @@
 import "./App.css";
-import { Button, Form, Input, Space, Typography } from "antd";
+import { Button, Form, Input, Space, Image } from "antd";
 import {
   DB3Client,
   MetamaskWallet,
@@ -114,13 +114,15 @@ function App() {
       <h1>
         Data Manager base on <a href="https://db3.network"> DB3 Network</a>
       </h1>
+
       <Space direction="vertical">
+        <Image width={200}  style={{padding: "left"}} src = "../public/Logo_standard.png" ></Image>
         <div>
-          <h2> Step1: connect wallet</h2>
+          <h2> Step1: Connect wallet</h2>
           <p>Db3 account addr: {db3AccountAddr}</p>
           <p>EVM account addr: {evmAccountAddr}</p>
           <Button type="primary" onClick={connectWallet}>
-            connect wallet
+            Connect Wallet
           </Button>
         </div>
         <div>
@@ -196,7 +198,7 @@ function App() {
                 </div>
               </Space>
             </Form.Item>
-            <Button type="primary" htmlType="submit" loading={res2.loading}>
+            <Button type="primary"  htmlType="submit" loading={res2.loading}>
               Create Collection
             </Button>
           </Form>
