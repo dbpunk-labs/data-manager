@@ -13,29 +13,31 @@ import { Buffer } from "buffer";
 
 globalThis.Buffer = Buffer;
 const wallet = new MetamaskWallet(window);
-const defaultEndpoint = "http://127.0.0.1:26659"
+const defaultEndpoint = "http://127.0.0.1:26659";
+
 function App() {
   const [databaseAddr, setDatabaseAddr] = useState("");
   const [db3AccountAddr, setDb3AccountAddr] = useState("");
   const [evmAccountAddr, setEvmAccountAddr] = useState("");
   const [resultDoc, setResultDoc] = useState([]);
-  const [messages, setMessages] = useState("")
-  const [height, setHeight] = useState("")
-  const [client, setClient] = useState()
+  const [messages, setMessages] = useState("");
+  const [height, setHeight] = useState("");
+  const [client, setClient] = useState();
+  const [description, setDescrition] = useState("");
 
-  const [endpoint, setEndpoint] = useState()
-  useEffect(
-   async=> setEndpoint(defaultEndpoint),[]
-  )
+  const [endpoint, setEndpoint] = useState();
+  useEffect((async) => setEndpoint(defaultEndpoint), []);
 
   useEffect(
-    async => {
+    (async) => {
       setClient(new DB3Client(endpoint, wallet));
       // if (client){
       //     client.subscribe(subscription_handle)
       // }
-    }, [endpoint, wallet]
-  )
+      console.log(client);
+    },
+    [endpoint, wallet]
+  );
 
   // Step1: connect Metamask wallet and get evm address
   const [res, connectWallet] = useAsyncFn(async () => {
@@ -53,7 +55,8 @@ function App() {
   // Step2: Get or Create database
   const [response, createDatabase] = useAsyncFn(async () => {
     try {
-      const [dbid, txid] = await client.createDatabase();
+      const [dbid, txid] = await client.createDatabase(description);
+      console.log(dbid);
       setDatabaseAddr(dbid);
     } catch (e) {
       console.log(e);
@@ -65,7 +68,7 @@ function App() {
     async (databaseAddr, colName, colIndexList) => {
       try {
         const db = new DB3Store(databaseAddr, client);
-
+        console.log(db);
         // if the collection do not exist, the sdk will create it
         const collectionRef = await collection(db, colName, colIndexList);
 
@@ -74,7 +77,7 @@ function App() {
         console.log(e);
       }
     },
-    [wallet]
+    [client]
   );
 
   function createCollection(values) {
@@ -86,28 +89,30 @@ function App() {
     }
   }
   const index_example = `[
-   {
-      "name": "ownerIndex",
-      "id": 1,
-      "fields": [
-        {
-          "fieldPath": "owner",
-          "valueMode": {
-            "oneofKind": "order",
-            "order": 1,
-          },
-        },
-      ],
-    },
-  ]`;
+    {
+        "name": "timeIndex",
+        "id": 1,
+        "fields": [
+            {
+                "fieldPath": "time",
+                "valueMode": {
+                    "oneofKind": "order",
+                    "order": 1
+                }
+            }
+        ]
+    }
+]`;
 
-  const [res5, queryDocHandle] = useAsyncFn(
+  const [res3, queryDocHandle] = useAsyncFn(
     async (databaseAddr, colName) => {
       try {
+        console.log(colName);
         const db = new DB3Store(databaseAddr, client);
+        console.log(db);
         const collectionRef = await collection(db, colName);
+        console.log(collectionRef);
         const result = await getDocs(collectionRef);
-
         console.log(result);
         setResultDoc(result.docs);
       } catch (e) {
@@ -117,19 +122,17 @@ function App() {
     [client]
   );
 
-
   const [ctrl, subscribe] = useAsyncFn(async () => {
     try {
-      return await client.subscribe(subscription_handle)
+      return await client.subscribe(subscription_handle);
     } catch (e) {
-      console.log(e)
+      console.log(e);
     }
-  }, [client])
+  }, [client]);
 
   const subscription_handle = (msg) => {
-
-    if (msg.event.oneofKind === 'blockEvent') {
-      setHeight(msg.event.blockEvent.height)
+    if (msg.event.oneofKind === "blockEvent") {
+      setHeight(msg.event.blockEvent.height);
     } else {
       try {
         if (
@@ -138,41 +141,40 @@ function App() {
         ) {
           const new_messages = [
             {
-              mtype: 'Create Database Done',
+              mtype: "Create Database Done",
               msg:
-                'create database at height ' +
-                msg.event.mutationEvent.height,
+                "create database at height " + msg.event.mutationEvent.height,
               key: msg.event.mutationEvent.hash,
             },
-          ]
+          ];
 
-          setMessages(new_messages.concat(messages.slice(0, 10)))
+          setMessages(new_messages.concat(messages.slice(0, 10)));
         } else {
           const new_messages = [
             {
-              mtype: 'Apply Mutation to collection',
+              mtype: "Apply Mutation to collection",
               msg:
-                'apply crud opertaions to collections ' +
+                "apply crud opertaions to collections " +
                 msg.event.mutationEvent.collections.join() +
-                ' at height ' +
+                " at height " +
                 msg.event.mutationEvent.height,
               key: msg.event.mutationEvent.hash,
             },
-          ]
-          setMessages(new_messages.concat(messages.slice(0, 10)))
+          ];
+          setMessages(new_messages.concat(messages.slice(0, 10)));
         }
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     }
-  }
+  };
 
   function queryDoc(values) {
     queryDocHandle(values.databaseAddr, values.colName);
   }
 
   function handleChange(value) {
-    setEndpoint(value)
+    setEndpoint(value);
   }
 
   return (
@@ -182,21 +184,35 @@ function App() {
       </h1>
 
       <Space direction="vertical">
-        <Image width={250} style={{ padding: "left" }} src="../Logo_standard.png" ></Image>
-
-
+        <Image
+          width={250}
+          style={{ padding: "left" }}
+          src="../Logo_standard.png"
+        ></Image>
 
         <Space>
-          <p>
-            Choice Endpoint
-          </p>
+          <p>Choice Endpoint</p>
           <Select
             defaultValue={defaultEndpoint}
             style={{ width: 320 }}
             onChange={handleChange}
             options={[
-              { value: 'http://127.0.0.1:26659', label: 'http://127.0.0.1:26659' },
-              { value: 'https://grpc.devnet.db3.network', label: 'https://grpc.devnet.db3.network' },
+              {
+                value: "http://127.0.0.1:26659",
+                label: "http://127.0.0.1:26659",
+              },
+              {
+                value: "https://grpc.devnet.db3.network",
+                label: "https://grpc.devnet.db3.network",
+              },
+              {
+                value: "http://18.162.230.6:26659",
+                label: "http://18.162.230.6:26659",
+              },
+              {
+                value: "http://16.163.108.68:26659",
+                label: "http://16.163.108.68:26659",
+              },
             ]}
           />
         </Space>
@@ -221,6 +237,15 @@ function App() {
         </Button>
         <div>
           <h2> Step2: Get or Create a Database</h2>
+
+          <div style={{ width: "65%" }}>
+            <p>Description </p>
+            <Input
+              onChange={(e) => setDescrition(e.target.value)}
+              value={description}
+            />
+          </div>
+
           <p> Database addr: {databaseAddr} </p>
           <Button type="primary" onClick={createDatabase}>
             Create Database
@@ -273,7 +298,11 @@ function App() {
             >
               <Space align="start" size={20}>
                 <div>
-                  <Input.TextArea rows={15} placeholder="define index" />
+                  <Input.TextArea
+                    style={{ width: "100%" }}
+                    rows={15}
+                    placeholder="define index"
+                  />
                 </div>
                 <div>
                   <b>Example index</b>
@@ -292,7 +321,7 @@ function App() {
                 </div>
               </Space>
             </Form.Item>
-            <Button type="primary" htmlType="submit" loading={res2.loading}>
+            <Button type="primary" htmlType="submit">
               Create Collection
             </Button>
           </Form>
@@ -333,7 +362,7 @@ function App() {
               >
                 <Input />
               </Form.Item>
-              <Button type="primary" htmlType="submit" loading={res2.loading}>
+              <Button type="primary" htmlType="submit">
                 Query doc
               </Button>
             </Form>
