@@ -14,7 +14,7 @@ import DatabaseCard from "./databaseCard";
 
 globalThis.Buffer = Buffer;
 const wallet = new MetamaskWallet(window);
-const defaultEndpoint = "http://127.0.0.1:26659";
+const defaultEndpoint = "https://grpc.devnet.db3.network";
 
 function App() {
   const [databaseAddr, setDatabaseAddr] = useState("");
@@ -59,11 +59,12 @@ function App() {
 
   useEffect(() => {
     if (client && db3AccountAddr) getDatabasesByAddr(db3AccountAddr);
-  }, [db3AccountAddr]);
+  }, [db3AccountAddr, databaseAddr]);
 
   const [, getDatabasesByAddr] = useAsyncFn(
     async (value) => {
       try {
+        console.log("===>" + value);
         const dbs = await client.listDatabases(value);
         setDatabases(dbs);
       } catch (e) {
@@ -78,13 +79,15 @@ function App() {
     async (values) => {
       try {
         const [dbid, txid] = await client.createDatabase(values.description);
+
+        await new Promise((r) => setTimeout(r, 1000));
         setDatabaseAddr(dbid);
       } catch (e) {
         console.log(e);
         alert(e.message);
       }
     },
-    [client]
+    [client, db3AccountAddr]
   );
 
   // Step3: Create Collection under a database
@@ -223,13 +226,14 @@ function App() {
             onChange={handleChange}
             options={[
               {
-                value: "http://127.0.0.1:26659",
-                label: "http://127.0.0.1:26659",
-              },
-              {
                 value: "https://grpc.devnet.db3.network",
                 label: "https://grpc.devnet.db3.network",
               },
+              {
+                value: "http://127.0.0.1:26659",
+                label: "http://127.0.0.1:26659",
+              },
+
               {
                 value: "http://18.162.230.6:26659",
                 label: "http://18.162.230.6:26659",
@@ -305,7 +309,11 @@ function App() {
               >
                 <Input />
               </Form.Item>
-              <Button type="primary" htmlType="submit">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={response.loading}
+              >
                 Create Database
               </Button>
             </Form>
@@ -380,7 +388,7 @@ function App() {
                 </div>
               </Space>
             </Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={res2.loading}>
               Create Collection
             </Button>
           </Form>
