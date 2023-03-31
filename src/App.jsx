@@ -218,7 +218,7 @@ function App() {
         </Space>
 
         <Space direction="vertical">
-          <p>Block Height </p>
+          <b>Block Height </b>
           <h2>{height}</h2>
         </Space>
 
