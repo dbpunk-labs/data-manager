@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "antd": "^5.0.7",
     "buffer": "^6.0.3",
     "db3.js": "^0.2.22",

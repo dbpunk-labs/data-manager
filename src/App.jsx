@@ -1,5 +1,6 @@
 import "./App.css";
 import { Button, Form, Input, Space, Image, Select } from "antd";
+
 import {
   DB3Client,
   MetamaskWallet,
@@ -24,23 +25,17 @@ function App() {
   const [messages, setMessages] = useState("");
   const [height, setHeight] = useState("");
   const [client, setClient] = useState();
-  const [description, setDescrition] = useState("");
-  const [creater, setCreater] = useState("");
+
   const [databases, setDatabases] = useState([]);
 
   const [endpoint, setEndpoint] = useState();
-  useEffect((async) => setEndpoint(defaultEndpoint), []);
+  useEffect(() => setEndpoint(defaultEndpoint), []);
 
-  useEffect(
-    (async) => {
-      setClient(new DB3Client(endpoint, wallet));
-      // if (client){
-      //     client.subscribe(subscription_handle)
-      // }
-      console.log(client);
-    },
-    [endpoint, wallet]
-  );
+  useEffect(() => {
+    setClient(new DB3Client(endpoint, wallet));
+
+    console.log(client);
+  }, [endpoint, wallet]);
 
   // Step1: connect Metamask wallet and get evm address
   const [res, connectWallet] = useAsyncFn(async () => {
@@ -80,7 +75,7 @@ function App() {
       try {
         const [dbid, txid] = await client.createDatabase(values.description);
 
-        await new Promise((r) => setTimeout(r, 1000));
+        await new Promise((r) => setTimeout(r, 1500));
         setDatabaseAddr(dbid);
       } catch (e) {
         console.log(e);
@@ -91,6 +86,11 @@ function App() {
   );
 
   // Step3: Create Collection under a database
+
+  const onFinish = (values) => {
+    console.log("Received values of form:", values);
+  };
+
   const [res2, createCollectionHandle] = useAsyncFn(
     async (databaseAddr, colName, colIndexList) => {
       try {
@@ -201,7 +201,7 @@ function App() {
     queryDocHandle(values.databaseAddr, values.colName);
   }
 
-  function handleChange(value) {
+  function changeEndpoint(value) {
     setEndpoint(value);
   }
 
@@ -223,7 +223,7 @@ function App() {
           <Select
             defaultValue={defaultEndpoint}
             style={{ width: 320 }}
-            onChange={handleChange}
+            onChange={changeEndpoint}
             options={[
               {
                 value: "https://grpc.devnet.db3.network",
@@ -393,80 +393,6 @@ function App() {
             </Button>
           </Form>
         </div>
-
-
- {/* ---------------------- */}
-
-
-        <Form
-      form={form}
-      name="dynamic_form_complex"
-      onFinish={onFinish}
-      style={{ maxWidth: 600 }}
-      autoComplete="off"
-    >
-      <Form.Item name="area" label="Area" rules={[{ required: true, message: 'Missing area' }]}>
-        <Select options={areas} onChange={handleChange} />
-      </Form.Item>
-      <Form.List name="sights">
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map((field) => (
-              <Space key={field.key} align="baseline">
-                <Form.Item
-                  noStyle
-                  shouldUpdate={(prevValues, curValues) =>
-                    prevValues.area !== curValues.area || prevValues.sights !== curValues.sights
-                  }
-                >
-                  {() => (
-                    <Form.Item
-                      {...field}
-                      label="Sight"
-                      name={[field.name, 'sight']}
-                      rules={[{ required: true, message: 'Missing sight' }]}
-                    >
-                      <Select disabled={!form.getFieldValue('area')} style={{ width: 130 }}>
-                        {(sights[form.getFieldValue('area') as SightsKeys] || []).map((item) => (
-                          <Option key={item} value={item}>
-                            {item}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                  )}
-                </Form.Item>
-                <Form.Item
-                  {...field}
-                  label="Price"
-                  name={[field.name, 'price']}
-                  rules={[{ required: true, message: 'Missing price' }]}
-                >
-                  <Input />
-                </Form.Item>
-
-                <MinusCircleOutlined onClick={() => remove(field.name)} />
-              </Space>
-            ))}
-
-            <Form.Item>
-              <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                Add sights
-              </Button>
-            </Form.Item>
-          </>
-        )}
-      </Form.List>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
-    {/* ---------------------- */}
-
-
-
 
         <div>
           <h2> Step4: Preview a collection</h2>
