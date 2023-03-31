@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { useAsyncFn } from "react-use";
 import { Buffer } from "buffer";
+import DatabaseCard from "./databaseCard";
 
 globalThis.Buffer = Buffer;
 const wallet = new MetamaskWallet(window);
@@ -24,6 +25,8 @@ function App() {
   const [height, setHeight] = useState("");
   const [client, setClient] = useState();
   const [description, setDescrition] = useState("");
+  const [creater, setCreater] = useState("");
+  const [databases, setDatabases] = useState([]);
 
   const [endpoint, setEndpoint] = useState();
   useEffect((async) => setEndpoint(defaultEndpoint), []);
@@ -53,28 +56,47 @@ function App() {
   }, [wallet]);
 
   // Step2: Get or Create database
-  const [response, createDatabase] = useAsyncFn(async () => {
-    try {
-      const [dbid, txid] = await client.createDatabase(description);
-      console.log(dbid);
-      setDatabaseAddr(dbid);
-    } catch (e) {
-      console.log(e);
-    }
-  }, [client]);
+
+  useEffect(() => {
+    if (client && db3AccountAddr) getDatabasesByAddr(db3AccountAddr);
+  }, [db3AccountAddr]);
+
+  const [, getDatabasesByAddr] = useAsyncFn(
+    async (value) => {
+      try {
+        const dbs = await client.listDatabases(value);
+        setDatabases(dbs);
+      } catch (e) {
+        console.log(e);
+        alert(e.message);
+      }
+    },
+    [client]
+  );
+
+  const [response, createDatabase] = useAsyncFn(
+    async (values) => {
+      try {
+        const [dbid, txid] = await client.createDatabase(values.description);
+        setDatabaseAddr(dbid);
+      } catch (e) {
+        console.log(e);
+        alert(e.message);
+      }
+    },
+    [client]
+  );
 
   // Step3: Create Collection under a database
   const [res2, createCollectionHandle] = useAsyncFn(
     async (databaseAddr, colName, colIndexList) => {
       try {
         const db = new DB3Store(databaseAddr, client);
-        console.log(db);
         // if the collection do not exist, the sdk will create it
         const collectionRef = await collection(db, colName, colIndexList);
-
-        console.log(collectionRef);
       } catch (e) {
         console.log(e);
+        alert(e.message);
       }
     },
     [client]
@@ -84,8 +106,9 @@ function App() {
     try {
       const idx = JSON.parse(values.colIndexList);
       createCollectionHandle(values.databaseAddr, values.colName, idx);
-    } catch (error) {
-      alert(error);
+    } catch (e) {
+      console.log(e);
+      alert(e.message);
     }
   }
   const index_example = `[
@@ -109,14 +132,15 @@ function App() {
       try {
         console.log(colName);
         const db = new DB3Store(databaseAddr, client);
-        console.log(db);
+
         const collectionRef = await collection(db, colName);
-        console.log(collectionRef);
+
         const result = await getDocs(collectionRef);
-        console.log(result);
+
         setResultDoc(result.docs);
       } catch (e) {
         console.log(e);
+        alert(e.message);
       }
     },
     [client]
@@ -127,6 +151,7 @@ function App() {
       return await client.subscribe(subscription_handle);
     } catch (e) {
       console.log(e);
+      alert(e.message);
     }
   }, [client]);
 
@@ -235,22 +260,56 @@ function App() {
         <Button type="primary" onClick={subscribe}>
           Subscribe
         </Button>
+
         <div>
           <h2> Step2: Get or Create a Database</h2>
 
-          <div style={{ width: "65%" }}>
-            <p>Description </p>
-            <Input
-              onChange={(e) => setDescrition(e.target.value)}
-              value={description}
+          <b>Database List</b>
+          <div>
+            <Input.Search
+              placeholder="creater db3 address"
+              allowClear
+              enterButton="Search"
+              onSearch={getDatabasesByAddr}
+              style={{ width: "50%" }}
             />
-          </div>
 
-          <p> Database addr: {databaseAddr} </p>
-          <Button type="primary" onClick={createDatabase}>
-            Create Database
-          </Button>
-          <br />
+            <div style={{ paddingTop: "2em" }}>
+              {databases.map((item, i) => (
+                <Space style={{ paddingRight: "2em" }}>
+                  <DatabaseCard item={item} />
+                </Space>
+              ))}
+            </div>
+          </div>
+          <div style={{ paddingTop: "2em" }}>
+            <b>Create Database</b>
+
+            <Form
+              name="basic"
+              labelCol={{ span: 4 }}
+              wrapperCol={{ span: 16 }}
+              onFinish={createDatabase}
+              autoComplete="off"
+              style={{ width: 600 }}
+            >
+              <Form.Item
+                label="Description"
+                name="description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input database description!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+              <Button type="primary" htmlType="submit">
+                Create Database
+              </Button>
+            </Form>
+          </div>
         </div>
         <div>
           <h2> Step3: Create collections under a database</h2>
@@ -368,14 +427,14 @@ function App() {
             </Form>
             <div>
               <h4 style={{ margin: 0 }}>View docs</h4>
-              <p>
+              <div>
                 {resultDoc.map((item, i) => (
                   <Space>
-                    <span> {item.entry.doc.text} </span>
-                    <span> {item.entry.doc.owner}</span>
+                    <span> {JSON.stringify(item.entry.doc)} </span>
+                    <span> {item.entry.owner}</span>
                   </Space>
                 ))}
-              </p>
+              </div>
             </div>
           </Space>
         </div>
