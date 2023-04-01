@@ -14,7 +14,7 @@ export default function DatabaseCard(param) {
   return (
     <Card
       title={param.item.address}
-      extra={<a href=" ">More</a>}
+      //   extra={<a href=" ">More</a>}
       style={{ width: 350 }}
       size="small"
     >
