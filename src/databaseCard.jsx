@@ -1,7 +1,10 @@
 import { Card, Space } from "antd";
 import React from "react";
 
-function shortAddr(addr) {}
+function shortAddr(addr) {
+  return addr.substring(0, 5) + "..." + addr.substring(addr.length - 4);
+}
+
 function getColleciontInfo(item) {
   let info = "";
   if (item.length > 0) {
@@ -10,18 +13,18 @@ function getColleciontInfo(item) {
   return info;
 }
 
-export default function DatabaseCard(param) {
+export default function DatabaseCard({ item }) {
   return (
     <Card
-      title={param.item.address}
+      title={shortAddr(item.address)}
       //   extra={<a href=" ">More</a>}
-      style={{ width: 350 }}
+      style={{ width: 370 }}
       size="small"
     >
-      <span>DB Addr: {param.item.address}</span>
-      <p>Desc : {param.item?.desc}</p>
-      <p>Collection Count : {param.item?.collections?.length}</p>
-      <p>Collections : {getColleciontInfo(param.item.collections)} </p>
+      <span>DB Addr: {item.address}</span>
+      <p>Desc : {item.desc}</p>
+      <p>Collection Count : {item.collections?.length}</p>
+      <p>Collections : {getColleciontInfo(item.collections)} </p>
     </Card>
   );
 }
