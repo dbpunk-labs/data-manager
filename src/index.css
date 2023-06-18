@@ -1,8 +1,9 @@
-:root {
+#root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  background: linear-gradient(#eae3e5,rgb(113 128 150))
+  height: 100%;
+  /* background: linear-gradient(#eae3e5,rgb(113 128 150)) */
 /* 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -68,4 +69,10 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+html, 
+body {
+    height: 100%;
+    overflow-x: hidden;
 }
