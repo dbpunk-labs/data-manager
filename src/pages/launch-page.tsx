@@ -20,7 +20,7 @@ export const LaunchPage = () => {
           <Space direction="horizontal">
             <div
               style={{ background: "lightgray", cursor: "pointer" }}
-              onClick={() => navigate("./console")}
+              onClick={() => navigate("../console/home")}
             >
               <div className="card">We host,you just use.</div>
               <h3>Cloud mode</h3>
