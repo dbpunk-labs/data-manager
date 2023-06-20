@@ -1,6 +1,6 @@
-import { Menu } from "antd";
-import React from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Menu } from 'antd'
+import React from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 export const NodeConsole = () => {
   const navigate = useNavigate();
