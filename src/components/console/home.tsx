@@ -4,12 +4,13 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 
 export const Home = () => {
-  const cardStyle = {
-    background: "lightgray",
-    cursor: "pointer",
-    width: 300,
-    height: 200,
-  };
+    const cardStyle = {
+        background: 'lightgray',
+        cursor: 'pointer',
+        width: 300,
+        height: 200,
+    }
+
 
   const navigate = useNavigate();
   return (
@@ -58,3 +59,4 @@ export const Home = () => {
     </div>
   );
 };
+
