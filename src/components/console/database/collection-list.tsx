@@ -1,12 +1,28 @@
 import { CopyOutlined, PlusOutlined } from "@ant-design/icons";
 import { Form, Button, Modal, Input, Table } from "antd";
 import React from "react";
+import {
+  createRandomAccount,
+  createClient,
+  syncAccountNonce,
+  showDatabase,
+} from "db3.js";
+import { Wallet } from "../../../hooks/wallet";
+
+// const account = createRandomAccount();
+// const client = createClient("http://127.0.0.1:26619", "", account);
+// const nonce = await syncAccountNonce(client);
 
 type Database = {
   id: string;
   name: string;
   address: string;
 };
+
+// export async function loader() {
+//   await showDatabase("0x....", client);
+// }
+
 export const CollectionList = () => {
   const [database, setDataBase] = React.useState<Database>({
     id: "db-id-1",
@@ -82,6 +98,7 @@ export const CollectionList = () => {
         </div>
       </div>
       <div>
+        {Wallet.address}
         <Table
           dataSource={collections}
           columns={[

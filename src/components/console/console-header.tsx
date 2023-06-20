@@ -3,6 +3,7 @@ import icon from "../../assets/Logo_cycle.png";
 import { Breadcrumb } from "antd";
 import { ConnectWallet } from "../connect-wallet";
 import { Link } from "react-router-dom";
+import { Wallet } from "../../hooks/wallet";
 export const ConsoleHeader = () => {
   const breadcrumbNameMap = [
     {
@@ -32,6 +33,8 @@ export const ConsoleHeader = () => {
       key: "home",
     },
   ].concat(item ? [item] : []);
+
+  console.log(Wallet.address);
 
   return (
     <div

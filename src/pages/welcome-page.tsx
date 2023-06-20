@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Header } from "../components/header";
 import { Button, Form, Input, Modal } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
+import { ethers } from "ethers";
+import { abi } from "../assets/contract_abi.json";
+import { Wallet } from "../hooks/wallet";
 
 export const WelcomePage = () => {
   const [showRequestModal, setShowRequestModal] =
@@ -9,12 +12,27 @@ export const WelcomePage = () => {
 
   const [token, setToken] = useState<string>("");
   const [tx_id, setTx_id] = useState<string>("");
+  const [admin_add, setAdmin_add] = useState<string>("");
+
+  const address = "0xeD30118f5e8E57baa999Ef99E5Fe187c07e9144e";
+
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const signer = provider.getSigner();
+  const contract = new ethers.Contract(address, abi, signer);
+
+  const onSignin = async () => {
+    const myAddress = await signer.getAddress();
+    Wallet.setAddress(myAddress);
+    setAdmin_add(myAddress);
+  };
 
   const onRequestToken = () => {
     // TODO
   };
 
   const onRegister = () => {
+    const tx = contract.addPeople(10, "muran");
+    console.log(tx);
     // TODO
   };
 
@@ -41,7 +59,7 @@ export const WelcomePage = () => {
           <div>
             <h2>Sign in</h2>
             <p>Connect wallet and sign in as the admin address of this node</p>
-            <Button>Sign in</Button>
+            <Button onClick={onSignin}>Sign in</Button>
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
@@ -70,7 +88,7 @@ export const WelcomePage = () => {
               </p>
               <div>
                 <h3>Admin address</h3>
-                <p>```</p>
+                <p>"{admin_add}"</p>
               </div>
               <div>
                 <h3>Arweave address</h3>{" "}
@@ -132,10 +150,10 @@ export const WelcomePage = () => {
                   </p>
                   <div style={{ border: "1px solid black" }}>
                     <div>
-                      I’m testing db3 network as my dApp database, and get some
+                      `I’m testing db3 network as my dApp database, and get some
                       test token, my Ar address is 0x1012314121412415. My
                       Polygon address is 0x1231455. My endpoint node code is :
-                      902133erq Go and get more info about db3.network
+                      902133erq Go and get more info about db3.network{}`
                     </div>
                     <CopyOutlined
                       style={{ cursor: "pointer" }}
@@ -191,9 +209,14 @@ export const WelcomePage = () => {
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <h2>Register</h2>
-            <p>Target contract: 0x61e613F27b8B48144fbf93DFdBcC5B2BEa6eb7DD</p>
             <p>
-              tx_id: <a>{tx_id}</a>
+              Target contract:{" "}
+              <a href={"https://etherscan.io/"}>
+                0x61e613F27b8B48144fbf93DFdBcC5B2BEa6eb7DD
+              </a>{" "}
+            </p>
+            <p>
+              Tx_id: <a href={"https://etherscan.io/tr/" + tx_id}>{tx_id}</a>
             </p>
             <Button onClick={() => onRegister()}>Register</Button>
           </div>

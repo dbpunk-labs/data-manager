@@ -55,7 +55,7 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "/console/event-db",
+            path: "/console/event-db/",
             element: <EventDB />,
             children: [
               {
@@ -79,7 +79,7 @@ const router = createBrowserRouter([
             ],
           },
           {
-            path: "/console//node",
+            path: "/console/node",
             element: <NodeConsole />,
             children: [
               {

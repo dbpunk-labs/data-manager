@@ -17,7 +17,7 @@ export const NodeConsole = () => {
         items={[
           {
             key: "rollup",
-            label: "Roll-ip",
+            label: "Roll-up",
           },
           {
             key: "mutations",

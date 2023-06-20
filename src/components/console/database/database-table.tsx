@@ -3,6 +3,8 @@ import { Form, Button, Input, Modal, Tree } from "antd";
 import React from "react";
 import { Outlet, useMatch, useNavigate } from "react-router";
 
+export async function loader() {}
+
 export const DatabaseTable = (props) => {
   const [showCreateDatabaseModal, setShowCreateDatabaseModal] =
     React.useState<boolean>(false);
