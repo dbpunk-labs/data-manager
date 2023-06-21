@@ -4,21 +4,34 @@ import { Button, Form, Input, Modal } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
 import {
     createClient,
-    // getStorageNodeStatus,
+
+    getStorageNodeStatus,
+    getIndexNodeStatus,
+    createFromExternal,
     createRandomAccount,
     syncAccountNonce,
     DB3Account,
     Client,
-    configRollup,
+    db3MetaStoreContractConfig,
+    setupStorageNode,
 } from 'db3.js'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAsyncFn } from 'react-use'
 import { useAccount } from 'wagmi'
+import { useContractWrite } from 'wagmi'
+import { useBalance } from 'wagmi'
+import { useSignTypedData } from 'wagmi'
+import { useNetwork } from 'wagmi'
+
+function unitsToReadableNum(units: string): string {
+    return (Number(BigInt(units) / BigInt(1000_000)) / 1000_000.0).toFixed(6)
+}
 
 export const WelcomePage = () => {
-    const [account, setAccount] = React.useState<DB3Account>(
-        createRandomAccount()
+    const [networkId, setNetworkId] = React.useState(
+        parseInt(new Date().getTime() / 1000)
     )
+    const { chain, chains } = useNetwork()
     const { address, isConnecting, isDisconnected } = useAccount()
     const [client, setClient] = React.useState<Client>()
     const [inited, setInited] = React.useState(false)
@@ -30,39 +43,70 @@ export const WelcomePage = () => {
         storageNodeUrl: '',
         rollupInterval: '10',
         minRollSize: '10',
+        indexNodeUrl: '',
+        indexNodeEvmAddress: '',
     })
 
-    const [setRollupRet, setRollupFn] = useAsyncFn(async () => {}, [
-        client,
-        context,
-    ])
+    const storageNodeEvmBalance = useBalance(
+        {
+            address: context.storageNodeEvmAddress,
+            formatUnits: 'matic',
+        },
+        [context]
+    )
+
+    const [setupRollupNodeRet, setupRollupNodeHandle] = useAsyncFn(async () => {
+        try {
+            console.log(context)
+            console.log(context.rollupInterval)
+            console.log(context.minRollSize)
+            const rollupInterval = parseInt(context.rollupInterval) * 60 * 1000
+            const minRollSize = parseInt(context.minRollSize) * 1024 * 1024
+            console.log(rollupInterval)
+            console.log(minRollSize)
+            const response = await setupStorageNode(
+                client,
+                networkId.toString(),
+                rollupInterval.toString(),
+                minRollSize.toString()
+            )
+            console.log(response)
+        } catch (e) {
+            console.log(e)
+        }
+    }, [client, context, networkId])
+
     const [initFnRet, initFn] = useAsyncFn(async () => {
-        if (account) {
+        if (chain) {
             try {
+                console.log(chain)
+                const account = await createFromExternal(chain)
                 const c = createClient(
                     'http://127.0.0.1:26619',
                     'http://127.0.0.1:26639',
                     account
                 )
+                console.log(account)
                 await syncAccountNonce(c)
                 setClient(c)
                 const status = await getStorageNodeStatus(c)
                 console.log(status)
+                const indexStatus = await getIndexNodeStatus(c)
+                console.log(indexStatus)
                 updateContext({
                     ...context,
                     storageNodeArAddress: status.arAccount,
                     storageNodeEvmAddress: status.evmAccount,
                     storageNodeArBalance: status.arBalance,
                     storageNodeUrl: status.nodeUrl,
-                    rollupInterval: status.rollupInterval,
-                    minRollSize: status.minRollupSize,
+                    indexNodeUrl: indexStatus.nodeUrl,
+                    indexNodeEvmAddress: indexStatus.evmAccount,
                 })
             } catch (e) {
                 console.log(e)
             }
         }
-    }, [account, context])
-
+    }, [chain, context])
     const [showRequestModal, setShowRequestModal] =
         React.useState<boolean>(false)
 
@@ -72,11 +116,12 @@ export const WelcomePage = () => {
         initFn()
         setInited(true)
     }
-    const onRequestToken = () => {
-        // TODO
-    }
 
-    const onRegister = () => {
+    const registerNetwork = useContractWrite({
+        ...db3MetaStoreContractConfig,
+        functionName: 'registerNetwork',
+    })
+    const onRequestToken = () => {
         // TODO
     }
 
@@ -113,8 +158,52 @@ export const WelcomePage = () => {
                     <div>
                         <h2>#2</h2>
                     </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <h2>Register</h2>
+                        <p>
+                            Target contract:
+                            {db3MetaStoreContractConfig.address}
+                        </p>
+                        <h3>Network Id </h3> <p>{networkId}</p>
+                        <h3>Admin </h3> <p>addr:{address}</p>
+                        <h3>rollup node</h3>{' '}
+                        <p>addr:{context.storageNodeEvmAddress}</p>
+                        <p>url:http://{context.storageNodeUrl}</p>
+                        <h3>index node</h3>{' '}
+                        <p>addr:{context.indexNodeEvmAddress}</p>
+                        <p>url:http://{context.indexNodeUrl}</p>
+                        <Button
+                            disabled={!registerNetwork}
+                            onClick={() =>
+                                registerNetwork.write({
+                                    args: [
+                                        networkId,
+                                        context.storageNodeUrl,
+                                        context.storageNodeEvmAddress,
+                                        [context.indexNodeUrl],
+                                        [context.indexNodeEvmAddress],
+                                    ],
+                                })
+                            }
+                        >
+                            Register
+                        </Button>
+                        {registerNetwork.isLoading && <div>Check Wallet</div>}
+                        {registerNetwork.isSuccess && (
+                            <div>
+                                Transaction:{' '}
+                                {JSON.stringify(registerNetwork.data)}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
                     <div>
-                        <h2>Request Test Token</h2>
+                        <h2>#3</h2>
+                    </div>
+                    <div>
+                        <h2>Request Test Token for Rollup Node</h2>
                         <p>
                             Since DB3 is a decentralized database, register this
                             node info to a public contract is required. Interact
@@ -167,6 +256,13 @@ export const WelcomePage = () => {
                                     >
                                         Copy
                                     </a>
+                                    <p>
+                                        balance:{' '}
+                                        {unitsToReadableNum(
+                                            context.storageNodeArBalance
+                                        )}{' '}
+                                        ar
+                                    </p>
                                 </p>
                             </div>
                             <div>
@@ -182,7 +278,6 @@ export const WelcomePage = () => {
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => {
                                             if (navigator.clipboard) {
-                                                // TODO
                                                 navigator.clipboard.writeText(
                                                     `**`
                                                 )
@@ -191,64 +286,20 @@ export const WelcomePage = () => {
                                     >
                                         Copy
                                     </a>
+                                    <p>
+                                        balance:{' '}
+                                        {storageNodeEvmBalance.data?.formatted}{' '}
+                                        {storageNodeEvmBalance.data?.symbol}{' '}
+                                    </p>
                                 </p>
                             </div>
-                            <div>
-                                <p>
-                                    You can find both addresses’ private key
-                                    under the path : /usr/db3/.....
-                                </p>
-                            </div>
+                            <div></div>
                             <div>
                                 <Button
                                     onClick={() => setShowRequestModal(true)}
                                 >
-                                    Request test token
+                                    Go to Polygon Mumbai Faucet
                                 </Button>
-                                <Modal
-                                    title="Request Test Token"
-                                    open={showRequestModal}
-                                    okText="Request token"
-                                    onOk={() => {
-                                        onRequestToken()
-                                    }}
-                                    onCancel={() => setShowRequestModal(false)}
-                                >
-                                    <p>
-                                        Step1： Post a tweet to your Twitter
-                                        account, the content is as follows:
-                                    </p>
-                                    <div style={{ border: '1px solid black' }}>
-                                        <div>
-                                            I’m testing db3 network as my dApp
-                                            database, and get some test token,
-                                            my Ar address is 0x1012314121412415.
-                                            My Polygon address is 0x1231455. My
-                                            endpoint node code is : 902133erq Go
-                                            and get more info about db3.network
-                                        </div>
-                                        <CopyOutlined
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                if (navigator.clipboard) {
-                                                    navigator.clipboard.writeText(
-                                                        `**`
-                                                    )
-                                                }
-                                            }}
-                                        />
-                                    </div>
-                                    <p>
-                                        Step2： Paste your twitter url contains
-                                        above info and get some token
-                                    </p>
-                                    <Input
-                                        value={token}
-                                        onChange={(e) =>
-                                            setToken(e.target.value)
-                                        }
-                                    />
-                                </Modal>
                             </div>
                         </div>
                     </div>
@@ -258,7 +309,7 @@ export const WelcomePage = () => {
                         <h2>#3</h2>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h2>Setup data roll-up rules</h2>
+                        <h2>Node Setup</h2>
                         <p>
                             You can decide how the data on your node be roll-up
                             to the Arweave system which will permanent store the
@@ -273,12 +324,17 @@ export const WelcomePage = () => {
                             }}
                         >
                             <p>
-                                <b>Size (Mb):</b>
+                                <b>Network Id:</b>
+                                <input defaultValue={networkId} />
+                                {''}
+                            </p>
+                            <p>
+                                <b>Min Rollup Size (Mb):</b>
                                 <input
                                     defaultValue="10"
                                     onChange={(e) =>
-                                        updateRollupSettings({
-                                            ...rollupSettings,
+                                        updateContext({
+                                            ...context,
                                             minRollSize: e.target.value,
                                         })
                                     }
@@ -287,38 +343,22 @@ export const WelcomePage = () => {
                                 min., DB3 will compress 10Mb to 1Mb.
                             </p>
                             <p>
-                                <b>Time (min):</b>
+                                <b>Rollup Interval (min):</b>
                                 <input
                                     defaultValue="10"
                                     onChange={(e) =>
-                                        updateRollupSettings({
-                                            ...rollupSettings,
+                                        updateContext({
+                                            ...context,
                                             rollupInterval: e.target.value,
                                         })
                                     }
                                 />
                                 {`Min. 1 min, data size should be > 10Mb first.`}
                             </p>
-                            <Button onClick={() => setShowRequestModal(true)}>
-                                Set the Rollup
+                            <Button onClick={() => setupRollupNodeHandle()}>
+                                setup
                             </Button>
                         </div>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div>
-                        <h2>#4</h2>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h2>Register</h2>
-                        <p>
-                            Target contract:
-                            0x61e613F27b8B48144fbf93DFdBcC5B2BEa6eb7DD
-                        </p>
-                        <p>
-                            tx_id: <a>{tx_id}</a>
-                        </p>
-                        <Button onClick={() => onRegister()}>Register</Button>
                     </div>
                 </div>
             </div>

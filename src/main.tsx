@@ -28,8 +28,64 @@ import { configureChains, createConfig, WagmiConfig } from 'wagmi'
 import { polygonMumbai } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 
+const customeMumbai = {
+    id: 80001,
+    name: 'local Testnet',
+    network: 'local-testnet',
+    nativeCurrency: { name: 'matic', symbol: 'matic', decimals: 18 },
+    rpcUrls: {
+        default: {
+            http: [
+                'https://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+            ],
+            webSocket: [
+                'wss://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+            ],
+        },
+        public: {
+            http: [
+                'https://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+            ],
+            webSocket: [
+                'wss://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+            ],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: 'localhost',
+            url: 'https://mumbai.polygonscan.com/',
+        },
+    },
+    testnet: true,
+}
+
+const myTestnet = {
+    id: 9125,
+    name: 'my network',
+    network: 'localtestnet',
+    nativeCurrency: { name: 'matic', symbol: 'matic', decimals: 18 },
+    rpcUrls: {
+        default: {
+            http: ['http://127.0.0.1:8545'],
+            webSocket: ['ws://127.0.0.1:8545'],
+        },
+        public: {
+            http: ['http://127.0.0.1:8545'],
+            webSocket: ['ws://127.0.0.1:8545'],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: 'localhost',
+            url: '',
+        },
+    },
+    testnet: true,
+}
+
 const { chains, publicClient } = configureChains(
-    [polygonMumbai],
+    [customeMumbai, polygonMumbai],
     [publicProvider()]
 )
 
@@ -44,7 +100,6 @@ const wagmiConfig = createConfig({
     connectors,
     publicClient,
 })
-
 const router = createBrowserRouter([
     {
         path: '/',
