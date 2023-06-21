@@ -1,7 +1,7 @@
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
 import { Form, Button, Modal, Input, Table, Space } from 'antd'
 import React, { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 
 import {
     createFromPrivateKey,
@@ -28,7 +28,7 @@ export const CollectionList = () => {
     const { db } = location.state
     let description: string[] = db.internal?.database?.docDb?.desc
         ?.toString()
-        .split('#')
+        .split('#-#')
     const [database, setDataBase] = React.useState<Database>({
         id: db.addr,
         name: description[0],
@@ -41,39 +41,30 @@ export const CollectionList = () => {
         React.useState<boolean>(false)
     const [createCollectionForm] = Form.useForm()
 
+    const [colName, setColName] = React.useState<string>('')
+
     const onCreateCollection = async () => {
-        // TODO
-        if (db) {
+        if (!colName || colName === '') {
+            alert('Please input collection name')
+        } else {
             // const index1: Index = {
             //     path: '/city', // a top level field name 'city' and the path will be '/city'
             //     indexType: Indextype.StringKey,
             // }
             const { collection, result } = await createCollection(
                 db,
-                'test_collection_002',
+                colName,
                 []
             )
+            setShowCreateCollectionModal(false)
+            fetchData()
         }
-        const values = createCollectionForm.getFieldsValue()
     }
 
-    const [collections, setCollections] = React.useState<any[]>([
-        {
-            name: 'test-collection',
-            documents: 10,
-            size: 100,
-            indexes: 2,
-        },
-        {
-            name: 'test-collectio-2',
-            documents: 10,
-            size: 100,
-            indexes: 2,
-        },
-    ])
+    const [collections, setCollections] = React.useState<any[]>([])
     const fetchData = async () => {
         const data = await showCollection(db)
-        console.log(data)
+        console.log('==>>>', data)
         if (data) {
             let items: any = []
             for (let i = 0; i < data.length; i++) {
@@ -90,6 +81,7 @@ export const CollectionList = () => {
             setCollections([...items])
         }
     }
+
     useEffect(() => {
         fetchData()
     }, [db])
@@ -126,7 +118,6 @@ export const CollectionList = () => {
                         onCancel={() => setShowCreateCollectionModal(false)}
                         onOk={() => {
                             onCreateCollection()
-                            setShowCreateCollectionModal(false)
                         }}
                     >
                         <Form form={createCollectionForm}>
@@ -138,11 +129,16 @@ export const CollectionList = () => {
                                 <Input value={database.name} disabled />
                             </Form.Item>
                             <Form.Item
-                                required={false}
+                                required={true}
                                 label="Collection Name"
                                 key="collectionName"
                             >
-                                <Input />
+                                <Input
+                                    value={colName}
+                                    onChange={(e) => {
+                                        setColName(e.target.value)
+                                    }}
+                                />
                             </Form.Item>
                         </Form>
                     </Modal>
@@ -152,7 +148,19 @@ export const CollectionList = () => {
                 <Table
                     dataSource={collections}
                     columns={[
-                        { dataIndex: 'name', title: 'Collection Name' },
+                        {
+                            dataIndex: 'name',
+                            title: 'Collection Name',
+                            render: (text: string) => (
+                                <a>
+                                    <Link
+                                        to={`/console/database/list/${database.id}/collection/1`}
+                                    >
+                                        {text}
+                                    </Link>{' '}
+                                </a>
+                            ),
+                        },
                         { dataIndex: 'documents', title: 'Documents' },
                         { dataIndex: 'size', title: 'Total Size' },
                         { dataIndex: 'indexes', title: 'Indexes' },

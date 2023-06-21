@@ -37,6 +37,9 @@ export const DatabaseTable = (props) => {
         )
     }
 
+    const [dbName, setDbName] = React.useState<string>('')
+    const [dbDesc, setDbDesc] = React.useState<string>('')
+
     const navigateToDb = (dbItem: DataNode) => {
         console.log(dbItem)
 
@@ -89,6 +92,8 @@ export const DatabaseTable = (props) => {
         })
 
     useEffect(() => {
+        console.log('xxx')
+
         Client.init().then(() => {
             showDatabase(Client.account!.address, Client.instance!).then(
                 (data) => {
@@ -97,6 +102,9 @@ export const DatabaseTable = (props) => {
                         let items: any = []
                         for (let i = 0; i < data.length; i++) {
                             let desc = data[i].internal?.database?.docDb?.desc
+                                ?.toString()
+                                .split('#-#')[0]
+
                             let db_item = {
                                 id: data[i].addr,
                                 title: desc,
@@ -113,27 +121,36 @@ export const DatabaseTable = (props) => {
         })
     }, [])
 
+    useEffect(() => {
+        console.log('yyy')
+
+        if (dbData && dbData.length > 0) {
+            navigateToDb(dbData[0])
+        }
+    }, [dbData])
+
     const [createDBForm] = Form.useForm()
 
     const onCreateDatabase = async () => {
-        // TODO
-        const values = createDBForm.getFieldsValue()
+        // const values = createDBForm.getFieldsValue()
+        if (!dbName || dbName === '') {
+            alert('Please enter a database name')
+        } else {
+            let the_desc = `${dbName}#-#${dbDesc}`
+            const { db, result } = await createDocumentDatabase(
+                Client.instance!,
+                the_desc
+            )
+            const databases = await showDatabase(
+                Client.account!.address,
+                Client.instance!
+            )
 
-        const { db, result } = await createDocumentDatabase(
-            Client.instance!,
-            'my_db_2'
-        )
-        console.log(db)
+            console.log(databases)
+            setDbData(databases)
 
-        const databases = await showDatabase(
-            Client.account!.address,
-            Client.instance!
-        )
-
-        console.log(databases)
-        setDbData(databases)
-
-        setShowCreateDatabaseModal(false)
+            setShowCreateDatabaseModal(false)
+        }
     }
 
     const onSelect = (e) => {
@@ -192,14 +209,24 @@ export const DatabaseTable = (props) => {
                     >
                         <Form form={createDBForm}>
                             <Form.Item required={true} label="Name" key="name">
-                                <Input />
+                                <Input
+                                    value={dbName}
+                                    onChange={(e) => {
+                                        setDbName(e.target.value)
+                                    }}
+                                />
                             </Form.Item>
                             <Form.Item
                                 required={false}
                                 label="Description"
                                 key="description"
                             >
-                                <Input />
+                                <Input.TextArea
+                                    value={dbDesc}
+                                    onChange={(e) => {
+                                        setDbDesc(e.target.value)
+                                    }}
+                                />
                             </Form.Item>
                         </Form>
                     </Modal>

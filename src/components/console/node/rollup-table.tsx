@@ -1,5 +1,7 @@
 import { Table } from 'antd'
-import React from 'react'
+import { scanRollupRecords } from 'db3.js'
+import React, { useEffect } from 'react'
+import { Client } from '../../../data-context/client'
 
 export const RollupTable = () => {
     const [collections, setCollections] = React.useState<any[]>([
@@ -13,6 +15,23 @@ export const RollupTable = () => {
             block: '-',
         },
     ])
+
+    useEffect(() => {
+        console.log('xxx')
+
+        Client.init().then(() => {
+            console.log('client init')
+
+            scanRollupRecords(Client.instance!, 1, 1000)
+                .then((records) => {
+                    console.log(records)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        })
+    }, [])
+
     return (
         <div style={{ padding: 20 }}>
             <Table

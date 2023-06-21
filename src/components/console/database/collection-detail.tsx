@@ -29,11 +29,13 @@ function isJsonString(str) {
 export const CollectionDetail = () => {
     const location = useLocation()
 
+    // if (!location.state) {
     const { db, collection } = location.state
+    // }
 
     let description: string[] = db.internal?.database?.docDb?.desc
         ?.toString()
-        .split('#')
+        .split('#-#')
 
     const [db_0, setDb_0] = React.useState<any>({
         id: db.addr,

@@ -269,27 +269,6 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     "to-fast-properties" "^2.0.0"
 
-"@chainsafe/as-sha256@^0.4.1":
-  "integrity" "sha512-IqeeGwQihK6Y2EYLFofqs2eY2ep1I2MvQXHzOAI+5iQN51OZlUkrLgyAugu2x86xZewDk5xas7lNczkzFzF62w=="
-  "resolved" "https://registry.npmjs.org/@chainsafe/as-sha256/-/as-sha256-0.4.1.tgz"
-  "version" "0.4.1"
-
-"@chainsafe/persistent-merkle-tree@^0.6.1":
-  "integrity" "sha512-gcENLemRR13+1MED2NeZBMA7FRS0xQPM7L2vhMqvKkjqtFT4YfjSVADq5U0iLuQLhFUJEMVuA8fbv5v+TN6O9A=="
-  "resolved" "https://registry.npmjs.org/@chainsafe/persistent-merkle-tree/-/persistent-merkle-tree-0.6.1.tgz"
-  "version" "0.6.1"
-  dependencies:
-    "@chainsafe/as-sha256" "^0.4.1"
-    "@noble/hashes" "^1.3.0"
-
-"@chainsafe/ssz@^0.11.1":
-  "integrity" "sha512-cB8dBkgGN6ZoeOKuk+rIRHKN0L5i9JLGeC0Lui71QX0TuLcQKwgbfkUexpyJxnGFatWf8yeJxlOjozMn/OTP0g=="
-  "resolved" "https://registry.npmjs.org/@chainsafe/ssz/-/ssz-0.11.1.tgz"
-  "version" "0.11.1"
-  dependencies:
-    "@chainsafe/as-sha256" "^0.4.1"
-    "@chainsafe/persistent-merkle-tree" "^0.6.1"
-
 "@coinbase/wallet-sdk@^3.6.6":
   "integrity" "sha512-LjyoDCB+7p0waQXfK+fUgcAs3Ezk6S6e+LYaoFjpJ6c9VTop3NyZF40Pi7df4z7QJohCwzuIDjz0Rhtig6Y7Pg=="
   "resolved" "https://registry.npmjs.org/@coinbase/wallet-sdk/-/wallet-sdk-3.7.1.tgz"
@@ -339,11 +318,10 @@
   "version" "4.0.1"
 
 "@ethereumjs/util@^8.0.5", "@ethereumjs/util@^8.0.6":
-  "integrity" "sha512-zFLG/gXtF3QUC7iKFn4PT6HCr+DEnlCbwUGKGtXoqjA+64T+e0FuqMjlo4bQIY2ngRzk3EtudKdGYC4g31ehhg=="
-  "resolved" "https://registry.npmjs.org/@ethereumjs/util/-/util-8.0.6.tgz"
-  "version" "8.0.6"
+  "integrity" "sha512-zQ0IqbdX8FZ9aw11vP+dZkKDkS+kgIvQPHnSAXzP9pLu+Rfu3D3XEeLbicvoXJTYnhZiPmsZUxgdzXwNKxRPbA=="
+  "resolved" "https://registry.npmjs.org/@ethereumjs/util/-/util-8.1.0.tgz"
+  "version" "8.1.0"
   dependencies:
-    "@chainsafe/ssz" "^0.11.1"
     "@ethereumjs/rlp" "^4.0.1"
     "ethereum-cryptography" "^2.0.0"
     "micro-ftch" "^0.3.1"
@@ -2146,10 +2124,10 @@
   "resolved" "https://registry.npmjs.org/db3-bson/-/db3-bson-5.1.2.tgz"
   "version" "5.1.2"
 
-"db3.js@^0.3.1":
-  "integrity" "sha512-yyvHj1PnZ4KhlUU0pLvCo7DyInYwY/EcFLLRvqGlqBH6oLC4aJyWM8o5vi63mzw7622s8S9Nh4nFe72VZw0FYg=="
-  "resolved" "https://registry.npmjs.org/db3.js/-/db3.js-0.3.1.tgz"
-  "version" "0.3.1"
+"db3.js@^0.3.9":
+  "integrity" "sha512-JBABYUu3o44bzKtX/xNvfgMRiUwzi/JtjHpGzzo0TnMtTLBCrWZTrH1/FReihH/Rqi3y5g4ygMDfFVOMi7QCzg=="
+  "resolved" "https://registry.npmjs.org/db3.js/-/db3.js-0.3.9.tgz"
+  "version" "0.3.9"
   dependencies:
     "@ethereumjs/util" "^8.0.5"
     "@metamask/eth-sig-util" "^5.0.2"

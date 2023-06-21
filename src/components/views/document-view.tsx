@@ -7,13 +7,15 @@ import React, { useEffect } from 'react'
 export const DocumentView = (props) => {
     const [docs, setDocs] = React.useState<any[]>([])
     const [queryStr, setQueryStr] = React.useState<string>('/* | limit 10')
+
     const fetchData = async () => {
+        console.log(queryStr)
+
         const resultSet = await queryDoc(props.collection, queryStr)
         if (resultSet) {
             setDocs(resultSet.docs)
         }
     }
-
     useEffect(() => {
         fetchData()
     }, [props.collection])
@@ -36,9 +38,9 @@ export const DocumentView = (props) => {
                     style={{ marginBottom: 8, width: 300 }}
                     size="small"
                     placeholder="/[field=value] | limit 10]"
-                    // onPressEnter={(e) => {
-                    //     setQueryStr(e.target.value)
-                    // }}
+                    onPressEnter={(e) => {
+                        setQueryStr(e.target.value)
+                    }}
                 />
             </div>
             {/* <Divider type="horizontal" /> */}
