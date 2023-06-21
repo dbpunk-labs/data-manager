@@ -159,7 +159,7 @@ const router = createBrowserRouter([
                         ],
                     },
                     {
-                        path: '/console//node',
+                        path: '/console/node',
                         element: <NodeConsole />,
                         children: [
                             {

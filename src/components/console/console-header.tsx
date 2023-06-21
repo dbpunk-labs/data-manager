@@ -3,6 +3,10 @@ import icon from '../../assets/Logo_cycle.png'
 import { Breadcrumb } from 'antd'
 import { ConnectWallet } from '../connect-wallet'
 import { Link } from 'react-router-dom'
+import { Wallet } from '../../data-context/wallet'
+
+// import { ConnectButton } from '@rainbow-me/rainbowkit'
+
 export const ConsoleHeader = () => {
     const breadcrumbNameMap = [
         {

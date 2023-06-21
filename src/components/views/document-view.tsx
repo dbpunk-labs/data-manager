@@ -1,18 +1,22 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Modal, Divider, Input } from 'antd'
-import { Collapse } from 'antd'
-import React from 'react'
+
+import { Collapse, Input } from 'antd'
+import { queryDoc } from 'db3.js'
+import React, { useEffect } from 'react'
 
 export const DocumentView = (props) => {
-    const [showInsertDocModal, setShowInsertDocModal] =
-        React.useState<boolean>(false)
-
-    const [doc, setDoc] = React.useState<any>({})
-
-    const onInsertDoc = () => {
-        // TODO
+    const [docs, setDocs] = React.useState<any[]>([])
+    const [queryStr, setQueryStr] = React.useState<string>('/* | limit 10')
+    const fetchData = async () => {
+        const resultSet = await queryDoc(props.collection, queryStr)
+        if (resultSet) {
+            setDocs(resultSet.docs)
+        }
     }
 
+    useEffect(() => {
+        fetchData()
+    }, [props.collection])
     return (
         <div>
             <div
@@ -28,38 +32,27 @@ export const DocumentView = (props) => {
                 <h4 style={{ display: 'inline-block', margin: 0 }}>
                     View Docs
                 </h4>
-                <Button
-                    onClick={() => setShowInsertDocModal(true)}
+                <Input.Search
+                    style={{ marginBottom: 8, width: 300 }}
                     size="small"
-                >
-                    <PlusOutlined /> Insert Document
-                </Button>
-                <Modal
-                    title="Insert Doc"
-                    open={showInsertDocModal}
-                    onCancel={() => setShowInsertDocModal(false)}
-                    onOk={() => {
-                        onInsertDoc()
-                        setShowInsertDocModal(false)
-                    }}
-                    okText="Insert"
-                >
-                    <Input.TextArea
-                        value={doc}
-                        onChange={(e) => {
-                            setDoc(e.target.value)
-                        }}
-                    />
-                </Modal>
+                    placeholder="/[field=value] | limit 10]"
+                    // onPressEnter={(e) => {
+                    //     setQueryStr(e.target.value)
+                    // }}
+                />
             </div>
             {/* <Divider type="horizontal" /> */}
-            <Collapse>
-                {props.data.map((item, index) => {
+            <Collapse size="small">
+                {docs.map((item, index) => {
                     return (
                         <Collapse.Panel
                             key={index}
-                            header={item.content.slice(0, 30)}
-                            children={item.content}
+                            header={item.id}
+                            children={
+                                <pre style={{ fontSize: 12 }}>
+                                    {JSON.stringify(item, undefined, 4)}
+                                </pre>
+                            }
                         />
                     )
                 })}
