@@ -11,7 +11,6 @@ export const ConsolePage = (props) => {
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%',
-                position: 'relative',
             }}
         >
             <div style={{ height: 64, borderBottom: '1px solid lightgray' }}>
@@ -22,13 +21,12 @@ export const ConsolePage = (props) => {
                     display: 'flex',
                     flexDirection: 'row',
                     height: 'calc(100% - 64px)',
-                    position: 'relative',
                 }}
             >
                 <div
                     style={{
                         width: 160,
-                        height: '100%',
+                        minHeight: '100%',
                         borderRight: '1px solid rgba(5, 5, 5, 0.06)',
                     }}
                 >
@@ -62,7 +60,6 @@ export const ConsolePage = (props) => {
                     style={{
                         width: 'calc(100% - 160px)',
                         height: '100%',
-                        overflow: 'hidden',
                     }}
                 >
                     <Outlet />

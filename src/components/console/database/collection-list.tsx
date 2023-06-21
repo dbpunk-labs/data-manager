@@ -1,25 +1,59 @@
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
-import { Form, Button, Modal, Input, Table } from 'antd'
-import React from 'react'
+import { Form, Button, Modal, Input, Table, Space } from 'antd'
+import React, { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
+
+import {
+    createFromPrivateKey,
+    createClient,
+    syncAccountNonce,
+    createCollection,
+    showCollection,
+    Index,
+} from 'db3.js'
+
+import { useAccount } from 'wagmi'
 
 type Database = {
     id: string
     name: string
     address: string
+    db: any
+    desc: string
 }
+
 export const CollectionList = () => {
+    const location = useLocation()
+
+    const { db } = location.state
+    let description: string[] = db.internal?.database?.docDb?.desc
+        ?.toString()
+        .split('#')
     const [database, setDataBase] = React.useState<Database>({
-        id: 'db-id-1',
-        name: 'db-name',
-        address: '0x123abadfa12345231',
+        id: db.addr,
+        name: description[0],
+        address: db.addr,
+        db: db,
+        desc: description.length > 1 ? description[1] : '-',
     })
 
     const [showCreateCollectionModal, setShowCreateCollectionModal] =
         React.useState<boolean>(false)
     const [createCollectionForm] = Form.useForm()
 
-    const onCreateCollection = () => {
+    const onCreateCollection = async () => {
         // TODO
+        if (db) {
+            // const index1: Index = {
+            //     path: '/city', // a top level field name 'city' and the path will be '/city'
+            //     indexType: Indextype.StringKey,
+            // }
+            const { collection, result } = await createCollection(
+                db,
+                'test_collection_002',
+                []
+            )
+        }
         const values = createCollectionForm.getFieldsValue()
     }
 
@@ -37,6 +71,28 @@ export const CollectionList = () => {
             indexes: 2,
         },
     ])
+    const fetchData = async () => {
+        const data = await showCollection(db)
+        console.log(data)
+        if (data) {
+            let items: any = []
+            for (let i = 0; i < data.length; i++) {
+                const collection = data[i]
+                let collectionItem = {
+                    name: collection.name,
+                    documents: '-',
+                    size: '-',
+                    indexes: collection.indexFields?.length,
+                }
+
+                items.push(collectionItem)
+            }
+            setCollections([...items])
+        }
+    }
+    useEffect(() => {
+        fetchData()
+    }, [db])
 
     return (
         <div style={{ padding: '12px 24px' }}>
@@ -50,8 +106,15 @@ export const CollectionList = () => {
             >
                 <div>
                     <h3 style={{ display: 'inline-block' }}>{database.name}</h3>
-                    <span>addr： {database.address}</span>
-                    <CopyOutlined />
+                    <Space direction="vertical">
+                        <div>
+                            <span> addr: {database.address}</span>
+                            <CopyOutlined />
+                        </div>
+                        <div>
+                            <span> desc: {database.desc}</span>
+                        </div>
+                    </Space>
                 </div>
                 <div>
                     <Button onClick={() => setShowCreateCollectionModal(true)}>
