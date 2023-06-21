@@ -90,8 +90,8 @@ const { chains, publicClient } = configureChains(
 )
 
 const { connectors } = getDefaultWallets({
-    appName: 'db3 dms',
-    projectId: '1',
+    appName: 'db3 network',
+    projectId: '169f8d0376c922533256a707b401c6ce',
     chains,
 })
 
