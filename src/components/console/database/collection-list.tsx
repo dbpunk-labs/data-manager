@@ -28,8 +28,6 @@ type DB = {
 export const CollectionList = () => {
     const location = useLocation()
 
-    debugger
-
     const getDBInstance = async (addr: string) => {
         const dbs = await showDatabase(
             Client.account!.address,
