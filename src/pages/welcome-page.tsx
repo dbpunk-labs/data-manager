@@ -29,7 +29,8 @@ export const WelcomePage = () => {
     const [networkId, setNetworkId] = React.useState(
         parseInt(new Date().getTime() / 1000)
     )
-    const { chain, chains } = useNetwork()
+    const {chain, chains} = useNetwork()
+    const [msg, setMsg] = React.useState("")
     const { address, isConnecting, isDisconnected } = useAccount()
     const [client, setClient] = React.useState<Client>()
     const [inited, setInited] = React.useState(false)
@@ -68,9 +69,12 @@ export const WelcomePage = () => {
                 rollupInterval.toString(),
                 minRollSize.toString()
             )
-            console.log(response)
+            if (response.code == 0) {
+                setMsg("config rollup done!")
+            }
         } catch (e) {
             console.log(e)
+            setMsg("config rollup failed!")
         }
     }, [client, context, networkId])
 
@@ -80,8 +84,10 @@ export const WelcomePage = () => {
                 console.log(chain)
                 const account = await createFromExternal(chain)
                 const c = createClient(
-                    'http://127.0.0.1:26619',
-                    'http://127.0.0.1:26639',
+                    "http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619",
+                    "http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639",
+                    //"http://127.0.0.1:26619",
+                    //"http://127.0.0.1:26639",
                     account
                 )
                 console.log(account)
@@ -158,6 +164,13 @@ export const WelcomePage = () => {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <h2>Register</h2>
+                        <div
+                            style={{
+                                background: 'lightgray',
+                                border: '1px solid black',
+                            }}
+                        >
+
                         <p>
                             Target contract:
                             {db3MetaStoreContractConfig.address}
@@ -170,6 +183,7 @@ export const WelcomePage = () => {
                         <h3>index node</h3>{' '}
                         <p>addr:{context.indexNodeEvmAddress}</p>
                         <p>url:http://{context.indexNodeUrl}</p>
+                        </div>
                         <Button
                             disabled={!registerNetwork}
                             onClick={() =>
@@ -293,11 +307,9 @@ export const WelcomePage = () => {
                             </div>
                             <div></div>
                             <div>
-                                <Button
-                                    onClick={() => setShowRequestModal(true)}
-                                >
+                            <a href="https://faucet.polygon.technology/" target="blank">
                                     Go to Polygon Mumbai Faucet
-                                </Button>
+                            </a>
                             </div>
                         </div>
                     </div>
@@ -356,6 +368,7 @@ export const WelcomePage = () => {
                             <Button onClick={() => setupRollupNodeHandle()}>
                                 setup
                             </Button>
+                            {msg}
                         </div>
                     </div>
                 </div>
