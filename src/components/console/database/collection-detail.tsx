@@ -16,6 +16,7 @@ import {
 } from 'db3.js'
 
 import { useLocation } from 'react-router-dom'
+import { Client } from '../../../data-context/client'
 
 function isJsonString(str) {
     try {
@@ -28,6 +29,22 @@ function isJsonString(str) {
 
 export const CollectionDetail = () => {
     const location = useLocation()
+
+    // const getCollection = async (addr:string) => {
+    //   Client.init().then( () => {
+    //     const client = Client.getClient()
+    //     client.account = createFromPrivateKey({
+    //       privateKey: localStorage.getItem('privateKey'),
+    //       network: 'testnet',
+    //     })
+    //     client.account.syncNonce()
+    //     client.account.setFee({ gasLimit: 10000000000000, amount: 0 })
+    //     client.account.setDB({ addr: addr })
+    //     client.account.setCollection({ name: "你想要的collection" })
+    //   })
+
+    //   await showDatabase(client.account.address, client).filter((db)=>db.addr === "你想要的地址")
+    // }
 
     // if (!location.state) {
     const { db, collection } = location.state
@@ -63,14 +80,7 @@ export const CollectionDetail = () => {
     const [collection_0, setCollection_0] = React.useState<any>({
         id: `${db.addr}/${collection.name}`,
         name: collection.name,
-        documents: [
-            {
-                content: 'document content...',
-            },
-            {
-                content: 'document content2...',
-            },
-        ],
+        documents: [],
     })
 
     return (

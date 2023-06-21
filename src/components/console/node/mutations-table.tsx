@@ -1,65 +1,68 @@
-import { Table } from 'antd'
+import { Pagination, Table } from 'antd'
 import React, { useEffect } from 'react'
 import { Client } from '../../../data-context/client'
-import { createClient, createFromPrivateKey, scanMutationHeaders } from 'db3.js'
-const private_key =
-    '0xdc6f560254643be3b4e90a6ba85138017aadd78639fbbb43c57669067c3bbe76'
-
-const account = createFromPrivateKey(private_key)
-
-const client = createClient(
-    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
-    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
-    account
-)
+import {
+    scanMutationHeaders,
+    getMutationBody,
+    Client as ClientInstance,
+} from 'db3.js'
+import { MutationHeader } from 'db3.js/dist/proto/db3_mutation_v2'
 
 export const MutationsTable = () => {
-    const [collections, setCollections] = React.useState<any[]>([
-        {
-            number: 100,
-            id: 'dsshi',
-            age: '1min',
-            address: 'addrxxx',
-            sender: 'xx',
-            state: 'Off chain',
-            block: '-',
-        },
-        {
-            number: 110,
-            id: 'wwwdj',
-            age: '1min2s',
-            address: 'addrxxx',
-            sender: 'xx',
-            state: 'On chain',
-            block: '122',
-        },
-    ])
+    const [collections, setCollections] = React.useState<any[]>([])
+
+    const [page, setPage] = React.useState<number>(1)
+
+    const getMutationItem = async (
+        client: ClientInstance,
+        r: MutationHeader
+    ) => {
+        getMutationBody(client, r.id).then((body) => {
+            let item = {
+                id: r.id,
+                age: r.time
+                    ? new Date().getTime() / 1000 - parseInt(r.time)
+                    : 0,
+                sender: '',
+                type: body[1]?.bodies[0]?.body?.oneofKind,
+                state: 'off chain',
+                arBlock: '-',
+            }
+            return item
+        })
+    }
+
+    const fetchData = () => {
+        if (Client.instance) {
+            scanMutationHeaders(Client.instance, (page - 1) * 10, 10)
+                .then((records) => {
+                    let items: any[] = []
+                    for (let i = 0; i < records.length; i++) {
+                        let r = records[i]
+                        let item = getMutationItem(Client.instance!, r)
+                        items.push(item)
+                    }
+
+                    Promise.all(items).then((values) => {
+                        setCollections(values)
+                        console.log(values)
+                    })
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+    }
 
     useEffect(() => {
-        console.log('xxx')
-
-        const fetchData = async () => {
-            // await Client.init()
-            console.log('client init')
-
-            const records = await scanMutationHeaders(client, 1, 1000)
-
-            console.log(records)
-        }
-        fetchData()
-
-        // Client.init().then(() => {
-        //     console.log('client init')
-
-        //     scanMutationHeaders(Client.instance!, 1, 1000)
-        //         .then((records) => {
-        //             console.log(records)
-        //         })
-        //         .catch((err) => {
-        //             console.log(err)
-        //         })
-        // })
+        Client.init().then(() => {
+            fetchData()
+        })
     }, [])
+    const onChangePage = (page: number) => {
+        setPage(page)
+        fetchData()
+    }
 
     return (
         <div style={{ padding: 20 }}>
@@ -95,6 +98,12 @@ export const MutationsTable = () => {
                         title: 'Ar Block',
                     },
                 ]}
+            />
+            <Pagination
+                style={{ paddingLeft: 800 }}
+                current={page}
+                onChange={onChangePage}
+                total={100}
             />
         </div>
     )

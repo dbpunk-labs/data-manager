@@ -121,11 +121,14 @@ export const DatabaseTable = (props) => {
         })
     }, [])
 
+    const [expandedKeys, setExpandedKeys] = React.useState(false)
+
     useEffect(() => {
         console.log('yyy')
 
-        if (dbData && dbData.length > 0) {
+        if (dbData && dbData.length > 0 && !expandedKeys) {
             navigateToDb(dbData[0])
+            setExpandedKeys(true)
         }
     }, [dbData])
 
@@ -160,7 +163,7 @@ export const DatabaseTable = (props) => {
             navigateToDb(dbItem)
         } else {
             dbData.map((dbItem) => {
-                const collection = dbItem.children.find(
+                const collection = dbItem?.children?.find(
                     (item) => item.key === key
                 )
                 if (collection)

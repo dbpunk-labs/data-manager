@@ -10,11 +10,14 @@ import {
     createCollection,
     showCollection,
     Index,
+    showDatabase,
 } from 'db3.js'
 
 import { useAccount } from 'wagmi'
+import { Client } from '../../../data-context/client'
+import { Database } from 'db3.js/dist/store/types'
 
-type Database = {
+type DB = {
     id: string
     name: string
     address: string
@@ -25,11 +28,35 @@ type Database = {
 export const CollectionList = () => {
     const location = useLocation()
 
+    debugger
+
+    const getDBInstance = async (addr: string) => {
+        const dbs = await showDatabase(
+            Client.account!.address,
+            Client.instance!
+        )
+
+        return dbs.filter((db) => db.addr === addr)
+    }
+
+    const getCollectionInstance = async (db: Database, colName: string) => {
+        const cols = await showCollection(db)
+
+        return cols.filter((col) => col.name === colName)
+    }
+
+    const dbx = getDBInstance('0xad4ae29b507ce73f053c9dca275da7a76dd2489b')
+
+    console.log('dbx', dbx)
+
+    getCollectionInstance(dbx, 'users')
+
     const { db } = location.state
+
     let description: string[] = db.internal?.database?.docDb?.desc
         ?.toString()
         .split('#-#')
-    const [database, setDataBase] = React.useState<Database>({
+    const [database, setDataBase] = React.useState<DB>({
         id: db.addr,
         name: description[0],
         address: db.addr,

@@ -6,11 +6,10 @@ import React, { useEffect } from 'react'
 
 export const DocumentView = (props) => {
     const [docs, setDocs] = React.useState<any[]>([])
-    const [queryStr, setQueryStr] = React.useState<string>('/* | limit 10')
+    const [queryStr, setQueryStr] = React.useState<string>('/* | limit 1')
 
     const fetchData = async () => {
         console.log(queryStr)
-
         const resultSet = await queryDoc(props.collection, queryStr)
         if (resultSet) {
             setDocs(resultSet.docs)

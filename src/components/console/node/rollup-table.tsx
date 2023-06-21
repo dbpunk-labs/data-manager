@@ -22,7 +22,7 @@ export const RollupTable = () => {
         Client.init().then(() => {
             console.log('client init')
 
-            scanRollupRecords(Client.instance!, 1, 1000)
+            scanRollupRecords(Client.instance!, 1, 30)
                 .then((records) => {
                     console.log(records)
                 })
