@@ -1,8 +1,10 @@
-import { Button, Form, Input, Modal, Tree } from 'antd';
-import React from 'react';
-import { Outlet, useMatch, useNavigate } from 'react-router';
+import { Button, Form, Input, Modal, Tree } from 'antd'
+import React from 'react'
+import { Outlet, useMatch, useNavigate } from 'react-router'
 
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons'
+import { Client } from '../../../data-context/client'
+import { createEventDatabase } from 'db3.js'
 
 export const EventDbTable = (props) => {
     const [showCreateIndexModal, setShowCreateIndexModal] =
@@ -57,10 +59,30 @@ export const EventDbTable = (props) => {
 
     const [createDBForm] = Form.useForm()
 
-    const onCreateDatabase = () => {
+    const abi = `
+    [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"deposit","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Withdrawal","type":"event"}]
+    `
+    const evmNodeUrl =
+        'wss://polygon-mumbai.g.alchemy.com/v2/gVbWEkutfeaosLPHTyh7EiIiGBPOF9HA'
+
+    const onCreateDatabase = async () => {
         // TODO
-        const values = createDBForm.getFieldsValue()
-        console.log(values)
+        // const values = createDBForm.getFieldsValue()
+        // console.log(values)
+
+        await Client.init()
+
+        const response = await createEventDatabase(
+            Client.instance!,
+            'desc',
+            '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
+            ['Transfer', 'Deposit', 'Approval', 'Withdrawal'],
+            abi,
+            evmNodeUrl
+        )
+        console.log(response)
+        await new Promise((r) => setTimeout(r, 10000))
+
         setShowCreateIndexModal(false)
     }
 
