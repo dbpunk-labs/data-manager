@@ -1,7 +1,9 @@
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
-import { Form, Button, Modal, Input, Table } from 'antd'
-import React from 'react'
-import { Link } from 'react-router-dom'
+import { Button, Form, Input, Modal, Table } from 'antd';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
+
 type Database = {
     id: string
     name: string
@@ -98,7 +100,7 @@ export const EventDbList = () => {
                             render: (value, record, index) => {
                                 return (
                                     <Link
-                                        to={`/console/event-db/events/${database.id}/collection/${record.id}`}
+                                        to={`/console/event-db/events/${database.id}/${record.id}`}
                                     >
                                         {record.name}
                                     </Link>

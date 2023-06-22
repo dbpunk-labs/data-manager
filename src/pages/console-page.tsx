@@ -1,10 +1,19 @@
-import { Menu } from 'antd'
-import { Outlet, useNavigate } from 'react-router-dom'
-import React from 'react'
-import { ConsoleHeader } from '../components/console/console-header'
+import { Menu } from 'antd';
+import React, { useEffect } from 'react';
+import { Outlet, useMatch, useNavigate } from 'react-router-dom';
+
+import { ConsoleHeader } from '../components/console/console-header';
 
 export const ConsolePage = (props) => {
     const navigate = useNavigate()
+
+    const activeMenu = useMatch({ path: '/console/:menu', end: false })?.params
+        .menu
+
+    useEffect(() => {
+        if (!activeMenu) navigate('/console/home')
+    }, [activeMenu])
+
     return (
         <div
             style={{
@@ -31,7 +40,8 @@ export const ConsolePage = (props) => {
                     }}
                 >
                     <Menu
-                        defaultActiveFirst={true}
+                        selectedKeys={[activeMenu!]}
+                        activeKey={activeMenu}
                         mode="inline"
                         items={[
                             {

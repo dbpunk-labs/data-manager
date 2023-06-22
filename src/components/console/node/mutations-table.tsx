@@ -1,4 +1,4 @@
-import { Pagination, Table } from 'antd'
+import { Pagination, Table, Typography } from 'antd'
 import React, { useEffect } from 'react'
 import { Client } from '../../../data-context/client'
 import {
@@ -30,7 +30,12 @@ export const MutationsTable = () => {
         return item
     }
 
+    const [isLoading, setIsLoading] = React.useState<boolean>(false)
+
     const fetchData = async () => {
+        setIsLoading(true)
+
+        await Client.init()
         if (Client.instance) {
             const records = await scanMutationHeaders(
                 Client.instance,
@@ -48,12 +53,12 @@ export const MutationsTable = () => {
             setCollections(values)
             console.log(values)
         }
+
+        setIsLoading(false)
     }
 
     useEffect(() => {
-        Client.init().then(() => {
-            fetchData()
-        })
+        fetchData()
     }, [])
 
     const onChangePage = (page: number) => {
@@ -64,31 +69,53 @@ export const MutationsTable = () => {
     return (
         <div style={{ padding: 20 }}>
             <Table
+                loading={isLoading}
+                size="small"
                 dataSource={collections}
                 columns={[
                     {
                         dataIndex: 'id',
                         title: 'Id',
+                        width: 200,
+                        render: (text: string) => {
+                            return (
+                                <Typography.Paragraph
+                                    ellipsis={{
+                                        rows: 1,
+                                        expandable: true,
+                                        symbol: 'more',
+                                    }}
+                                    style={{ maxWidth: 200 }}
+                                >
+                                    {text}
+                                </Typography.Paragraph>
+                            )
+                        },
                     },
                     {
                         dataIndex: 'age',
                         title: 'Age',
+                        width: 100,
                     },
                     {
                         dataIndex: 'type',
                         title: 'Type',
+                        width: 100,
                     },
                     {
                         dataIndex: 'sender',
                         title: 'Sender',
+                        width: 100,
                     },
                     {
                         dataIndex: 'state',
                         title: 'State',
+                        width: 100,
                     },
                     {
                         dataIndex: 'arBlock',
                         title: 'Ar Block',
+                        width: 100,
                     },
                 ]}
             />

@@ -1,7 +1,8 @@
-import { PlusOutlined } from '@ant-design/icons'
-import { Form, Button, Input, Modal, Tree } from 'antd'
-import React from 'react'
-import { Outlet, useMatch, useNavigate } from 'react-router'
+import { Button, Form, Input, Modal, Tree } from 'antd';
+import React from 'react';
+import { Outlet, useMatch, useNavigate } from 'react-router';
+
+import { PlusOutlined } from '@ant-design/icons';
 
 export const EventDbTable = (props) => {
     const [showCreateIndexModal, setShowCreateIndexModal] =
@@ -10,7 +11,7 @@ export const EventDbTable = (props) => {
 
     const navigate = useNavigate()
     const navigateToEvent = (dbId: string, eventId: string) => {
-        navigate(`/console/event-db/events/${dbId}/collection/${eventId}`)
+        navigate(`/console/event-db/events/${dbId}/${eventId}`)
     }
 
     const navigateToDb = (dbId: string) => {

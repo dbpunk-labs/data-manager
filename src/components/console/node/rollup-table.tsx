@@ -15,16 +15,16 @@ export const RollupTable = () => {
             block: '-',
         },
     ])
-
+    const [isLoading, setIsLoading] = React.useState<boolean>(false)
     useEffect(() => {
-        console.log('xxx')
-
+        setIsLoading(true)
         Client.init().then(() => {
             console.log('client init')
 
             scanRollupRecords(Client.instance!, 1, 30)
                 .then((records) => {
                     console.log(records)
+                    setIsLoading(false)
                 })
                 .catch((err) => {
                     console.log(err)
@@ -35,6 +35,8 @@ export const RollupTable = () => {
     return (
         <div style={{ padding: 20 }}>
             <Table
+                size="small"
+                loading={isLoading}
                 dataSource={collections}
                 columns={[
                     {

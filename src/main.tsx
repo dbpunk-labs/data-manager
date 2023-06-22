@@ -1,32 +1,34 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
-import './index.css'
-import { LaunchPage } from './pages/launch-page'
-import { ConsolePage } from './pages/console-page'
-import App from './app'
-import { WelcomePage } from './pages/welcome-page'
-import { Home } from './components/console/home'
-import { DatabaseManagement } from './components/console/database/database-management'
-import { EventDB } from './components/console/event-db/event-db'
-import { CollectionList } from './components/console/database/collection-list'
-import { DatabaseTable } from './components/console/database/database-table'
-import { Playground } from './components/console/database/database-playground'
-import { CollectionDetail } from './components/console/database/collection-detail'
-import { NodeConsole } from './components/console/node/node'
-import { EventDbPlayground } from './components/console/event-db/event-db-playground'
-import { EventDbTable } from './components/console/event-db/event-db-table'
-import { EventDbList } from './components/console/event-db/event-db-list'
-import { EventDetail } from './components/console/event-db/event-detail'
-import { RollupTable } from './components/console/node/rollup-table'
-import { MutationsTable } from './components/console/node/mutations-table'
-import { NodeAccount } from './components/console/node/account'
-import { NodeSetting } from './components/console/node/setting'
-import '@rainbow-me/rainbowkit/styles.css'
-import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
-import { configureChains, createConfig, WagmiConfig } from 'wagmi'
-import { polygonMumbai } from 'wagmi/chains'
-import { publicProvider } from 'wagmi/providers/public'
+import './index.css';
+import '@rainbow-me/rainbowkit/styles.css';
+
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import { polygonMumbai } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
+
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+
+import App from './app';
+import { CollectionDetail } from './components/console/database/collection-detail';
+import { CollectionList } from './components/console/database/collection-list';
+import { DatabaseManagement } from './components/console/database/database-management';
+import { Playground } from './components/console/database/database-playground';
+import { DatabaseTable } from './components/console/database/database-table';
+import { EventDB } from './components/console/event-db/event-db';
+import { EventDbList } from './components/console/event-db/event-db-list';
+import { EventDbPlayground } from './components/console/event-db/event-db-playground';
+import { EventDbTable } from './components/console/event-db/event-db-table';
+import { EventDetail } from './components/console/event-db/event-detail';
+import { Home } from './components/console/home';
+import { NodeAccount } from './components/console/node/account';
+import { MutationsTable } from './components/console/node/mutations-table';
+import { NodeConsole } from './components/console/node/node';
+import { RollupTable } from './components/console/node/rollup-table';
+import { NodeSetting } from './components/console/node/setting';
+import { ConsolePage } from './pages/console-page';
+import { LaunchPage } from './pages/launch-page';
+import { WelcomePage } from './pages/welcome-page';
 
 const customeMumbai = {
     id: 80001,
@@ -115,15 +117,15 @@ const router = createBrowserRouter([
                         element: <DatabaseManagement />,
                         children: [
                             {
-                                path: '/console/database/list',
+                                path: '/console/database/db',
                                 element: <DatabaseTable />,
                                 children: [
                                     {
-                                        path: '/console/database/list/:id',
+                                        path: '/console/database/db/:id',
                                         element: <CollectionList />,
                                     },
                                     {
-                                        path: '/console/database/list/:dbId/collection/:collectionId',
+                                        path: '/console/database/db/:dbId/:collectionId',
                                         element: <CollectionDetail />,
                                     },
                                 ],
@@ -147,7 +149,7 @@ const router = createBrowserRouter([
                                         element: <EventDbList />,
                                     },
                                     {
-                                        path: '/console/event-db/events/:dbId/collection/:collectionId',
+                                        path: '/console/event-db/events/:dbId/:collectionId',
                                         element: <EventDetail />,
                                     },
                                 ],

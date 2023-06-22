@@ -3,17 +3,11 @@
     line-height: 1.5;
     font-weight: 400;
     height: 100%;
-    /* background: linear-gradient(#eae3e5,rgb(113 128 150)) */
-    /* 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    margin: 0 auto;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%; */
+    > div {
+        height: 100%;
+    }
 }
 
 a {
@@ -21,6 +15,7 @@ a {
     color: #6b71e0;
     text-decoration: inherit;
 }
+
 a:hover {
     color: #353ee4;
 }
@@ -50,9 +45,11 @@ button {
     cursor: pointer;
     transition: border-color 0.25s;
 }
+
 button:hover {
     border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
     outline: 4px auto -webkit-focus-ring-color;
@@ -63,9 +60,11 @@ button:focus-visible {
         color: #213547;
         background-color: #ffffff;
     }
+
     a:hover {
         color: #747bff;
     }
+
     button {
         background-color: #f9f9f9;
     }
@@ -75,8 +74,5 @@ html,
 body {
     height: 100%;
     overflow-x: hidden;
-}
-
-html {
-    overflow: hidden;
+    margin: 0;
 }

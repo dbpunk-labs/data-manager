@@ -1,80 +1,104 @@
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, Form, Modal, Tabs, Input } from 'antd'
-import React, { useEffect } from 'react'
-import { DocumentView } from '../../views/document-view'
-import { IndexesView } from '../../views/indexes-view'
+import { Skeleton, Tabs } from 'antd';
+import { showCollection, showDatabase } from 'db3.js';
+import React, { useEffect, useState } from 'react';
+import { useMatch } from 'react-router-dom';
 
-import {
-    createClient,
-    showDatabase,
-    createDocumentDatabase,
-    createFromPrivateKey,
-    syncAccountNonce,
-    showCollection,
-    addDoc,
-    queryDoc,
-} from 'db3.js'
+import { CopyOutlined } from '@ant-design/icons';
 
-import { useLocation } from 'react-router-dom'
-import { Client } from '../../../data-context/client'
+import { Client } from '../../../data-context/client';
+import { DocumentView } from '../../views/document-view';
+import { IndexesView } from '../../views/indexes-view';
 
 export const CollectionDetail = () => {
-    const location = useLocation()
+    const [db, setDataBase] = React.useState()
+    const [collections, setCollections] = React.useState<any[]>([])
 
-    // if (!location.state) {
-    const { db, collection } = location.state
-    // }
+    const getDBInstance = async (addr: string) => {
+        await Client.init()
+        const dbs = await showDatabase(
+            Client.account!.address,
+            Client.instance!
+        )
+        return dbs.find((db) => db.addr === addr)
+    }
+    const [loading, setLoading] = useState<boolean>(false)
 
-    let description: string[] = db.internal?.database?.docDb?.desc
+    const routeParams = useMatch('/console/database/db/:dbId/:colName')?.params
+    const dbId = routeParams?.dbId
+    const colName = routeParams?.colName
+    const fetchData = async () => {
+        if (!dbId) return
+        setLoading(true)
+        const db = await getDBInstance(dbId)
+        if (!db) return
+        setDataBase(db)
+
+        const data = await showCollection(db)
+        console.log('== fetch data>>>', db, data)
+
+        // const collections = data.map((item: any, i: number) => ({
+        //     name: item.name,
+        //     documents: '-',
+        //     size: '-',
+        //     indexes: item.indexFields?.length,
+        // }))
+
+        setCollections(data)
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [dbId])
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const collection = collections.find((c) => c.name === colName)
+
+    const dbName = db?.internal?.database?.docDb?.desc
         ?.toString()
-        .split('#-#')
-
-    const [db_0, setDb_0] = React.useState<any>({
-        id: db.addr,
-        name: description[0],
-        addr: db.addr,
-    })
-
-    const [collection_0, setCollection_0] = React.useState<any>({
-        id: `${db.addr}/${collection.name}`,
-        name: collection.name,
-        documents: [],
-    })
+        .split('#-#')[0]
 
     return (
         <div>
-            <span>
-                <h3
-                    style={{
-                        display: 'inline-block',
-                        padding: '0 16px',
-                        marginBottom: 0,
-                    }}
-                >
-                    {db_0.name}.{collection_0.name}
-                </h3>
+            <Skeleton loading={loading}>
                 <span>
-                    addr: {db_0.add}/{collection_0.name}
+                    <h3
+                        style={{
+                            display: 'inline-block',
+                            padding: '0 16px',
+                            marginBottom: 0,
+                        }}
+                    >
+                        {dbName}.{collection?.name}
+                    </h3>
+                    <span>
+                        addr: {db?.addr}/{collection?.name}
+                    </span>
+                    <CopyOutlined />
                 </span>
-                <CopyOutlined />
-            </span>
-
-            <div style={{ padding: '0 16px' }}>
-                <Tabs
-                    items={[
-                        {
-                            key: 'documents',
-                            label: 'Documents',
-                            children: <DocumentView collection={collection} />,
-                        },
-                        {
-                            key: 'indexes',
-                            label: 'Indexes',
-                            children: <IndexesView />,
-                        },
-                    ]}
-                />
-            </div>
+                <div style={{ padding: '0 16px' }}>
+                    <Tabs
+                        defaultActiveKey={'documents'}
+                        items={[
+                            {
+                                key: 'documents',
+                                label: 'Documents',
+                                children: (
+                                    <DocumentView collection={collection} />
+                                ),
+                            },
+                            {
+                                key: 'indexes',
+                                label: 'Indexes',
+                                children: <IndexesView />,
+                            },
+                        ]}
+                    />
+                </div>
+            </Skeleton>
         </div>
     )
 }
