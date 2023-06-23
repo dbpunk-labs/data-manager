@@ -59,7 +59,6 @@ function App() {
     const [, getDatabasesByAddr] = useAsyncFn(
         async (value) => {
             try {
-                console.log('===>' + value)
                 const dbs = await client.listDatabases(value)
                 setDatabases(dbs)
             } catch (e) {
