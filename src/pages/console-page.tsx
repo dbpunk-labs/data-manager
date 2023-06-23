@@ -1,8 +1,8 @@
-import { Menu } from 'antd';
-import React, { useEffect } from 'react';
-import { Outlet, useMatch, useNavigate } from 'react-router-dom';
+import { Menu } from 'antd'
+import React, { useEffect } from 'react'
+import { Outlet, useMatch, useNavigate } from 'react-router-dom'
 
-import { ConsoleHeader } from '../components/console/console-header';
+import { ConsoleHeader } from '../components/console/console-header'
 
 export const ConsolePage = (props) => {
     const navigate = useNavigate()

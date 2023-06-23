@@ -2,22 +2,19 @@ import { Pagination, Table, Typography } from 'antd'
 import React, { useEffect } from 'react'
 import { useAsyncFn } from 'react-use'
 import { Client } from '../../../data-context/client'
-import {
-    getContractSyncStatus,
-    Client as ClientInstance,
-} from 'db3.js'
+import { getContractSyncStatus, Client as ClientInstance } from 'db3.js'
 
 interface ContractJobStatus {
-    addr:string,
-    evmNodeUrl :string,
-    blockNumber:string,
-    eventNumber:string
+    addr: string
+    evmNodeUrl: string
+    blockNumber: string
+    eventNumber: string
 }
 
 export const EventsTable = () => {
     const [jobStatus, setJobStatus] = React.useState<ContractJobStatus[]>([])
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
-    const [loadJobStatusRet, loadJobStatusFn] = useAsyncFn(async(client)=> {
+    const [loadJobStatusRet, loadJobStatusFn] = useAsyncFn(async (client) => {
         const statusList = await getContractSyncStatus(client)
         setJobStatus(statusList as ContractJobStatus[])
     })
@@ -80,8 +77,8 @@ export const EventsTable = () => {
                         dataIndex: 'eventNumber',
                         title: 'eventNumber',
                         width: 100,
-                    }
-                    ]}
+                    },
+                ]}
             />
             {/* <Pagination
                 style={{ paddingLeft: 800 }}

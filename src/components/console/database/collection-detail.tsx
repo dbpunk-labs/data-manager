@@ -1,13 +1,13 @@
-import { Skeleton, Tabs } from 'antd';
-import { showCollection, showDatabase } from 'db3.js';
-import React, { useEffect, useState } from 'react';
-import { useMatch } from 'react-router-dom';
+import { Skeleton, Tabs } from 'antd'
+import { showCollection, showDatabase } from 'db3.js'
+import React, { useEffect, useState } from 'react'
+import { useMatch } from 'react-router-dom'
 
-import { CopyOutlined } from '@ant-design/icons';
+import { CopyOutlined } from '@ant-design/icons'
 
-import { Client } from '../../../data-context/client';
-import { DocumentView } from '../../views/document-view';
-import { IndexesView } from '../../views/indexes-view';
+import { Client } from '../../../data-context/client'
+import { DocumentView } from '../../views/document-view'
+import { IndexesView } from '../../views/indexes-view'
 
 export const CollectionDetail = () => {
     const [db, setDataBase] = React.useState()

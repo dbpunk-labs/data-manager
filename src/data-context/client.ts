@@ -1,18 +1,18 @@
-
-
-
-
 import {
-    Client as ClientInstance, createClient, createFromPrivateKey, DB3Account, syncAccountNonce
-} from 'db3.js';
+    Client as ClientInstance,
+    createClient,
+    createFromPrivateKey,
+    DB3Account,
+    syncAccountNonce,
+} from 'db3.js'
 // import { DB3Account } from "db3.js";
-import { proxy } from 'valtio';
+import { proxy } from 'valtio'
 
 interface IClient {
-    init: () => Promise<void>;
-    account?: DB3Account;
-    instance?: ClientInstance;
-    ready: boolean;
+    init: () => Promise<void>
+    account?: DB3Account
+    instance?: ClientInstance
+    ready: boolean
 }
 
 export const Client = proxy<IClient>({
@@ -20,7 +20,7 @@ export const Client = proxy<IClient>({
     account: undefined,
     ready: false,
     init: async () => {
-        if (Client.ready) return;
+        if (Client.ready) return
         const private_key =
             '0xdc6f560254643be3b4e90a6ba85138017aadd78639fbbb43c57669067c3bbe76'
 
@@ -34,8 +34,8 @@ export const Client = proxy<IClient>({
             account
         )
         await syncAccountNonce(client)
-        Client.instance = client;
-        Client.account = account;
-        Client.ready = true;
-    }
-});
+        Client.instance = client
+        Client.account = account
+        Client.ready = true
+    },
+})

@@ -1,6 +1,6 @@
-import { Menu } from 'antd';
-import React, { useEffect } from 'react';
-import { Outlet, useMatch, useNavigate } from 'react-router-dom';
+import { Menu } from 'antd'
+import React, { useEffect } from 'react'
+import { Outlet, useMatch, useNavigate } from 'react-router-dom'
 
 export const DatabaseManagement = (props) => {
     const navigate = useNavigate()
