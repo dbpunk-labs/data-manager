@@ -23,6 +23,10 @@ export const NodeConsole = () => {
                         label: 'Mutations',
                     },
                     {
+                        key: 'events',
+                        label: 'Events',
+                    },
+                    {
                         key: 'account',
                         label: 'Account',
                     },
