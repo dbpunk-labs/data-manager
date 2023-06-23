@@ -27,10 +27,10 @@ export const Client = proxy<IClient>({
         const account = createFromPrivateKey(private_key)
 
         const client = createClient(
-            //'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
-            //'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
-            'http://127.0.0.1:26619',
-            'http://127.0.0.1:26639',
+            'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
+            'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
+            //'http://127.0.0.1:26619',
+            //'http://127.0.0.1:26639',
             account
         )
         await syncAccountNonce(client)

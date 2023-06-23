@@ -2268,10 +2268,10 @@ db3-bson@5.1.2:
   resolved "https://registry.npmjs.org/db3-bson/-/db3-bson-5.1.2.tgz#3f5ddd81c5527d646d64ecf41e11b0887a87072a"
   integrity sha512-NhH7GylEF1pX9zNv83nj7bZkuXSSwOrAa6i2Yn4eUz9XLJ6JiHkMFWbjIMk8Z2FAjOv47X5wtiJBu4BgG3aoOQ==
 
-db3.js@^0.3.10:
-  version "0.3.10"
-  resolved "https://registry.npmjs.org/db3.js/-/db3.js-0.3.10.tgz#3886edeae477b89e14fa1c50f70fe3bf10a20db2"
-  integrity sha512-jIWoUfplHeKgZ4QwlRUedvRckMChlNfpwiUFoHoNVLtWh+eVU9jIwnkPpbzd4MhCYJBbZE/6mG0qlc0VMbBDDQ==
+db3.js@^0.3.11:
+  version "0.3.11"
+  resolved "https://registry.npmjs.org/db3.js/-/db3.js-0.3.11.tgz#0c8c75a8b24d3a539a2d25abd49722ad40899651"
+  integrity sha512-f1u9CMTvStfD5qcNVYA46D1t/0GlNPs5nSKh6huJTdti1S8YmIjeIuMrSICuWyB7wa1o7fTO+oyi5mEhjzs/Zg==
   dependencies:
     "@ethereumjs/util" "^8.0.5"
     "@metamask/eth-sig-util" "^5.0.2"
