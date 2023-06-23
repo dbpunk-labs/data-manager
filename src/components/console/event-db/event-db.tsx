@@ -1,6 +1,6 @@
-import { Menu } from 'antd';
-import React, { useEffect } from 'react';
-import { Outlet, useMatch, useNavigate } from 'react-router-dom';
+import { Menu } from 'antd'
+import React, { useEffect } from 'react'
+import { Outlet, useMatch, useNavigate } from 'react-router-dom'
 
 export const EventDB = () => {
     const menu = useMatch({ path: '/console/event-db/:menu', end: false })
@@ -24,10 +24,10 @@ export const EventDB = () => {
                         key: 'events',
                         label: 'Events',
                     },
-                    {
-                        key: 'playground',
-                        label: 'Playground',
-                    },
+                    // {
+                    //     key: 'playground',
+                    //     label: 'Playground',
+                    // },
                 ]}
                 onClick={(e) => {
                     navigate(`/console/event-db/${e.key}`)

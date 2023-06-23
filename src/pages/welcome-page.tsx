@@ -30,8 +30,8 @@ export const WelcomePage = () => {
     const [networkId, setNetworkId] = React.useState(
         parseInt(new Date().getTime() / 1000)
     )
-    const {chain, chains} = useNetwork()
-    const [msg, setMsg] = React.useState("")
+    const { chain, chains } = useNetwork()
+    const [msg, setMsg] = React.useState('')
     const { address, isConnecting, isDisconnected } = useAccount()
     const [client, setClient] = React.useState<Client>()
     const [inited, setInited] = React.useState(false)
@@ -71,11 +71,11 @@ export const WelcomePage = () => {
                 minRollSize.toString()
             )
             if (response.code == 0) {
-                setMsg("config rollup done!")
+                setMsg('config rollup done!')
             }
         } catch (e) {
             console.log(e)
-            setMsg("config rollup failed!")
+            setMsg('config rollup failed!')
         }
     }, [client, context, networkId])
 
@@ -85,8 +85,8 @@ export const WelcomePage = () => {
                 console.log(chain)
                 const account = await createFromExternal(chain)
                 const c = createClient(
-                    "http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619",
-                    "http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639",
+                    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
+                    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
                     //"http://127.0.0.1:26619",
                     //"http://127.0.0.1:26639",
                     account
@@ -171,21 +171,24 @@ export const WelcomePage = () => {
                                 border: '1px solid black',
                             }}
                         >
-
-                        <p>
-                            Target contract:
-                            {db3MetaStoreContractConfig.address}
-                        </p>
-                        <h3>Network Id </h3> <p>{networkId}</p>
-                        <h3>Admin </h3> <p>addr:{address}</p>
-                        <h3>rollup node</h3>{' '}
-                        <p>addr:{context.storageNodeEvmAddress}</p>
-                        <p>url:http://{context.storageNodeUrl}</p>
-                        <h3>index node</h3>{' '}
-                        <p>addr:{context.indexNodeEvmAddress}</p>
-                        <p>url:http://{context.indexNodeUrl}</p>
+                            <p>
+                                Target contract:
+                                {db3MetaStoreContractConfig.address}
+                            </p>
+                            <h3>Network Id </h3> <p>{networkId}</p>
+                            <h3>Admin </h3> <p>addr:{address}</p>
+                            <h3>rollup node</h3>{' '}
+                            <p>addr:{context.storageNodeEvmAddress}</p>
+                            <p>url:http://{context.storageNodeUrl}</p>
+                            <h3>index node</h3>{' '}
+                            <p>addr:{context.indexNodeEvmAddress}</p>
+                            <p>url:http://{context.indexNodeUrl}</p>
                         </div>
                         <Button
+                            style={{
+                                backgroundColor: '#1677ff',
+                                color: '#fff',
+                            }}
                             disabled={!registerNetwork}
                             onClick={() =>
                                 registerNetwork.write({
@@ -308,9 +311,12 @@ export const WelcomePage = () => {
                             </div>
                             <div></div>
                             <div>
-                            <a href="https://faucet.polygon.technology/" target="blank">
+                                <a
+                                    href="https://faucet.polygon.technology/"
+                                    target="blank"
+                                >
                                     Go to Polygon Mumbai Faucet
-                            </a>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -366,7 +372,13 @@ export const WelcomePage = () => {
                                 />
                                 {`Min. 1 min, data size should be > 10Mb first.`}
                             </p>
-                            <Button onClick={() => setupRollupNodeHandle()}>
+                            <Button
+                                style={{
+                                    backgroundColor: '#1677ff',
+                                    color: '#fff',
+                                }}
+                                onClick={() => setupRollupNodeHandle()}
+                            >
                                 setup
                             </Button>
                             {msg}

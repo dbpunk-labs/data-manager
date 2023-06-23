@@ -1,141 +1,188 @@
-import { Button, Form, Input, Modal, Table } from 'antd';
-import { createEventDatabase } from 'db3.js';
-// import { getContractSyncStatus } from 'db3.js';
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Button, Form, Input, Modal, Skeleton, Space, Table } from 'antd'
+import { createCollection, showCollection, showDatabase } from 'db3.js'
+import React, { useEffect } from 'react'
+import { Link, useMatch } from 'react-router-dom'
 
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
+import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
 
-import { Client } from '../../../data-context/client';
+import { Client } from '../../../data-context/client'
 
-type Database = {
-    id: string
-    name: string
-    address: string
-}
 export const EventDbList = () => {
-    const [database, setDataBase] = React.useState<Database>({
-        id: 'db-id-1',
-        name: 'db-name',
-        address: '0x123abadfa12345231',
-    })
-
-    const [showCreateCollectionModal, setShowCreateContractModal] =
-        React.useState<boolean>(false)
-    const [createCollectionForm] = Form.useForm()
-    const abi = `
-        [{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"deposit","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Withdrawal","type":"event"}]
-        `
-    const evmNodeUrl =
-        'wss://polygon-mainnet.g.alchemy.com/v2/EH9ZSJ0gS7a1DEIohAWMbhP33lK6qHj9'
-
-    const onCreateCollection = async () => {
-        // TODO
-        // const values = createCollectionForm.getFieldsValue()
+    const [loading, setLoading] = React.useState<boolean>(false)
+    const getDBInstance = async (addr: string) => {
         await Client.init()
-
-        const response = await createEventDatabase(
-            Client.instance!,
-            'desc',
-            '0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270',
-            ['Transfer', 'Deposit', 'Approval', 'Withdrawal'],
-            abi,
-            evmNodeUrl
+        const dbs = await showDatabase(
+            Client.account!.address,
+            Client.instance!
         )
-        console.log(response)
-        await new Promise((r) => setTimeout(r, 10000))
-        // console.log(await getContractSyncStatus(Client.instance!))
-
-        // setShowCreateContractModal(false)
+        return dbs.find((db) => db.addr === addr)
     }
 
-    const [collections, setCollections] = React.useState<any[]>([
-        {
-            name: 'test-collection',
-            documents: 10,
-            size: 100,
-            indexes: 2,
-        },
-        {
-            name: 'test-collectio-2',
-            documents: 10,
-            size: 100,
-            indexes: 2,
-        },
-    ])
+    const [database, setDataBase] = React.useState({})
+
+    const [showCreateCollectionModal, setShowCreateCollectionModal] =
+        React.useState<boolean>(false)
+    const [createCollectionForm] = Form.useForm()
+
+    const [colName, setColName] = React.useState<string>('')
+
+    const onCreateCollection = async () => {
+        if (!colName || colName === '') {
+            alert('Please input collection name')
+        } else {
+            // const index1: Index = {
+            //     path: '/city', // a top level field name 'city' and the path will be '/city'
+            //     indexType: Indextype.StringKey,
+            // }
+            const { collection, result } = await createCollection(
+                database,
+                colName,
+                []
+            )
+            setShowCreateCollectionModal(false)
+            fetchData()
+        }
+    }
+
+    const [collections, setCollections] = React.useState<any[]>([])
+
+    const dbId = useMatch('/console/event-db/events/:dbId')?.params.dbId
+    const fetchData = async () => {
+        if (!dbId) return
+        setLoading(true)
+        const db = await getDBInstance(dbId)
+        if (!db) return
+        setDataBase(db)
+
+        const data = await showCollection(db)
+        console.log('collections ==>>>', data)
+        if (data) {
+            let items: any = []
+            for (let i = 0; i < data.length; i++) {
+                const collection = data[i]
+                let collectionItem = {
+                    id: collection.id,
+                    name: collection.name,
+                    documents: '-',
+                    size: '-',
+                    indexes: collection.indexFields?.length,
+                }
+
+                items.push(collectionItem)
+            }
+            setCollections([...items])
+        }
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        fetchData()
+    }, [dbId])
+
+    // useEffect(() => {
+    //     fetchData()
+    // }, [])
+
+    let description: string[] = database?.internal?.database?.eventDb?.desc
+        ?.toString()
+        .split('#-#')
 
     return (
         <div style={{ padding: '12px 24px' }}>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}
-            >
-                <div>
-                    <h3 style={{ display: 'inline-block' }}>{database.name}</h3>
-                    <span>addr： {database.address}</span>
-                    <CopyOutlined />
+            <Skeleton loading={loading}>
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div>
+                        <h3 style={{ display: 'inline-block' }}>
+                            {description?.[0]}
+                        </h3>
+                        <Space direction="vertical">
+                            <div>
+                                <span> addr: {database?.addr}</span>
+                                <CopyOutlined />
+                            </div>
+                            <div>
+                                <span>
+                                    desc:
+                                    {description?.length > 1
+                                        ? description[1]
+                                        : '-'}
+                                </span>
+                            </div>
+                        </Space>
+                    </div>
+                    <div>
+                        {/* <Button
+                            style={{
+                                backgroundColor: '#1677ff',
+                                color: '#fff',
+                            }}
+                            onClick={() => setShowCreateCollectionModal(true)}
+                        >
+                            <PlusOutlined /> Create Collection
+                        </Button> */}
+                        <Modal
+                            title="Create Collection"
+                            open={showCreateCollectionModal}
+                            onCancel={() => setShowCreateCollectionModal(false)}
+                            onOk={() => {
+                                onCreateCollection()
+                            }}
+                        >
+                            <Form form={createCollectionForm}>
+                                <Form.Item
+                                    required={true}
+                                    label="Database"
+                                    key="database"
+                                >
+                                    <Input value={description?.[0]} disabled />
+                                </Form.Item>
+                                <Form.Item
+                                    required={true}
+                                    label="Collection Name"
+                                    key="collectionName"
+                                >
+                                    <Input
+                                        value={colName}
+                                        onChange={(e) => {
+                                            setColName(e.target.value)
+                                        }}
+                                    />
+                                </Form.Item>
+                            </Form>
+                        </Modal>
+                    </div>
                 </div>
                 <div>
-                    <Button onClick={() => setShowCreateContractModal(true)}>
-                        <PlusOutlined /> Create Event Collection
-                    </Button>
-                    <Modal
-                        title="Create Target Event Collection"
-                        open={showCreateCollectionModal}
-                        onCancel={() => setShowCreateContractModal(false)}
-                        onOk={() => {
-                            onCreateCollection()
-                        }}
-                    >
-                        <Form form={createCollectionForm}>
-                            <Form.Item required={true} label="Name" key="name">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item
-                                required={true}
-                                label="Event Id"
-                                key="id"
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item
-                                required={true}
-                                label="Start block"
-                                key="block"
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Form>
-                    </Modal>
-                </div>
-            </div>
-            <div>
-                <Table
-                    dataSource={collections}
-                    columns={[
-                        {
-                            dataIndex: 'name',
-                            title: 'Indexer Name',
-                            render: (value, record, index) => {
-                                return (
-                                    <Link
-                                        to={`/console/event-db/events/${database.id}/${record.id}`}
-                                    >
-                                        {record.name}
-                                    </Link>
-                                )
+                    <Table
+                        dataSource={collections}
+                        columns={[
+                            {
+                                dataIndex: 'name',
+                                title: 'Collection Name',
+                                render: (text: string, record) => (
+                                    <a>
+                                        <Link
+                                            to={`/console/event-db/events/${database.addr}/${record.name}`}
+                                        >
+                                            {text}
+                                        </Link>
+                                    </a>
+                                ),
                             },
-                        },
-                        { dataIndex: 'documents', title: 'Documents' },
-                        { dataIndex: 'size', title: 'Total Size' },
-                        { dataIndex: 'indexes', title: 'Indexes' },
-                    ]}
-                />
-            </div>
+                            { dataIndex: 'documents', title: 'Documents' },
+                            { dataIndex: 'size', title: 'Total Size' },
+                            { dataIndex: 'indexes', title: 'Indexes' },
+                        ]}
+                    />
+                </div>
+            </Skeleton>
         </div>
     )
 }

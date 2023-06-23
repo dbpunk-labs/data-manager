@@ -1,11 +1,11 @@
-import { Button, Form, Input, Modal, Skeleton, Tree } from 'antd';
-import { createDocumentDatabase, showDatabase } from 'db3.js';
-import React, { useEffect } from 'react';
-import { Outlet, useNavigate } from 'react-router';
+import { Button, Form, Input, Modal, Skeleton, Tree } from 'antd'
+import { createDocumentDatabase, showDatabase } from 'db3.js'
+import React, { useEffect } from 'react'
+import { Outlet, useNavigate } from 'react-router'
 
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons'
 
-import { Client } from '../../../data-context/client';
+import { Client } from '../../../data-context/client'
 
 interface DataNode {
     title: string
@@ -72,20 +72,24 @@ export const DatabaseTable = (props) => {
 
         if (!data) return
 
+        console.log('databases:', data)
+
         let items: any = []
         for (let i = 0; i < data.length; i++) {
-            let desc = data[i].internal?.database?.docDb?.desc
-                ?.toString()
-                .split('#-#')[0]
+            if (data[i].internal?.database?.oneofKind === 'docDb') {
+                let desc = data[i].internal?.database?.docDb?.desc
+                    ?.toString()
+                    .split('#-#')[0]
 
-            let db_item = {
-                id: data[i].addr,
-                title: desc,
-                isLeaf: false,
-                key: i,
-                db: data[i],
+                let db_item = {
+                    id: data[i].addr,
+                    title: desc,
+                    isLeaf: false,
+                    key: i,
+                    db: data[i],
+                }
+                items.push(db_item)
             }
-            items.push(db_item)
         }
         setIsLoading(false)
         // await Promise.all(
@@ -110,8 +114,11 @@ export const DatabaseTable = (props) => {
         //         items = updateTreeData(items, dbItem.id, childrens)
         //     })
         // )
-        if (!currentDb && currentCollection) navigateToDb(items[0])
         setDbData([...items])
+        // if (!currentDb && currentCollection)
+        if (items.length > 0) {
+            navigateToDb(items[0])
+        }
     }
 
     const [createDBForm] = Form.useForm()
@@ -174,7 +181,11 @@ export const DatabaseTable = (props) => {
             >
                 <div>
                     <Button
-                        style={{ marginBottom: 8 }}
+                        style={{
+                            backgroundColor: '#1677ff',
+                            color: '#fff',
+                            marginBottom: 8,
+                        }}
                         size="small"
                         onClick={() => {
                             setShowCreateDatabaseModal(true)

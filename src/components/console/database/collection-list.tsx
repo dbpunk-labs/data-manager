@@ -1,11 +1,11 @@
-import { Button, Form, Input, Modal, Skeleton, Space, Table } from 'antd';
-import { createCollection, showCollection, showDatabase } from 'db3.js';
-import React, { useEffect } from 'react';
-import { Link, useMatch } from 'react-router-dom';
+import { Button, Form, Input, Modal, Skeleton, Space, Table } from 'antd'
+import { createCollection, showCollection, showDatabase } from 'db3.js'
+import React, { useEffect } from 'react'
+import { Link, useMatch } from 'react-router-dom'
 
-import { CopyOutlined, PlusOutlined } from '@ant-design/icons';
+import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
 
-import { Client } from '../../../data-context/client';
+import { Client } from '../../../data-context/client'
 
 export const CollectionList = () => {
     const [loading, setLoading] = React.useState<boolean>(false)
@@ -55,7 +55,7 @@ export const CollectionList = () => {
         setDataBase(db)
 
         const data = await showCollection(db)
-        console.log('==>>>', data)
+        console.log('collections ==>>>', data)
         if (data) {
             let items: any = []
             for (let i = 0; i < data.length; i++) {
@@ -119,6 +119,10 @@ export const CollectionList = () => {
                     </div>
                     <div>
                         <Button
+                            style={{
+                                backgroundColor: '#1677ff',
+                                color: '#fff',
+                            }}
                             onClick={() => setShowCreateCollectionModal(true)}
                         >
                             <PlusOutlined /> Create Collection

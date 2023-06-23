@@ -1,8 +1,8 @@
-import { Button, Collapse, Input, Modal } from 'antd';
-import { addDoc, queryDoc } from 'db3.js';
-import React, { useEffect } from 'react';
+import { Button, Collapse, Input, Modal } from 'antd'
+import { addDoc, queryDoc } from 'db3.js'
+import React, { useEffect } from 'react'
 
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons'
 
 export const DocumentView = (props) => {
     if (!props.collection) return null
@@ -101,13 +101,18 @@ export const DocumentView = (props) => {
                         onSearch={onSearch}
                     />
                 </div>
-                <Button
-                    style={{ marginBottom: 8 }}
-                    size="small"
-                    onClick={() => setShowInsertDocModal(true)}
-                >
-                    <PlusOutlined /> Insert Document
-                </Button>
+                {props.collection.db?.internal?.database?.oneofKind ===
+                    'docDb' && (
+                    <>
+                        <Button
+                            style={{ marginBottom: 8 }}
+                            size="small"
+                            onClick={() => setShowInsertDocModal(true)}
+                        >
+                            <PlusOutlined /> Insert Document
+                        </Button>
+                    </>
+                )}
             </div>
 
             {/* <Divider type="horizontal" /> */}

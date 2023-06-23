@@ -1,12 +1,18 @@
-import { Button, Typography } from 'antd';
+import { Button, Typography } from 'antd'
 import {
-    addDoc, createClient, createCollection, createDocumentDatabase, createFromPrivateKey, IndexType,
-    queryDoc, syncAccountNonce
-} from 'db3.js';
-import React, { memo, useState } from 'react';
-import SyntaxHighlighter from 'react-syntax-highlighter';
+    addDoc,
+    createClient,
+    createCollection,
+    createDocumentDatabase,
+    createFromPrivateKey,
+    IndexType,
+    queryDoc,
+    syncAccountNonce,
+} from 'db3.js'
+import React, { memo, useState } from 'react'
+import SyntaxHighlighter from 'react-syntax-highlighter'
 
-import Editor from '@monaco-editor/react';
+import Editor from '@monaco-editor/react'
 
 export function defaultCode() {
     return `// create client
@@ -97,7 +103,15 @@ export const Playground: React.FC<{}> = memo((props) => {
                 value={code}
                 onChange={(value) => setCode(value!)}
             />
-            <Button type="primary" size="small" onClick={runInsertDocCode}>
+            <Button
+                style={{
+                    backgroundColor: '#1677ff',
+                    color: '#fff',
+                }}
+                type="primary"
+                size="small"
+                onClick={runInsertDocCode}
+            >
                 Run
             </Button>
             {excuteResult && (
