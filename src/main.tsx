@@ -26,6 +26,7 @@ import { MutationsTable } from './components/console/node/mutations-table'
 import { NodeConsole } from './components/console/node/node'
 import { RollupTable } from './components/console/node/rollup-table'
 import { NodeSetting } from './components/console/node/setting'
+import { EventsTable } from './components/console/node/events'
 import { ConsolePage } from './pages/console-page'
 import { LaunchPage } from './pages/launch-page'
 import { WelcomePage } from './pages/welcome-page'
@@ -100,6 +101,10 @@ const router = createBrowserRouter([
                             {
                                 path: '/console/node/mutations',
                                 element: <MutationsTable />,
+                            },
+                            {
+                                path: '/console/node/events',
+                                element: <EventsTable />,
                             },
                             {
                                 path: '/console/node/account',
