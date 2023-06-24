@@ -79,9 +79,9 @@ export const CollectionList = () => {
         fetchData()
     }, [dbId])
 
-    useEffect(() => {
-        fetchData()
-    }, [])
+    // useEffect(() => {
+    //     fetchData()
+    // }, [])
 
     let description: string[] = database?.internal?.database?.docDb?.desc
         ?.toString()

@@ -7,6 +7,8 @@ import {
     createFromPrivateKey,
     IndexType,
     queryDoc,
+    getDatabase,
+    getCollection,
     syncAccountNonce,
 } from 'db3.js'
 import React, { memo, useState } from 'react'
@@ -26,15 +28,15 @@ const client = createClient(
 await syncAccountNonce(client)
 
 // create a database
-const { db } = await createDocumentDatabase(client, 'desc')
-const index = { path: '/name', indexType: IndexType.StringKey}
+// const { db } = await createDocumentDatabase(client, 'desc')
+// const index = { path: '/name', indexType: IndexType.StringKey}
 
 // create a collection
-const { collection } = await createCollection(db,'col',[index])
+const  collection = await getCollection('0x127ff39de458fef51d1fa9f3d3b2388ee4c43578','col',client)
 
 // add a document
 const [txId, block, order] = await addDoc(collection, {
-    name: 'book1',
+    name: 'book3',
     author: 'db3 developers',
     tag: 'web3',
     time: 1686285013,
@@ -63,6 +65,8 @@ export const Playground: React.FC<{}> = memo((props) => {
             'addDoc',
             'queryDoc',
             'syncAccountNonce',
+            'getCollection',
+            'getDatabase',
             'IndexType',
             code
         )
@@ -74,6 +78,8 @@ export const Playground: React.FC<{}> = memo((props) => {
             addDoc,
             queryDoc,
             syncAccountNonce,
+            getCollection,
+            getDatabase,
             IndexType
         ).then((data: any) => {
             setExcuteResult(JSON.stringify(data.docs, null, '\t'))

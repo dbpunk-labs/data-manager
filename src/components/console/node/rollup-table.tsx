@@ -52,7 +52,7 @@ export const RollupTable = () => {
     const [loadRecordsRef, loadRecordsFn] = useAsyncFn(async () => {
         await Client.init()
         const client = Client.instance
-        const records = await scanRollupRecords(client, 0, 20)
+        const records = await scanRollupRecords(client!, 0, 20)
         const newRecords = records.map((record) => {
             return {
                 startBlock: record.startBlock,
