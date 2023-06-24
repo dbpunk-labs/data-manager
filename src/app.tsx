@@ -1,9 +1,13 @@
-import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
+import {
+    RainbowKitProvider,
+    connectorsForWallets,
+} from '@rainbow-me/rainbowkit'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { polygonMumbai } from 'viem/chains'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
+import { injectedWallet } from '@rainbow-me/rainbowkit/wallets'
 
 export const App = () => {
     // TODO
@@ -40,41 +44,17 @@ export const App = () => {
         testnet: true,
     }
 
-    const myTestnet = {
-        id: 9125,
-        name: 'my network',
-        network: 'localtestnet',
-        nativeCurrency: { name: 'matic', symbol: 'matic', decimals: 18 },
-        rpcUrls: {
-            default: {
-                http: ['http://127.0.0.1:8545'],
-                webSocket: ['ws://127.0.0.1:8545'],
-            },
-            public: {
-                http: ['http://127.0.0.1:8545'],
-                webSocket: ['ws://127.0.0.1:8545'],
-            },
-        },
-        blockExplorers: {
-            default: {
-                name: 'localhost',
-                url: '',
-            },
-        },
-        testnet: true,
-    }
-
     const { chains, publicClient } = configureChains(
-        [customeMumbai, polygonMumbai],
+        [customeMumbai],
         [publicProvider()]
     )
 
-    const { connectors } = getDefaultWallets({
-        appName: 'db3 network',
-        projectId: '169f8d0376c922533256a707b401c6ce',
-        chains,
-    })
-
+    const connectors = connectorsForWallets([
+        {
+            groupName: 'Recommended',
+            wallets: [injectedWallet({ chains })],
+        },
+    ])
     const wagmiConfig = createConfig({
         autoConnect: true,
         connectors,

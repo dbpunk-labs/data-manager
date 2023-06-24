@@ -24,6 +24,12 @@ function unitsToReadableNum(units: string): string {
     return (Number(BigInt(units) / BigInt(1000_000)) / 1000_000.0).toFixed(6)
 }
 
+function evmUnitsToReadableNum(units: string): string {
+    return (
+        Number(BigInt(units) / BigInt(1000_000_000)) / 1000_000_000.0
+    ).toFixed(6)
+}
+
 function toHEX(bytes: Uint8Array): string {
     return (
         '0x' +
@@ -41,8 +47,10 @@ interface RollupRecord {
     compressDataSize: string
     arweaveTx: string
     mutationCount: string
-    cost: string
+    arCost: string
     time: string
+    evmCost: string
+    evmTx: string
 }
 
 export const RollupTable = () => {
@@ -60,9 +68,11 @@ export const RollupTable = () => {
                 rawDataSize: bytesToReadableNum(record.rawDataSize),
                 compressDataSize: bytesToReadableNum(record.compressDataSize),
                 mutationCount: record.mutationCount,
-                cost: unitsToReadableNum(record.cost),
+                arCost: unitsToReadableNum(record.cost),
                 time: record.time,
                 arweaveTx: record.arweaveTx,
+                evmCost: evmUnitsToReadableNum(record.evmCost),
+                evmTx: record.evmTx,
             } as RollupRecord
         })
         setRollupRecords(newRecords)
@@ -102,12 +112,20 @@ export const RollupTable = () => {
                         title: 'Mutations',
                     },
                     {
-                        dataIndex: 'cost',
-                        title: 'Cost',
+                        dataIndex: 'arCost',
+                        title: 'Ar Cost',
                     },
                     {
                         dataIndex: 'arweaveTx',
                         title: 'Ar tx',
+                    },
+                    {
+                        dataIndex: 'evmCost',
+                        title: 'Evm Cost',
+                    },
+                    {
+                        dataIndex: 'evmTx',
+                        title: 'Evm tx',
                     },
                     {
                         dataIndex: 'time',

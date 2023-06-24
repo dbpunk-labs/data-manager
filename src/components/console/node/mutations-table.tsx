@@ -6,35 +6,33 @@ import {
     getMutationBody,
     Client as ClientInstance,
 } from 'db3.js'
-import { MutationHeader } from 'db3.js/dist/proto/db3_mutation_v2'
 
+interface MutationHeader {
+    id: string
+    block: string
+    order: number
+    time: string
+    sender: string
+    size: number
+}
+function toHEX(bytes: Uint8Array): string {
+    return (
+        '0x' +
+        bytes.reduce(
+            (str, byte) => str + byte.toString(16).padStart(2, '0'),
+            ''
+        )
+    )
+}
 export const MutationsTable = () => {
-    const [collections, setCollections] = React.useState<any[]>([])
+    const [mutations, setMutations] = React.useState<any[]>([])
 
     const [page, setPage] = React.useState<number>(1)
-
-    const getMutationItem = async (
-        client: ClientInstance,
-        r: MutationHeader
-    ) => {
-        const body = await getMutationBody(client, r.id)
-
-        let item = {
-            id: r.id,
-            age: r.time ? new Date().getTime() / 1000 - parseInt(r.time) : 0,
-            sender: '',
-            type: body[1]?.bodies[0]?.body?.oneofKind,
-            state: 'off chain',
-            arBlock: '-',
-        }
-        return item
-    }
 
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
     const fetchData = async () => {
         setIsLoading(true)
-
         await Client.init()
         if (Client.instance) {
             const records = await scanMutationHeaders(
@@ -42,18 +40,18 @@ export const MutationsTable = () => {
                 (page - 1) * 10,
                 10
             )
-            let items: any[] = []
-            for (let i = 0; i < records.length; i++) {
-                let r = records[i]
-                let item = getMutationItem(Client.instance!, r)
-                items.push(item)
-            }
-
-            const values = await Promise.all(items)
-            setCollections(values)
-            console.log(values)
+            const mutations = records.map((item) => {
+                return {
+                    id: item.id,
+                    block: item.blockId,
+                    order: item.orderId,
+                    sender: toHEX(item.sender),
+                    time: item.time,
+                    size: item.size,
+                } as MutationHeader
+            })
+            setMutations(mutations)
         }
-
         setIsLoading(false)
     }
 
@@ -71,7 +69,7 @@ export const MutationsTable = () => {
             <Table
                 loading={isLoading}
                 size="small"
-                dataSource={collections}
+                dataSource={mutations}
                 columns={[
                     {
                         dataIndex: 'id',
@@ -93,13 +91,13 @@ export const MutationsTable = () => {
                         },
                     },
                     {
-                        dataIndex: 'age',
-                        title: 'Age',
+                        dataIndex: 'time',
+                        title: 'Time',
                         width: 100,
                     },
                     {
-                        dataIndex: 'type',
-                        title: 'Type',
+                        dataIndex: 'block',
+                        title: 'Block',
                         width: 100,
                     },
                     {
@@ -108,13 +106,13 @@ export const MutationsTable = () => {
                         width: 100,
                     },
                     {
-                        dataIndex: 'state',
-                        title: 'State',
+                        dataIndex: 'order',
+                        title: 'Order',
                         width: 100,
                     },
                     {
-                        dataIndex: 'arBlock',
-                        title: 'Ar Block',
+                        dataIndex: 'size',
+                        title: 'Size',
                         width: 100,
                     },
                 ]}

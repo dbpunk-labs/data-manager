@@ -85,10 +85,8 @@ export const WelcomePage = () => {
                 console.log(chain)
                 const account = await createFromExternal(chain)
                 const c = createClient(
-                    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
-                    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
-                    //"http://127.0.0.1:26619",
-                    //"http://127.0.0.1:26639",
+                    'http://127.0.0.1:26619',
+                    'http://127.0.0.1:26639',
                     account
                 )
                 console.log(account)
@@ -154,7 +152,8 @@ export const WelcomePage = () => {
                         <h2>Sign in</h2>
                         <p>
                             Connect wallet and sign in as the admin address of
-                            this node
+                            this node and the address must be the same with node
+                            admin address
                         </p>
                         <ConnectButton />
                     </div>
@@ -175,8 +174,10 @@ export const WelcomePage = () => {
                                 Target contract:
                                 {db3MetaStoreContractConfig.address}
                             </p>
-                            <h3>Network Id </h3> <p>{networkId}</p>
-                            <h3>Admin </h3> <p>addr:{address}</p>
+                            <h3>Network Id </h3>
+                            <p>{networkId}</p>
+                            <h3>Admin </h3>
+                            <p>addr:{address}</p>
                             <h3>rollup node</h3>{' '}
                             <p>addr:{context.storageNodeEvmAddress}</p>
                             <p>url:http://{context.storageNodeUrl}</p>
@@ -252,61 +253,49 @@ export const WelcomePage = () => {
                             </div>
                             <div>
                                 <h3>Arweave address</h3>{' '}
-                                <p>
-                                    <span>Public wallet address</span>{' '}
-                                    <input
-                                        defaultValue={
-                                            context.storageNodeArAddress
+                                <span>Public wallet address</span>{' '}
+                                <input
+                                    defaultValue={context.storageNodeArAddress}
+                                />
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        if (navigator.clipboard) {
+                                            // TODO
+                                            navigator.clipboard.writeText(`**`)
                                         }
-                                    />
-                                    <a
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            if (navigator.clipboard) {
-                                                // TODO
-                                                navigator.clipboard.writeText(
-                                                    `**`
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        Copy
-                                    </a>
-                                    <p>
-                                        balance:{' '}
-                                        {unitsToReadableNum(
-                                            context.storageNodeArBalance
-                                        )}{' '}
-                                        ar
-                                    </p>
+                                    }}
+                                >
+                                    Copy
+                                </a>
+                                <p>
+                                    balance:{' '}
+                                    {unitsToReadableNum(
+                                        context.storageNodeArBalance
+                                    )}{' '}
+                                    ar
                                 </p>
                             </div>
                             <div>
                                 <h3>Polygon (Mumbai)</h3>
-                                <p>
-                                    <span>Public wallet address</span>
-                                    <input
-                                        defaultValue={
-                                            context.storageNodeEvmAddress
+                                <span>Public wallet address</span>
+                                <input
+                                    defaultValue={context.storageNodeEvmAddress}
+                                />
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        if (navigator.clipboard) {
+                                            navigator.clipboard.writeText(`**`)
                                         }
-                                    />
-                                    <a
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            if (navigator.clipboard) {
-                                                navigator.clipboard.writeText(
-                                                    `**`
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        Copy
-                                    </a>
-                                    <p>
-                                        balance:{' '}
-                                        {storageNodeEvmBalance.data?.formatted}{' '}
-                                        {storageNodeEvmBalance.data?.symbol}{' '}
-                                    </p>
+                                    }}
+                                >
+                                    Copy
+                                </a>
+                                <p>
+                                    balance:{' '}
+                                    {storageNodeEvmBalance.data?.formatted}{' '}
+                                    {storageNodeEvmBalance.data?.symbol}{' '}
                                 </p>
                             </div>
                             <div></div>
@@ -340,38 +329,32 @@ export const WelcomePage = () => {
                                 border: '1px solid black',
                             }}
                         >
-                            <p>
-                                <b>Network Id:</b>
-                                <input defaultValue={networkId} />
-                                {''}
-                            </p>
-                            <p>
-                                <b>Min Rollup Size (Mb):</b>
-                                <input
-                                    defaultValue="10"
-                                    onChange={(e) =>
-                                        updateContext({
-                                            ...context,
-                                            minRollSize: e.target.value,
-                                        })
-                                    }
-                                />{' '}
-                                Min. size recommended: 10Mb, AR requires 1Mb at
-                                min., DB3 will compress 10Mb to 1Mb.
-                            </p>
-                            <p>
-                                <b>Rollup Interval (min):</b>
-                                <input
-                                    defaultValue="10"
-                                    onChange={(e) =>
-                                        updateContext({
-                                            ...context,
-                                            rollupInterval: e.target.value,
-                                        })
-                                    }
-                                />
-                                {`Min. 1 min, data size should be > 10Mb first.`}
-                            </p>
+                            <b>Network Id:</b>
+                            <input defaultValue={networkId} />
+                            {''}
+                            <b>Min Rollup Size (Mb):</b>
+                            <input
+                                defaultValue="10"
+                                onChange={(e) =>
+                                    updateContext({
+                                        ...context,
+                                        minRollSize: e.target.value,
+                                    })
+                                }
+                            />{' '}
+                            Min. size recommended: 10Mb, AR requires 1Mb at
+                            min., DB3 will compress 10Mb to 1Mb.
+                            <b>Rollup Interval (min):</b>
+                            <input
+                                defaultValue="10"
+                                onChange={(e) =>
+                                    updateContext({
+                                        ...context,
+                                        rollupInterval: e.target.value,
+                                    })
+                                }
+                            />
+                            {`Min. 1 min, data size should be > 10Mb first.`}
                             <Button
                                 style={{
                                     backgroundColor: '#1677ff',
