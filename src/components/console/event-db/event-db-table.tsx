@@ -102,14 +102,14 @@ export const EventDbTable = (props) => {
                     id: data[i].addr,
                     title: desc,
                     isLeaf: false,
-                    key: i,
+                    key: data[i].addr,
                     db: data[i],
                 }
                 items.push(db_item)
             }
         }
+        console.log(items)
         setIsLoading(false)
-
         // if (!currentDb && currentCollection)
         setDbData([...items])
         if (items.length > 0) {
@@ -264,8 +264,6 @@ export const EventDbTable = (props) => {
                             ]}
                             current={currentStep}
                         />
-                        <>----</>
-
                         {currentStep === 0 && (
                             <Form form={createDBForm}>
                                 <Form.Item
@@ -327,7 +325,10 @@ export const EventDbTable = (props) => {
                                     <Space direction="vertical">
                                         {get_event_types_from_abi(abi).map(
                                             (item) => (
-                                                <Checkbox value={item}>
+                                                <Checkbox
+                                                    value={item}
+                                                    key={item}
+                                                >
                                                     {item}
                                                 </Checkbox>
                                             )

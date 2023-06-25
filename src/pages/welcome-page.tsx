@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Header } from '../components/header'
-import { Button, Form, Input, Modal } from 'antd'
+import { Button, Form, Input, Modal, message, Card, Space } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
+import { STORAGE_NODE_URL, INDEX_NODE_URL } from '../data-context/config'
+import { Alert } from 'antd'
 import {
     createClient,
     getStorageNodeStatus,
@@ -27,14 +29,18 @@ function unitsToReadableNum(units: string): string {
 }
 
 export const WelcomePage = () => {
+    const [messageApi, contextHolder] = message.useMessage()
+
+    const copiedNotify = () => {
+        messageApi.open({
+            type: 'success',
+            content: 'copied',
+        })
+    }
     const [networkId, setNetworkId] = React.useState(
         parseInt(new Date().getTime() / 1000)
     )
     const { chain, chains } = useNetwork()
-    const [msg, setMsg] = React.useState('')
-    const { address, isConnecting, isDisconnected } = useAccount()
-    const [client, setClient] = React.useState<Client>()
-    const [inited, setInited] = React.useState(false)
     const [context, updateContext] = React.useState({
         adminAddress: '',
         storageNodeEvmAddress: '',
@@ -45,7 +51,48 @@ export const WelcomePage = () => {
         minRollSize: '10',
         indexNodeUrl: '',
         indexNodeEvmAddress: '',
+        hasInited: false,
+        networkId: 0,
     })
+    const [client, setClient] = React.useState<Client>()
+    const [inited, setInited] = React.useState(false)
+    const [initFnRet, initFn] = useAsyncFn(async () => {
+        if (chain) {
+            try {
+                const account = await createFromExternal(chain)
+                const c = createClient(
+                    STORAGE_NODE_URL,
+                    INDEX_NODE_URL,
+                    account
+                )
+                await syncAccountNonce(c)
+                setClient(c)
+                const status = await getStorageNodeStatus(c)
+                const indexStatus = await getIndexNodeStatus(c)
+                updateContext({
+                    ...context,
+                    storageNodeArAddress: status.arAccount,
+                    storageNodeEvmAddress: status.evmAccount,
+                    storageNodeArBalance: status.arBalance,
+                    storageNodeUrl: status.nodeUrl,
+                    indexNodeUrl: indexStatus.nodeUrl,
+                    indexNodeEvmAddress: indexStatus.evmAccount,
+                    hasInited: status.hasInited,
+                    networkId: status.hasInited ? status.config.networkId : 0,
+                })
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            console.log('no chain')
+        }
+    }, [chain, context])
+    const accountHandle = useAccount({
+        onConnect({ address, connector, isReconnected }) {
+            initFn()
+        },
+    })
+    const [msg, setMsg] = React.useState('')
 
     const storageNodeEvmBalance = useBalance(
         {
@@ -57,9 +104,6 @@ export const WelcomePage = () => {
 
     const [setupRollupNodeRet, setupRollupNodeHandle] = useAsyncFn(async () => {
         try {
-            console.log(context)
-            console.log(context.rollupInterval)
-            console.log(context.minRollSize)
             const rollupInterval = parseInt(context.rollupInterval) * 60 * 1000
             const minRollSize = parseInt(context.minRollSize) * 1024 * 1024
             console.log(rollupInterval)
@@ -78,57 +122,10 @@ export const WelcomePage = () => {
             setMsg('config rollup failed!')
         }
     }, [client, context, networkId])
-
-    const [initFnRet, initFn] = useAsyncFn(async () => {
-        if (chain) {
-            try {
-                console.log(chain)
-                const account = await createFromExternal(chain)
-                const c = createClient(
-                    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
-                    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
-                    //"http://127.0.0.1:26619",
-                    //"http://127.0.0.1:26639",
-                    account
-                )
-                console.log(account)
-                await syncAccountNonce(c)
-                setClient(c)
-                const status = await getStorageNodeStatus(c)
-                console.log(status)
-                const indexStatus = await getIndexNodeStatus(c)
-                console.log(indexStatus)
-                updateContext({
-                    ...context,
-                    storageNodeArAddress: status.arAccount,
-                    storageNodeEvmAddress: status.evmAccount,
-                    storageNodeArBalance: status.arBalance,
-                    storageNodeUrl: status.nodeUrl,
-                    indexNodeUrl: indexStatus.nodeUrl,
-                    indexNodeEvmAddress: indexStatus.evmAccount,
-                })
-            } catch (e) {
-                console.log(e)
-            }
-        }
-    }, [chain, context])
-    const [showRequestModal, setShowRequestModal] =
-        React.useState<boolean>(false)
-
-    const [token, setToken] = useState<string>('')
-    const [tx_id, setTx_id] = useState<string>('')
-    if (!inited) {
-        initFn()
-        setInited(true)
-    }
-
     const registerNetwork = useContractWrite({
         ...db3MetaStoreContractConfig,
         functionName: 'registerNetwork',
     })
-    const onRequestToken = () => {
-        // TODO
-    }
 
     return (
         <div>
@@ -142,98 +139,89 @@ export const WelcomePage = () => {
                 }}
             >
                 <h1>Welcome </h1>
+                {context.hasInited ? (
+                    <Alert
+                        message="Setup Done!"
+                        description="This node has be initialized by admin"
+                        type="success"
+                        showIcon
+                    />
+                ) : (
+                    <p></p>
+                )}
                 <div>
                     You’ve done fantastic job, we’ll almost finished to
                     self-host your DB3 node. Just few steps to kick start.
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div>
-                        <h2>#1</h2>
-                    </div>
-                    <div>
-                        <h2>Sign in</h2>
-                        <p>
-                            Connect wallet and sign in as the admin address of
-                            this node
-                        </p>
-                        <ConnectButton />
-                    </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div>
-                        <h2>#2</h2>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h2>Register</h2>
-                        <div
-                            style={{
-                                background: 'lightgray',
-                                border: '1px solid black',
-                            }}
-                        >
-                            <p>
-                                Target contract:
-                                {db3MetaStoreContractConfig.address}
-                            </p>
-                            <h3>Network Id </h3> <p>{networkId}</p>
-                            <h3>Admin </h3> <p>addr:{address}</p>
-                            <h3>rollup node</h3>{' '}
-                            <p>addr:{context.storageNodeEvmAddress}</p>
-                            <p>url:http://{context.storageNodeUrl}</p>
-                            <h3>index node</h3>{' '}
-                            <p>addr:{context.indexNodeEvmAddress}</p>
-                            <p>url:http://{context.indexNodeUrl}</p>
-                        </div>
-                        <Button
-                            style={{
-                                backgroundColor: '#1677ff',
-                                color: '#fff',
-                            }}
-                            disabled={!registerNetwork}
-                            onClick={() =>
-                                registerNetwork.write({
-                                    args: [
-                                        networkId,
-                                        context.storageNodeUrl,
-                                        context.storageNodeEvmAddress,
-                                        [context.indexNodeUrl],
-                                        [context.indexNodeEvmAddress],
-                                    ],
-                                })
-                            }
-                        >
-                            Register
-                        </Button>
-                        {registerNetwork.isLoading && <div>Check Wallet</div>}
-                        {registerNetwork.isSuccess && (
-                            <div>
-                                Transaction:{' '}
-                                {JSON.stringify(registerNetwork.data)}
-                            </div>
-                        )}
-                    </div>
-                </div>
 
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div>
-                        <h2>#3</h2>
-                    </div>
-                    <div>
-                        <h2>Request Test Token for Rollup Node</h2>
+                <Space direction="vertical" size="small">
+                    <h2>#1 Sign In</h2>
+                    <p>
+                        Connect wallet and sign in as the admin address of this
+                        node and the address must be the same with node admin
+                        address
+                    </p>
+                    <ConnectButton />
+                </Space>
+
+                <Space direction="vertical" size="small">
+                    <h2>#2 Register Metadata</h2>
+                    <div
+                        style={{
+                            background: 'lightgray',
+                            border: '1px solid black',
+                        }}
+                    >
+                        <h3>Metadata Contract Address</h3>
+                        <p>{db3MetaStoreContractConfig.address}</p>
+                        <h3>Network Id </h3>
                         <p>
-                            Since DB3 is a decentralized database, register this
-                            node info to a public contract is required. Interact
-                            with on-chain contract will need token. We currently
-                            support Polygon Mumbai. If you don’t have the
-                            request token on Polygon Mumbai, please don’t
-                            hesitate to request from us
+                            {context.hasInited ? context.networkId : networkId}
                         </p>
+                        <h3>Your Admin Address</h3>
+                        <p>{accountHandle.address}</p>
+                        <h3>rollup node</h3>{' '}
+                        <p>addr:{context.storageNodeEvmAddress}</p>
+                        <p>url:http://{context.storageNodeUrl}</p>
+                        <h3>index node</h3>{' '}
+                        <p>addr:{context.indexNodeEvmAddress}</p>
+                        <p>url:http://{context.indexNodeUrl}</p>
+                    </div>
+                    <Button
+                        type="primary"
+                        size="large"
+                        disabled={!registerNetwork || context.hasInited}
+                        onClick={() =>
+                            registerNetwork.write({
+                                args: [
+                                    networkId,
+                                    context.storageNodeUrl,
+                                    context.storageNodeEvmAddress,
+                                    [context.indexNodeUrl],
+                                    [context.indexNodeEvmAddress],
+                                ],
+                            })
+                        }
+                    >
+                        Register
+                    </Button>
+                    {registerNetwork.isLoading && <div>Check Wallet</div>}
+                    {registerNetwork.isSuccess && (
+                        <div>
+                            Transaction: {JSON.stringify(registerNetwork.data)}
+                        </div>
+                    )}
+                </Space>
+
+                <Space direction="vertical" size="small">
+                    <h2>#3 The Account status of Data Rollup Node</h2>
+                    <div>
                         <p>
-                            On the other hand, data-up will cost some tokens.
-                            That include Arweave native token $Ar and EVM token
-                            (currently will only support Polygon Mumbai). We’ve
-                            already generated the two addresses on your node
-                            when you install{' '}
+                            Data Rollup Node will cost some tokens. That include
+                            Arweave native token $Ar and EVM token (currently
+                            will only support Polygon Mumbai). We’ve already
+                            generated the two addresses on your node when you
+                            install{' '}
                         </p>
                         <div
                             style={{
@@ -248,65 +236,56 @@ export const WelcomePage = () => {
                             </p>
                             <div>
                                 <h3>Admin address</h3>
-                                <p>{address}</p>
+                                <p>{accountHandle.address}</p>
                             </div>
                             <div>
                                 <h3>Arweave address</h3>{' '}
-                                <p>
-                                    <span>Public wallet address</span>{' '}
-                                    <input
-                                        defaultValue={
-                                            context.storageNodeArAddress
+                                <span>Public wallet address</span>{' '}
+                                <input
+                                    defaultValue={context.storageNodeArAddress}
+                                />
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        if (navigator.clipboard) {
+                                            navigator.clipboard.writeText(
+                                                context.storageNodeArAddress
+                                            )
                                         }
-                                    />
-                                    <a
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            if (navigator.clipboard) {
-                                                // TODO
-                                                navigator.clipboard.writeText(
-                                                    `**`
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        Copy
-                                    </a>
-                                    <p>
-                                        balance:{' '}
-                                        {unitsToReadableNum(
-                                            context.storageNodeArBalance
-                                        )}{' '}
-                                        ar
-                                    </p>
+                                    }}
+                                >
+                                    <CopyOutlined />
+                                </a>
+                                <p>
+                                    balance:{' '}
+                                    {unitsToReadableNum(
+                                        context.storageNodeArBalance
+                                    )}{' '}
+                                    ar
                                 </p>
                             </div>
                             <div>
                                 <h3>Polygon (Mumbai)</h3>
-                                <p>
-                                    <span>Public wallet address</span>
-                                    <input
-                                        defaultValue={
-                                            context.storageNodeEvmAddress
+                                <span>Public wallet address</span>
+                                <input
+                                    defaultValue={context.storageNodeEvmAddress}
+                                />
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        if (navigator.clipboard) {
+                                            navigator.clipboard.writeText(
+                                                context.storageNodeEvmAddress
+                                            )
                                         }
-                                    />
-                                    <a
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={() => {
-                                            if (navigator.clipboard) {
-                                                navigator.clipboard.writeText(
-                                                    `**`
-                                                )
-                                            }
-                                        }}
-                                    >
-                                        Copy
-                                    </a>
-                                    <p>
-                                        balance:{' '}
-                                        {storageNodeEvmBalance.data?.formatted}{' '}
-                                        {storageNodeEvmBalance.data?.symbol}{' '}
-                                    </p>
+                                    }}
+                                >
+                                    <CopyOutlined />
+                                </a>
+                                <p>
+                                    balance:{' '}
+                                    {storageNodeEvmBalance.data?.formatted}{' '}
+                                    {storageNodeEvmBalance.data?.symbol}{' '}
                                 </p>
                             </div>
                             <div></div>
@@ -320,71 +299,68 @@ export const WelcomePage = () => {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    <div>
-                        <h2>#3</h2>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <h2>Node Setup</h2>
+                </Space>
+
+                <Space direction="vertical" size="small">
+                    <h2>#4 Setup Rollup Node</h2>
+                    <p>
+                        You can decide how the data on your node be roll-up to
+                        the Arweave system which will permanent store the data.
+                        For the underlying technical about why DB3 do that,
+                        please refer to the [doc]. If you don’t change anything,
+                        the node will use default or set up later
+                    </p>
+                    <div
+                        style={{
+                            background: 'lightgray',
+                            border: '1px solid black',
+                        }}
+                    >
+                        <h3>Network Id</h3>
+                        <input
+                            defaultValue={
+                                context.hasInited
+                                    ? context.networkId
+                                    : networkId
+                            }
+                            disabled={context.hasInited}
+                        />
+                        {''}
+                        <h3>Min Rollup Size (Mb):</h3>
+                        <input
+                            defaultValue="10"
+                            onChange={(e) =>
+                                updateContext({
+                                    ...context,
+                                    minRollSize: e.target.value,
+                                })
+                            }
+                        />{' '}
                         <p>
-                            You can decide how the data on your node be roll-up
-                            to the Arweave system which will permanent store the
-                            data. For the underlying technical about why DB3 do
-                            that, please refer to the [doc]. If you don’t change
-                            anything, the node will use default or set up later
+                            Min. size recommended: 10Mb, AR requires 1Mb at
+                            min., DB3 will compress 10Mb to 1Mb.
                         </p>
-                        <div
-                            style={{
-                                background: 'lightgray',
-                                border: '1px solid black',
-                            }}
-                        >
-                            <p>
-                                <b>Network Id:</b>
-                                <input defaultValue={networkId} />
-                                {''}
-                            </p>
-                            <p>
-                                <b>Min Rollup Size (Mb):</b>
-                                <input
-                                    defaultValue="10"
-                                    onChange={(e) =>
-                                        updateContext({
-                                            ...context,
-                                            minRollSize: e.target.value,
-                                        })
-                                    }
-                                />{' '}
-                                Min. size recommended: 10Mb, AR requires 1Mb at
-                                min., DB3 will compress 10Mb to 1Mb.
-                            </p>
-                            <p>
-                                <b>Rollup Interval (min):</b>
-                                <input
-                                    defaultValue="10"
-                                    onChange={(e) =>
-                                        updateContext({
-                                            ...context,
-                                            rollupInterval: e.target.value,
-                                        })
-                                    }
-                                />
-                                {`Min. 1 min, data size should be > 10Mb first.`}
-                            </p>
-                            <Button
-                                style={{
-                                    backgroundColor: '#1677ff',
-                                    color: '#fff',
-                                }}
-                                onClick={() => setupRollupNodeHandle()}
-                            >
-                                setup
-                            </Button>
-                            {msg}
-                        </div>
+                        <h3>Rollup Interval (min):</h3>
+                        <input
+                            defaultValue="10"
+                            onChange={(e) =>
+                                updateContext({
+                                    ...context,
+                                    rollupInterval: e.target.value,
+                                })
+                            }
+                        />
+                        <p>{`Min. 1 min, data size > 10Mb is recommended.`}</p>
+                        {msg}
                     </div>
-                </div>
+                    <Button
+                        type="primary"
+                        size="large"
+                        onClick={() => setupRollupNodeHandle()}
+                    >
+                        Setup
+                    </Button>
+                </Space>
             </div>
         </div>
     )

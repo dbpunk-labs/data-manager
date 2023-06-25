@@ -16,15 +16,15 @@ export const NodeConsole = () => {
                 mode="horizontal"
                 defaultActiveFirst={true}
                 defaultChecked={true}
-                defaultSelectedKeys={['rollup']}
+                defaultSelectedKeys={['mutations']}
                 items={[
-                    {
-                        key: 'rollup',
-                        label: 'Roll-up',
-                    },
                     {
                         key: 'mutations',
                         label: 'Mutations',
+                    },
+                    {
+                        key: 'rollup',
+                        label: 'Roll-up',
                     },
                     {
                         key: 'events',
