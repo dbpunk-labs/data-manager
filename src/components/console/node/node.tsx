@@ -1,8 +1,12 @@
 import { Menu } from 'antd'
+import React, { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 export const NodeConsole = () => {
     const navigate = useNavigate()
+    useEffect(() => {
+        navigate('/console/node/rollup')
+    }, [])
     return (
         <div style={{ width: '100%', height: '100%' }}>
             {/* <h2 style={{ width: '100%', padding: '0 16px', marginBottom: 0 }}>

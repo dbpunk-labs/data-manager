@@ -42,8 +42,9 @@ export const DocumentView = (props) => {
         if (isJsonString(doc)) {
             var json = JSON.parse(doc)
             let r = await addDoc(props.collection, json)
-            setShowInsertDocModal(false)
+
             fetchData('')
+            setShowInsertDocModal(false)
         } else {
             alert('Invalid JSON')
         }
@@ -96,7 +97,7 @@ export const DocumentView = (props) => {
                     <Input.Search
                         style={{ marginBottom: 8, width: 300 }}
                         size="small"
-                        placeholder="/[field=value | limit 10]"
+                        placeholder="/[field = value] | limit 10"
                         loading={loadingSearch}
                         onSearch={onSearch}
                     />
@@ -105,7 +106,11 @@ export const DocumentView = (props) => {
                     'docDb' && (
                     <>
                         <Button
-                            style={{ marginBottom: 8 }}
+                            style={{
+                                marginBottom: 8,
+                                backgroundColor: '#1677ff',
+                                color: '#fff',
+                            }}
                             size="small"
                             onClick={() => setShowInsertDocModal(true)}
                         >
