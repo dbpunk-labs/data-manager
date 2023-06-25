@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.0.1",
+    "@ant-design/icons": "^5.1.4",
     "@monaco-editor/react": "^4.5.1",
     "@rainbow-me/rainbowkit": "^1.0.2",
     "antd": "^5.0.7",

@@ -1,5 +1,5 @@
 import { Skeleton, Tabs } from 'antd'
-import { showCollection, showDatabase } from 'db3.js'
+import { getCollectione } from 'db3.js'
 import React, { useEffect, useState } from 'react'
 import { useMatch } from 'react-router-dom'
 
@@ -11,16 +11,8 @@ import { IndexesView } from '../../views/indexes-view'
 
 export const EventDetail = () => {
     const [db, setDataBase] = React.useState()
-    const [collections, setCollections] = React.useState<any[]>([])
+    const [collection, setCollection] = React.useState<any[]>([])
 
-    const getDBInstance = async (addr: string) => {
-        await Client.init()
-        const dbs = await showDatabase(
-            Client.account!.address,
-            Client.instance!
-        )
-        return dbs.find((db) => db.addr === addr)
-    }
     const [loading, setLoading] = useState<boolean>(false)
 
     const routeParams = useMatch(
@@ -31,21 +23,16 @@ export const EventDetail = () => {
     const fetchData = async () => {
         if (!dbId) return
         setLoading(true)
-        const db = await getDBInstance(dbId)
-        if (!db) return
-        setDataBase(db)
-
-        const data = await showCollection(db)
-        console.log('== fetch data>>>', db, data)
-
+        await Client.init()
+        const collection = await getCollection(dbId, colName, Client.instance)
         // const collections = data.map((item: any, i: number) => ({
         //     name: item.name,
         //     documents: '-',
         //     size: '-',
         //     indexes: item.indexFields?.length,
         // }))
-
-        setCollections(data)
+        setCollection(collection)
+        setDataBase(collection.db)
         setLoading(false)
     }
 
@@ -56,8 +43,6 @@ export const EventDetail = () => {
     useEffect(() => {
         fetchData()
     }, [])
-
-    const collection = collections.find((c) => c.name === colName)
 
     const dbName = db?.internal?.database?.eventDb?.desc
         ?.toString()
