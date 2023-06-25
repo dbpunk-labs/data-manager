@@ -18,10 +18,10 @@ import React, { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router'
 
 import { PlusOutlined } from '@ant-design/icons'
-
-import { Client } from '../../../data-context/client'
 import { CheckboxValueType } from 'antd/es/checkbox/Group'
 import { useMatch } from 'react-router-dom'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
 
 interface DataNode {
     title: string
@@ -34,28 +34,25 @@ interface DataNode {
 }
 
 export const EventDbTable = (props) => {
+    const { client } = usePageContext()
     const [showCreateIndexModal, setShowCreateIndexModal] =
         React.useState<boolean>(false)
     const dbId = useMatch('console/event-db/:id')
     const [currentDb, setCurrentDb] = React.useState<any>(null)
     const [currentCollection, setCurrentCollection] = React.useState<any>(null)
-
     const navigate = useNavigate()
     const navigateToCollection = (dbItem, collectionItem) => {
         setCurrentDb(dbItem)
         setCurrentCollection(collectionItem)
         navigate(`/console/event-db/events/${dbItem.id}/${collectionItem.id}`)
     }
-
     const [dbName, setDbName] = React.useState<string>('')
     const [dbDesc, setDbDesc] = React.useState<string>('')
-
     const navigateToDb = (dbItem: DataNode) => {
         setCurrentDb(dbItem)
         setCurrentCollection(null)
         navigate(`/console/event-db/events/${dbItem.id}`)
     }
-
     const [dbData, setDbData] = React.useState<any[]>([])
     const updateTreeData = (
         list: DataNode[],
@@ -69,35 +66,19 @@ export const EventDbTable = (props) => {
                     children,
                 }
             }
-
             return node
         })
-
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
-    useEffect(() => {
-        loadData()
-    }, [])
-
-    const loadData = async () => {
+    const [loadDataRet, loadData] = useAsyncFn(async () => {
         setIsLoading(true)
-
-        await Client.init()
-        const data = await showDatabase(
-            Client.account!.address,
-            Client.instance!
-        )
-
-        if (!data) return
-
-        console.log('databases:', data)
-
+        const data = await showDatabase(client.account.address, client)
+        console.log(data)
         let items: any = []
         for (let i = 0; i < data.length; i++) {
             if (data[i].internal?.database?.oneofKind === 'eventDb') {
                 let desc = data[i].internal?.database?.eventDb?.desc
                     ?.toString()
                     .split('#-#')[0]
-
                 let db_item = {
                     id: data[i].addr,
                     title: desc,
@@ -108,14 +89,15 @@ export const EventDbTable = (props) => {
                 items.push(db_item)
             }
         }
-        console.log(items)
         setIsLoading(false)
-        // if (!currentDb && currentCollection)
-        setDbData([...items])
+        setDbData(items)
         if (items.length > 0) {
             navigateToDb(items[0])
         }
-    }
+    }, [client])
+    useEffect(() => {
+        loadData()
+    }, [client])
 
     const [createDBForm] = Form.useForm()
     const [isCreating, setIsCreating] = React.useState<boolean>(false)
@@ -153,51 +135,48 @@ export const EventDbTable = (props) => {
         setEventTypes(checkedValues as string[])
     }
 
-    const onCreateDatabase = async () => {
+    const [createDBRet, createDBFn] = useAsyncFn(async () => {
         setIsCreating(true)
         // const values = createDBForm.getFieldsValue()
         if (eventTypes === undefined || eventTypes.length === 0) {
             alert('Please select at least one event type')
             return
         }
-
         if (!contractIndexName || contractIndexName === '') {
             alert('Please enter a database name')
         } else {
             let the_desc = `${contractIndexName}#-#${dbDesc}`
             const { db, result } = await createEventDatabase(
-                Client.instance!,
+                client,
                 the_desc,
                 contractAddress,
                 eventTypes,
                 eventAbi,
                 eventEvmNodeUrl
             )
-            const databases = await showDatabase(
-                Client.account!.address,
-                Client.instance!
-            )
-            setDbData(databases)
             setIsCreating(false)
             setShowCreateIndexModal(false)
+            loadData()
         }
-    }
+    }, [client, dbName, dbDesc, eventTypes])
 
-    const onSelect = (e) => {
-        const key = e[0]
-        const dbItem = dbData.find((item) => item.key === key)
-        if (dbItem) {
-            navigateToDb(dbItem)
-        } else {
-            dbData.map((dbItem) => {
-                const collection = dbItem?.children?.find(
-                    (item) => item.key === key
-                )
-                if (collection) navigateToCollection(dbItem, collection)
-            })
-        }
-    }
-
+    const [onSelectRet, onSelectFn] = useAsyncFn(
+        async (e) => {
+            const key = e[0]
+            const dbItem = dbData.find((item) => item.key === key)
+            if (dbItem) {
+                navigateToDb(dbItem)
+            } else {
+                dbData.map((dbItem) => {
+                    const collection = dbItem?.children?.find(
+                        (item) => item.key === key
+                    )
+                    if (collection) navigateToCollection(dbItem, collection)
+                })
+            }
+        },
+        [client, dbData]
+    )
     return (
         <div
             style={{
@@ -241,7 +220,7 @@ export const EventDbTable = (props) => {
                             if (currentStep === 0) {
                                 setCurrentStep(1)
                             } else {
-                                onCreateDatabase()
+                                createDBFn()
                             }
                         }}
                         onCancel={() => {
@@ -346,7 +325,7 @@ export const EventDbTable = (props) => {
                             showLine={false}
                             showIcon={false}
                             defaultExpandedKeys={['0-0-0']}
-                            onSelect={onSelect}
+                            onSelect={onSelectFn}
                             treeData={dbData}
                         />
                     </Skeleton>

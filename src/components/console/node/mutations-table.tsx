@@ -1,11 +1,8 @@
 import { Pagination, Table, Typography } from 'antd'
 import React, { useEffect } from 'react'
-import { Client } from '../../../data-context/client'
-import {
-    scanMutationHeaders,
-    getMutationBody,
-    Client as ClientInstance,
-} from 'db3.js'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
+import { scanMutationHeaders, getMutationBody } from 'db3.js'
 
 interface MutationHeader {
     id: string
@@ -25,44 +22,37 @@ function toHEX(bytes: Uint8Array): string {
     )
 }
 export const MutationsTable = () => {
+    const { client } = usePageContext()
     const [mutations, setMutations] = React.useState<any[]>([])
-
-    const [page, setPage] = React.useState<number>(1)
-
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
-
-    const fetchData = async () => {
-        setIsLoading(true)
-        await Client.init()
-        if (Client.instance) {
-            const records = await scanMutationHeaders(
-                Client.instance,
-                (page - 1) * 10,
-                10
-            )
-            const mutations = records.map((item) => {
-                return {
-                    id: item.id,
-                    block: item.blockId,
-                    order: item.orderId,
-                    sender: toHEX(item.sender),
-                    time: item.time,
-                    size: item.size,
-                } as MutationHeader
-            })
-            setMutations(mutations)
+    const [fetchDataRet, fetchDataFn] = useAsyncFn(async () => {
+        if (client) {
+            try {
+                setIsLoading(true)
+                const records = await scanMutationHeaders(client, 0, 10)
+                const mutations = records.map((item) => {
+                    return {
+                        id: item.id,
+                        block: item.blockId,
+                        order: item.orderId,
+                        sender: toHEX(item.sender),
+                        time: item.time,
+                        size: item.size,
+                    } as MutationHeader
+                })
+                setIsLoading(false)
+                setMutations(mutations)
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            console.log('no client')
         }
-        setIsLoading(false)
-    }
+    }, [client])
 
     useEffect(() => {
-        fetchData()
-    }, [])
-
-    const onChangePage = (page: number) => {
-        setPage(page)
-        fetchData()
-    }
+        fetchDataFn()
+    }, [client])
 
     return (
         <div style={{ padding: 20 }}>

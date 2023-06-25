@@ -1,65 +1,43 @@
 import { Skeleton, Tabs } from 'antd'
-import { showCollection, showDatabase } from 'db3.js'
+import { getCollection } from 'db3.js'
 import React, { useEffect, useState } from 'react'
 import { useMatch } from 'react-router-dom'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
 
 import { CopyOutlined } from '@ant-design/icons'
-
-import { Client } from '../../../data-context/client'
 import { DocumentView } from '../../views/document-view'
 import { IndexesView } from '../../views/indexes-view'
 
 export const CollectionDetail = () => {
+    const { client } = usePageContext()
     const [db, setDataBase] = React.useState()
-    const [collections, setCollections] = React.useState<any[]>([])
-
-    const getDBInstance = async (addr: string) => {
-        await Client.init()
-        const dbs = await showDatabase(
-            Client.account!.address,
-            Client.instance!
-        )
-        return dbs.find((db) => db.addr === addr)
-    }
+    const [collection, setCollection] = React.useState({})
+    const [dbName, setDbName] = React.useState('')
     const [loading, setLoading] = useState<boolean>(false)
-
     const routeParams = useMatch('/console/database/db/:dbId/:colName')?.params
     const dbId = routeParams?.dbId
     const colName = routeParams?.colName
-    const fetchData = async () => {
-        if (!dbId) return
-        setLoading(true)
-        const db = await getDBInstance(dbId)
-        if (!db) return
-        setDataBase(db)
-
-        const data = await showCollection(db)
-        console.log('== fetch data>>>', db, data)
-
-        // const collections = data.map((item: any, i: number) => ({
-        //     name: item.name,
-        //     documents: '-',
-        //     size: '-',
-        //     indexes: item.indexFields?.length,
-        // }))
-
-        setCollections(data)
-        setLoading(false)
-    }
+    const [fetchDataRet, fetchData] = useAsyncFn(async () => {
+        if (client) {
+            try {
+                setLoading(true)
+                const data = await getCollection(dbId, colName, client)
+                const dbName =
+                    data.db?.internal?.database?.docDb?.desc?.split('#-#')[0]
+                setDataBase(data.db)
+                setDbName(dbName)
+                setCollection(data)
+                setLoading(false)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [client, dbId, colName])
 
     useEffect(() => {
         fetchData()
-    }, [dbId])
-
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    const collection = collections.find((c) => c.name === colName)
-
-    const dbName = db?.internal?.database?.docDb?.desc
-        ?.toString()
-        .split('#-#')[0]
+    }, [client])
 
     return (
         <div>
@@ -74,8 +52,9 @@ export const CollectionDetail = () => {
                     >
                         {dbName}.{collection?.name}
                     </h3>
+                    <br />
                     <span>
-                        addr: {db?.addr}/{collection?.name}
+                        {db?.addr}/{collection?.name}
                     </span>
                     <CopyOutlined />
                 </span>

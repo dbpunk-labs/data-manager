@@ -1,52 +1,46 @@
 import { Skeleton, Tabs } from 'antd'
-import { getCollectione } from 'db3.js'
+import { getCollection } from 'db3.js'
 import React, { useEffect, useState } from 'react'
 import { useMatch } from 'react-router-dom'
 
 import { CopyOutlined } from '@ant-design/icons'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
 
-import { Client } from '../../../data-context/client'
 import { DocumentView } from '../../views/document-view'
 import { IndexesView } from '../../views/indexes-view'
 
 export const EventDetail = () => {
+    const { client } = usePageContext()
     const [db, setDataBase] = React.useState()
-    const [collection, setCollection] = React.useState<any[]>([])
-
+    const [collection, setCollection] = React.useState({})
     const [loading, setLoading] = useState<boolean>(false)
-
     const routeParams = useMatch(
         '/console/event-db/events/:dbId/:colName'
     )?.params
     const dbId = routeParams?.dbId
     const colName = routeParams?.colName
-    const fetchData = async () => {
-        if (!dbId) return
-        setLoading(true)
-        await Client.init()
-        const collection = await getCollection(dbId, colName, Client.instance)
-        // const collections = data.map((item: any, i: number) => ({
-        //     name: item.name,
-        //     documents: '-',
-        //     size: '-',
-        //     indexes: item.indexFields?.length,
-        // }))
-        setCollection(collection)
-        setDataBase(collection.db)
-        setLoading(false)
-    }
+    const [dbName, setDbName] = React.useState('')
+    const [fetchDataRet, fetchData] = useAsyncFn(async () => {
+        if (client) {
+            try {
+                setLoading(true)
+                const data = await getCollection(dbId, colName, client)
+                const dbName =
+                    data.db?.internal?.database?.eventDb?.desc?.split('#-#')[0]
+                setDataBase(data.db)
+                setDbName(dbName)
+                setCollection(data)
+                setLoading(false)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [client, dbId, colName])
 
     useEffect(() => {
         fetchData()
-    }, [dbId])
-
-    useEffect(() => {
-        fetchData()
-    }, [])
-
-    const dbName = db?.internal?.database?.eventDb?.desc
-        ?.toString()
-        .split('#-#')[0]
+    }, [dbId, client])
 
     return (
         <div>
@@ -62,7 +56,7 @@ export const EventDetail = () => {
                         {dbName}.{collection?.name}
                     </h3>
                     <span>
-                        addr: {db?.addr}/{collection?.name}
+                        {db?.addr}/{collection?.name}
                     </span>
                     <CopyOutlined />
                 </span>

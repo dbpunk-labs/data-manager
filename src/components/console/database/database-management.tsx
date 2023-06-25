@@ -13,10 +13,6 @@ export const DatabaseManagement = (props) => {
 
     return (
         <div style={{ width: '100%', height: '100%' }}>
-            {/* <h2 style={{ width: '100%', padding: '0 16px', marginBottom: 0 }}>
-                Database
-            </h2> */}
-
             <Menu
                 mode="horizontal"
                 selectedKeys={[menu!]}

@@ -1,13 +1,16 @@
 import { Button, Collapse, Input, Modal } from 'antd'
 import { addDoc, queryDoc } from 'db3.js'
 import React, { useEffect } from 'react'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
 
 import { PlusOutlined } from '@ant-design/icons'
 
 export const DocumentView = (props) => {
-    if (!props.collection) return null
+    if (!props.collection) {
+        return null
+    }
     const [docs, setDocs] = React.useState<any[]>()
-
     const [queryStr, setQueryStr] = React.useState<string>('/* | limit 10')
     function isJsonString(str) {
         try {
@@ -18,15 +21,16 @@ export const DocumentView = (props) => {
         }
     }
     const [loadingSearch, setLoadingSearch] = React.useState<boolean>(false)
-
     const onSearch = async (value: string) => {
-        console.log('s=', value)
         setLoadingSearch(true)
         await fetchData(value)
         setLoadingSearch(false)
     }
 
     const fetchData = async (search: string) => {
+        if (!props.collection?.db) {
+            return
+        }
         if (!search || search.length == 0) {
             search = '/* | limit 10'
         }
@@ -42,7 +46,6 @@ export const DocumentView = (props) => {
         if (isJsonString(doc)) {
             var json = JSON.parse(doc)
             let r = await addDoc(props.collection, json)
-
             fetchData('')
             setShowInsertDocModal(false)
         } else {
@@ -85,7 +88,7 @@ export const DocumentView = (props) => {
                         }}
                         okText="Insert"
                     >
-                        <span>{`target :  ${props.collection.name}`}</span>
+                        <span>{`target :  ${props.collection?.name}`}</span>
                         <Input.TextArea
                             value={doc}
                             placeholder='{"name":"John","age":30,"cities":["New York","Beijing"]}'
@@ -102,7 +105,7 @@ export const DocumentView = (props) => {
                         onSearch={onSearch}
                     />
                 </div>
-                {props.collection.db?.internal?.database?.oneofKind ===
+                {props.collection?.db?.internal?.database?.oneofKind ===
                     'docDb' && (
                     <>
                         <Button
@@ -121,7 +124,7 @@ export const DocumentView = (props) => {
             </div>
 
             {/* <Divider type="horizontal" /> */}
-            <div style={{ height: '100%', overflow: 'scroll' }}>
+            <div style={{ height: '100%' }}>
                 <Collapse size="small">
                     {docs?.map((item, index) => {
                         return (

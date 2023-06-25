@@ -36,34 +36,6 @@ export const Home = () => {
                     Create Database
                 </Button>
             </div>
-
-            <div>
-                <h2>Example</h2>
-                <Space direction="horizontal">
-                    <Link
-                        to={
-                            'https://github.com/dbpunk-labs/db3.js/tree/main/examples/helloworld'
-                        }
-                    >
-                        <div style={cardStyle}>Try Hello world</div>
-                    </Link>
-
-                    <Link
-                        to={
-                            'https://github.com/dbpunk-labs/db3.js/tree/main/examples/todomvc'
-                        }
-                    >
-                        <div style={cardStyle}>Try Todo MVC</div>
-                    </Link>
-                </Space>
-                <h2>Build</h2>
-                <Space direction="horizontal">
-                    <Link to={'https://github.com/dbpunk-labs/db3.js'}>
-                        <div style={cardStyle}>DB3js Library</div>
-                    </Link>
-                    <div style={cardStyle}>something...</div>
-                </Space>
-            </div>
-        </div>
+       </div>
     )
 }

@@ -1,7 +1,7 @@
 import { Table } from 'antd'
 import { scanRollupRecords } from 'db3.js'
 import React, { useEffect } from 'react'
-import { Client } from '../../../data-context/client'
+import { usePageContext } from '../../../data-context/page-context'
 import { useAsyncFn } from 'react-use'
 
 function bytesToReadableNum(bytes_size_str: string): string {
@@ -54,13 +54,11 @@ interface RollupRecord {
 }
 
 export const RollupTable = () => {
+    const { client } = usePageContext()
     const [rollupRecords, setRollupRecords] = React.useState<RollupRecord[]>()
-    const [inited, setInited] = React.useState<boolean>(false)
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [loadRecordsRef, loadRecordsFn] = useAsyncFn(async () => {
-        await Client.init()
-        const client = Client.instance
-        const records = await scanRollupRecords(client!, 0, 20)
+        const records = await scanRollupRecords(client, 0, 20)
         const newRecords = records.map((record) => {
             return {
                 startBlock: record.startBlock,
@@ -76,13 +74,10 @@ export const RollupTable = () => {
             } as RollupRecord
         })
         setRollupRecords(newRecords)
-    })
-    if (!inited) {
-        setIsLoading(true)
-        setInited(true)
+    }, [client])
+    useEffect(() => {
         loadRecordsFn()
-        setIsLoading(false)
-    }
+    }, [client])
 
     return (
         <div style={{ padding: 20 }}>

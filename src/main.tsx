@@ -19,7 +19,7 @@ import { EventDB } from './components/console/event-db/event-db'
 import { EventDbList } from './components/console/event-db/event-db-list'
 import { EventDbPlayground } from './components/console/event-db/event-db-playground'
 import { EventDbTable } from './components/console/event-db/event-db-table'
-import { EventDetail } from './components/console/event-db/event-detail-d'
+import { EventDetail } from './components/console/event-db/event-detail'
 import { Home } from './components/console/home'
 import { NodeAccount } from './components/console/node/account'
 import { MutationsTable } from './components/console/node/mutations-table'
@@ -117,10 +117,6 @@ const router = createBrowserRouter([
                         ],
                     },
                 ],
-            },
-            {
-                path: '/launch',
-                element: <LaunchPage />,
             },
             {
                 path: '/welcome',

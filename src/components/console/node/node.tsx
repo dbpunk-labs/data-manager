@@ -5,13 +5,10 @@ import { Outlet, useNavigate } from 'react-router-dom'
 export const NodeConsole = () => {
     const navigate = useNavigate()
     useEffect(() => {
-        navigate('/console/node/rollup')
+        navigate('/console/node/mutations')
     }, [])
     return (
         <div style={{ width: '100%', height: '100%' }}>
-            {/* <h2 style={{ width: '100%', padding: '0 16px', marginBottom: 0 }}>
-                Node
-            </h2> */}
             <Menu
                 mode="horizontal"
                 defaultActiveFirst={true}

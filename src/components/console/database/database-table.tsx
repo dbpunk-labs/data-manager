@@ -1,8 +1,9 @@
 import { Button, Form, Input, Modal, Skeleton, Tree } from 'antd'
 import { createDocumentDatabase, showDatabase } from 'db3.js'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
 import React, { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router'
-
 import { PlusOutlined } from '@ant-design/icons'
 
 import { Client } from '../../../data-context/client'
@@ -18,11 +19,11 @@ interface DataNode {
 }
 
 export const DatabaseTable = (props) => {
+    const { client } = usePageContext()
     const [showCreateDatabaseModal, setShowCreateDatabaseModal] =
         React.useState<boolean>(false)
     const [currentDb, setCurrentDb] = React.useState<any>(null)
     const [currentCollection, setCurrentCollection] = React.useState<any>(null)
-
     const navigate = useNavigate()
     const navigateToCollection = (dbItem, collectionItem) => {
         setCurrentDb(dbItem)
@@ -57,109 +58,77 @@ export const DatabaseTable = (props) => {
         })
 
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
-    useEffect(() => {
-        loadData()
-    }, [])
 
-    const loadData = async () => {
+    const [loadDataRet, loadDataFn] = useAsyncFn(async () => {
         setIsLoading(true)
-
-        await Client.init()
-        const data = await showDatabase(
-            Client.account!.address,
-            Client.instance!
-        )
-
-        if (!data) return
-
-        console.log('databases:', data)
-
+        const data = await showDatabase(client.account.address, client)
         let items: any = []
         for (let i = 0; i < data.length; i++) {
             if (data[i].internal?.database?.oneofKind === 'docDb') {
                 let desc = data[i].internal?.database?.docDb?.desc
                     ?.toString()
                     .split('#-#')[0]
-
                 let db_item = {
                     id: data[i].addr,
                     title: desc,
                     isLeaf: false,
-                    key: i,
+                    key: data[i].addr,
                     db: data[i],
                 }
                 items.push(db_item)
             }
         }
         setIsLoading(false)
-        // await Promise.all(
-        //     items.map(async (dbItem, idx) => {
-        //         const collections = await showCollection(dbItem.db)
-
-        //         console.log(collections)
-        //         let childrens: DataNode[] = []
-
-        //         collections.map((item, idx) => {
-        //             let collection_item = {
-        //                 id: item.name,
-        //                 title: item.name,
-        //                 key: `${dbItem.key}-${idx}`,
-        //                 collection: item,
-        //                 isLeaf: true,
-        //             }
-
-        //             childrens.push(collection_item)
-        //         })
-
-        //         items = updateTreeData(items, dbItem.id, childrens)
-        //     })
-        // )
-        setDbData([...items])
-        // if (!currentDb && currentCollection)
+        setDbData(items)
         if (items.length > 0) {
             navigateToDb(items[0])
         }
-    }
+    }, [client])
 
     const [createDBForm] = Form.useForm()
     const [isCreating, setIsCreating] = React.useState<boolean>(false)
-
-    const onCreateDatabase = async () => {
-        setIsCreating(true)
-        // const values = createDBForm.getFieldsValue()
-        if (!dbName || dbName === '') {
-            alert('Please enter a database name')
-        } else {
-            let the_desc = `${dbName}#-#${dbDesc}`
-            const { db, result } = await createDocumentDatabase(
-                Client.instance!,
-                the_desc
-            )
-            const databases = await showDatabase(
-                Client.account!.address,
-                Client.instance!
-            )
-            setDbData(databases)
-            setIsCreating(false)
-            setShowCreateDatabaseModal(false)
-        }
-    }
-
-    const onSelect = (e) => {
-        const key = e[0]
-        const dbItem = dbData.find((item) => item.key === key)
-        if (dbItem) {
-            navigateToDb(dbItem)
-        } else {
-            dbData.map((dbItem) => {
-                const collection = dbItem?.children?.find(
-                    (item) => item.key === key
+    const [createDBRet, createDBFn] = useAsyncFn(async () => {
+        if (client) {
+            setIsCreating(true)
+            if (!dbName || dbName === '') {
+                alert('Please enter a database name')
+                setIsCreating(false)
+            } else {
+                let the_desc = `${dbName}#-#${dbDesc}`
+                const { db, result } = await createDocumentDatabase(
+                    client,
+                    the_desc
                 )
-                if (collection) navigateToCollection(dbItem, collection)
-            })
+                setIsCreating(false)
+                setShowCreateDatabaseModal(false)
+                loadDataFn()
+            }
+        } else {
+            console.log('please login')
         }
-    }
+    }, [client, dbName, dbDesc])
 
+    const [onSelectRet, onSelectFn] = useAsyncFn(
+        async (e) => {
+            const key = e[0]
+            const dbItem = dbData.find((item) => item.key === key)
+            if (dbItem) {
+                navigateToDb(dbItem)
+            } else {
+                dbData.map((dbItem) => {
+                    const collection = dbItem?.children?.find(
+                        (item) => item.key === key
+                    )
+                    if (collection) navigateToCollection(dbItem, collection)
+                })
+            }
+        },
+        [client, dbData]
+    )
+
+    useEffect(() => {
+        loadDataFn()
+    }, [client])
     return (
         <div
             style={{
@@ -198,12 +167,12 @@ export const DatabaseTable = (props) => {
                         title="Create Database"
                         open={showCreateDatabaseModal}
                         onOk={() => {
-                            onCreateDatabase()
+                            createDBFn()
                         }}
                         confirmLoading={isCreating}
                         onCancel={() => setShowCreateDatabaseModal(false)}
                     >
-                        <Form form={createDBForm}>
+                        <Form form={createDBForm} style={{ maxWidth: 600 }}>
                             <Form.Item required={true} label="Name" key="name">
                                 <Input
                                     value={dbName}
@@ -234,7 +203,7 @@ export const DatabaseTable = (props) => {
                             showLine={false}
                             showIcon={false}
                             defaultExpandedKeys={['0-0-0']}
-                            onSelect={onSelect}
+                            onSelect={onSelectFn}
                             treeData={dbData}
                         />
                     </Skeleton>

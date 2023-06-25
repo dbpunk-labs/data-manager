@@ -1,32 +1,29 @@
 import { Button, Form, Input, Modal, Skeleton, Space, Table } from 'antd'
-import { createCollection, showCollection, showDatabase } from 'db3.js'
+import {
+    createCollection,
+    showCollection,
+    showDatabase,
+    getDatabase,
+} from 'db3.js'
 import React, { useEffect } from 'react'
 import { Link, useMatch } from 'react-router-dom'
-
 import { CopyOutlined, PlusOutlined } from '@ant-design/icons'
 
-import { Client } from '../../../data-context/client'
+import { usePageContext } from '../../../data-context/page-context'
+import { useAsyncFn } from 'react-use'
 
 export const CollectionList = () => {
+    const { client } = usePageContext()
     const [loading, setLoading] = React.useState<boolean>(false)
-    const getDBInstance = async (addr: string) => {
-        await Client.init()
-        const dbs = await showDatabase(
-            Client.account!.address,
-            Client.instance!
-        )
-        return dbs.find((db) => db.addr === addr)
-    }
-
     const [database, setDataBase] = React.useState({})
-
     const [showCreateCollectionModal, setShowCreateCollectionModal] =
         React.useState<boolean>(false)
     const [createCollectionForm] = Form.useForm()
 
     const [colName, setColName] = React.useState<string>('')
+    const [description, setDesc] = React.useState<string[]>([])
 
-    const onCreateCollection = async () => {
+    const [createColRet, createColFn] = useAsyncFn(async () => {
         if (!colName || colName === '') {
             alert('Please input collection name')
         } else {
@@ -40,52 +37,41 @@ export const CollectionList = () => {
                 []
             )
             setShowCreateCollectionModal(false)
-            fetchData()
+            fetchDataFn()
         }
-    }
+    }, [client, database, colName])
 
     const [collections, setCollections] = React.useState<any[]>([])
-
     const dbId = useMatch('/console/database/db/:dbId')?.params.dbId
-    const fetchData = async () => {
+    const [fetchDataRet, fetchDataFn] = useAsyncFn(async () => {
         if (!dbId) return
         setLoading(true)
-        const db = await getDBInstance(dbId)
-        if (!db) return
+        const db = await getDatabase(dbId, client)
         setDataBase(db)
-
-        const data = await showCollection(db)
-        console.log('collections ==>>>', data)
-        if (data) {
-            let items: any = []
-            for (let i = 0; i < data.length; i++) {
-                const collection = data[i]
-                let collectionItem = {
-                    id: collection.id,
-                    name: collection.name,
-                    documents: '-',
-                    size: '-',
-                    indexes: collection.indexFields?.length,
-                }
-
-                items.push(collectionItem)
+        let description: string[] = db?.internal?.database?.docDb?.desc
+            ?.toString()
+            .split('#-#')
+        setDesc(description)
+        const cols = await showCollection(db)
+        let items: any = []
+        for (let i = 0; i < cols.length; i++) {
+            const collection = cols[i]
+            let collectionItem = {
+                key: collection.name,
+                name: collection.name,
+                documents: '-',
+                size: '-',
+                indexes: collection.indexFields?.length,
             }
-            setCollections([...items])
+            items.push(collectionItem)
         }
+        setCollections(items)
         setLoading(false)
-    }
+    }, [client, dbId])
 
     useEffect(() => {
-        fetchData()
-    }, [dbId])
-
-    // useEffect(() => {
-    //     fetchData()
-    // }, [])
-
-    let description: string[] = database?.internal?.database?.docDb?.desc
-        ?.toString()
-        .split('#-#')
+        fetchDataFn()
+    }, [dbId, client])
 
     return (
         <div style={{ padding: '12px 24px' }}>
@@ -102,14 +88,26 @@ export const CollectionList = () => {
                         <h3 style={{ display: 'inline-block' }}>
                             {description?.[0]}
                         </h3>
+                        <br />
+
                         <Space direction="vertical">
                             <div>
-                                <span> addr: {database?.addr}</span>
-                                <CopyOutlined />
+                                <span> addr: {database.addr}</span>
+                                <a
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                        if (navigator.clipboard) {
+                                            navigator.clipboard.writeText(
+                                                database.addr
+                                            )
+                                        }
+                                    }}
+                                >
+                                    <CopyOutlined />
+                                </a>
                             </div>
                             <div>
                                 <span>
-                                    desc:
                                     {description?.length > 1
                                         ? description[1]
                                         : '-'}
@@ -132,7 +130,7 @@ export const CollectionList = () => {
                             open={showCreateCollectionModal}
                             onCancel={() => setShowCreateCollectionModal(false)}
                             onOk={() => {
-                                onCreateCollection()
+                                createColFn()
                             }}
                         >
                             <Form form={createCollectionForm}>
@@ -167,13 +165,11 @@ export const CollectionList = () => {
                                 dataIndex: 'name',
                                 title: 'Collection Name',
                                 render: (text: string, record) => (
-                                    <a>
-                                        <Link
-                                            to={`/console/database/db/${database.addr}/${record.name}`}
-                                        >
-                                            {text}
-                                        </Link>
-                                    </a>
+                                    <Link
+                                        to={`/console/database/db/${database.addr}/${record.name}`}
+                                    >
+                                        {text}
+                                    </Link>
                                 ),
                             },
                             { dataIndex: 'documents', title: 'Documents' },

@@ -4,10 +4,11 @@ import { Breadcrumb } from 'antd'
 import { ConnectWallet } from '../connect-wallet'
 import { Link } from 'react-router-dom'
 import { Wallet } from '../../data-context/wallet'
-
+import { usePageContext } from '../../data-context/page-context'
 // import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 export const ConsoleHeader = () => {
+    const { client } = usePageContext()
     const breadcrumbNameMap = [
         {
             key: '/console/home',
@@ -36,6 +37,7 @@ export const ConsoleHeader = () => {
             key: 'home',
         },
     ].concat(item ? [item] : [])
+    console.log(client)
 
     return (
         <div

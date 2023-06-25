@@ -37,10 +37,13 @@ export const WelcomePage = () => {
             content: 'copied',
         })
     }
+
     const [networkId, setNetworkId] = React.useState(
         parseInt(new Date().getTime() / 1000)
     )
+
     const { chain, chains } = useNetwork()
+
     const [context, updateContext] = React.useState({
         adminAddress: '',
         storageNodeEvmAddress: '',
@@ -54,6 +57,7 @@ export const WelcomePage = () => {
         hasInited: false,
         networkId: 0,
     })
+
     const [client, setClient] = React.useState<Client>()
     const [inited, setInited] = React.useState(false)
     const [initFnRet, initFn] = useAsyncFn(async () => {
@@ -79,6 +83,7 @@ export const WelcomePage = () => {
                     indexNodeEvmAddress: indexStatus.evmAccount,
                     hasInited: status.hasInited,
                     networkId: status.hasInited ? status.config.networkId : 0,
+                    adminAddress: status.adminAddr,
                 })
             } catch (e) {
                 console.log(e)
@@ -178,8 +183,8 @@ export const WelcomePage = () => {
                         <p>
                             {context.hasInited ? context.networkId : networkId}
                         </p>
-                        <h3>Your Admin Address</h3>
-                        <p>{accountHandle.address}</p>
+                        <h3>Admin Address</h3>
+                        <p>{context.adminAddress}</p>
                         <h3>rollup node</h3>{' '}
                         <p>addr:{context.storageNodeEvmAddress}</p>
                         <p>url:http://{context.storageNodeUrl}</p>

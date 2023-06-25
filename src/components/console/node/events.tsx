@@ -1,8 +1,8 @@
 import { Pagination, Table, Typography } from 'antd'
 import React, { useEffect } from 'react'
 import { useAsyncFn } from 'react-use'
-import { Client } from '../../../data-context/client'
-import { getContractSyncStatus, Client as ClientInstance } from 'db3.js'
+import { getContractSyncStatus } from 'db3.js'
+import { usePageContext } from '../../../data-context/page-context'
 
 interface ContractJobStatus {
     addr: string
@@ -12,31 +12,21 @@ interface ContractJobStatus {
 }
 
 export const EventsTable = () => {
+    const { client } = usePageContext()
     const [jobStatus, setJobStatus] = React.useState<ContractJobStatus[]>([])
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [loadJobStatusRet, loadJobStatusFn] = useAsyncFn(async (client) => {
         const statusList = await getContractSyncStatus(client)
         setJobStatus(statusList as ContractJobStatus[])
     })
-
-    const fetchData = async () => {
+    const [fetchDataRet, fetchDataFn] = useAsyncFn(async () => {
         setIsLoading(true)
-        await Client.init()
-        if (Client.instance) {
-            loadJobStatusFn(Client.instance)
-        }
+        loadJobStatusFn(client)
         setIsLoading(false)
-    }
-
+    }, [client])
     useEffect(() => {
-        fetchData()
-    }, [])
-
-    const onChangePage = (page: number) => {
-        setPage(page)
-        fetchData()
-    }
-
+        fetchDataFn()
+    }, [client])
     return (
         <div style={{ padding: 20 }}>
             <Table
