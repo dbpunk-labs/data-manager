@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { useAsyncFn } from 'react-use'
 import { getContractSyncStatus } from 'db3.js'
 import { usePageContext } from '../../../data-context/page-context'
+import { Link } from 'react-router-dom'
 
 interface ContractJobStatus {
     addr: string
@@ -38,20 +39,13 @@ export const EventsTable = () => {
                         dataIndex: 'addr',
                         title: 'addr',
                         width: 200,
-                        render: (text: string) => {
-                            return (
-                                <Typography.Paragraph
-                                    ellipsis={{
-                                        rows: 1,
-                                        expandable: true,
-                                        symbol: 'more',
-                                    }}
-                                    style={{ maxWidth: 200 }}
-                                >
-                                    {text}
-                                </Typography.Paragraph>
-                            )
-                        },
+                        render: (text: string, record) => (
+                                    <Link
+                                        to={`https://polygonscan.com/address/${record.addr}`} 
+                                    >
+                                        {text}
+                                    </Link>
+                        )
                     },
                     {
                         dataIndex: 'evmNodeUrl',

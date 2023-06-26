@@ -11,6 +11,7 @@ interface MutationHeader {
     time: string
     sender: string
     size: number
+    key: string
 }
 function toHEX(bytes: Uint8Array): string {
     return (
@@ -32,6 +33,7 @@ export const MutationsTable = () => {
                 const records = await scanMutationHeaders(client, 0, 10)
                 const mutations = records.map((item) => {
                     return {
+                        key: item.id,
                         id: item.id,
                         block: item.blockId,
                         order: item.orderId,

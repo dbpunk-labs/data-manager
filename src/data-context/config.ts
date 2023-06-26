@@ -17,3 +17,5 @@
 
 export const STORAGE_NODE_URL: string = 'https://rollup.cloud.db3.network'
 export const INDEX_NODE_URL: string = 'https://index.cloud.db3.network'
+export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'
+export const EVM_SCAN_URL: string = 'https://mumbai.polygonscan.com/tx/'
