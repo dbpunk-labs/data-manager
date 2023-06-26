@@ -36,6 +36,6 @@ export const Home = () => {
                     Create Database
                 </Button>
             </div>
-       </div>
+        </div>
     )
 }

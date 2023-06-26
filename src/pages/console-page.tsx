@@ -15,7 +15,6 @@ import {
 } from 'db3.js'
 
 export const ConsolePage = (props) => {
-    console.log('console page')
     const [pageContext, setPageContext] = React.useState<IPageContext>(
         {} as IPageContext
     )
@@ -29,8 +28,6 @@ export const ConsolePage = (props) => {
                     INDEX_NODE_URL,
                     account
                 )
-                console.log('create client')
-                console.log(c)
                 await syncAccountNonce(c)
                 setPageContext({
                     client: c,
@@ -44,7 +41,6 @@ export const ConsolePage = (props) => {
     }, [chain])
     const accountHandle = useAccount({
         onConnect({ address, connector, isReconnected }) {
-            console.log('on connect')
             initClientFn()
         },
     })

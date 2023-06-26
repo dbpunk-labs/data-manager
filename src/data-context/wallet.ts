@@ -17,10 +17,6 @@ export const Wallet = proxy<Wallet>({
     },
     account: {},
     setAccount: (account: {}) => {
-        console.log('setAccount')
-
-        console.log(account)
-
         Wallet.account = { ...account }
     },
     client: {},

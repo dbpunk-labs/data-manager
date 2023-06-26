@@ -34,9 +34,14 @@ export const DocumentView = (props) => {
         if (!search || search.length == 0) {
             search = '/* | limit 10'
         }
-        const resultSet = await queryDoc(props.collection, search)
-        if (resultSet) {
-            setDocs(resultSet.docs)
+        try {
+            console.log(props.collection)
+            const resultSet = await queryDoc(props.collection, search)
+            if (resultSet) {
+                setDocs(resultSet.docs)
+            }
+        } catch (e) {
+            console.log(e)
         }
     }
     const [showInsertDocModal, setShowInsertDocModal] =

@@ -72,7 +72,6 @@ export const EventDbTable = (props) => {
     const [loadDataRet, loadData] = useAsyncFn(async () => {
         setIsLoading(true)
         const data = await showDatabase(client.account.address, client)
-        console.log(data)
         let items: any = []
         for (let i = 0; i < data.length; i++) {
             if (data[i].internal?.database?.oneofKind === 'eventDb') {
@@ -131,7 +130,6 @@ export const EventDbTable = (props) => {
     const [eventTypes, setEventTypes] = React.useState<string[]>()
 
     const onSelectEvents = (checkedValues: CheckboxValueType[]) => {
-        console.log('checked = ', checkedValues)
         setEventTypes(checkedValues as string[])
     }
 

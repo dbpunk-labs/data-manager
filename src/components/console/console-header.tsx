@@ -37,7 +37,6 @@ export const ConsoleHeader = () => {
             key: 'home',
         },
     ].concat(item ? [item] : [])
-    console.log(client)
 
     return (
         <div

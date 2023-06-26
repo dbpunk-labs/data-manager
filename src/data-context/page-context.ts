@@ -1,5 +1,5 @@
 //
-// context.ts
+// page-context.ts
 // Copyright (C) 2023 db3.network Author imotai <codego.me@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,5 +15,16 @@
 // limitations under the License.
 //
 
-export const STORAGE_NODE_URL: string = 'https://rollup.cloud.db3.network'
-export const INDEX_NODE_URL: string = 'https://index.cloud.db3.network'
+import React from 'react'
+import { Client } from 'db3.js'
+
+export interface IPageContext {
+    client: Client
+}
+
+const PageContext = React.createContext({} as IPageContext)
+
+export function usePageContext() {
+    return React.useContext(PageContext)
+}
+export default PageContext

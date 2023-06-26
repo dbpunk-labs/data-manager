@@ -19,7 +19,6 @@ export const EventDbList = () => {
     const dbId = useMatch('/console/event-db/events/:dbId')?.params.dbId
     const [description, setDesc] = React.useState<string[]>([])
     const [fetchDataRet, fetchDataFn] = useAsyncFn(async () => {
-        console.log('fetch')
         if (client) {
             try {
                 if (!dbId) return
@@ -32,7 +31,6 @@ export const EventDbList = () => {
                         .split('#-#')
                 setDesc(description)
                 const cols = await showCollection(db)
-                console.log(cols)
                 let items: any = []
                 for (let i = 0; i < cols.length; i++) {
                     const collection = cols[i]
