@@ -4,7 +4,7 @@ import { scanRollupRecords } from 'db3.js'
 import React, { useEffect } from 'react'
 import { usePageContext } from '../../../data-context/page-context'
 import { useAsyncFn } from 'react-use'
-import {AR_SCAN_URL, EVM_SCAN_URL} from '../../../data-context/config'
+import { AR_SCAN_URL, EVM_SCAN_URL } from '../../../data-context/config'
 
 function bytesToReadableNum(bytes_size_str: string): string {
     const bytes_size = Number(bytes_size_str)
@@ -53,7 +53,7 @@ interface RollupRecord {
     time: string
     evmCost: string
     evmTx: string
-    key:string
+    key: string
 }
 
 export const RollupTable = () => {
@@ -64,7 +64,7 @@ export const RollupTable = () => {
         const records = await scanRollupRecords(client, 0, 20)
         const newRecords = records.map((record) => {
             return {
-                key:record.startBlock + "_" + record.endBlock,
+                key: record.startBlock + '_' + record.endBlock,
                 startBlock: record.startBlock,
                 endBlock: record.endBlock,
                 rawDataSize: bytesToReadableNum(record.rawDataSize),
@@ -118,11 +118,9 @@ export const RollupTable = () => {
                         dataIndex: 'arweaveTx',
                         title: 'Ar tx',
                         render: (text: string, record) => (
-                                    <Link
-                                        to={`${AR_SCAN_URL}${record.arweaveTx}`}
-                                    >
-                                        {text}
-                                    </Link>
+                            <Link to={`${AR_SCAN_URL}${record.arweaveTx}`}>
+                                {text}
+                            </Link>
                         ),
                     },
                     {
@@ -133,11 +131,9 @@ export const RollupTable = () => {
                         dataIndex: 'evmTx',
                         title: 'Evm tx',
                         render: (text: string, record) => (
-                                    <Link
-                                        to={`${EVM_SCAN_URL}${record.evmTx}`} 
-                                    >
-                                        {text}
-                                    </Link>
+                            <Link to={`${EVM_SCAN_URL}${record.evmTx}`}>
+                                {text}
+                            </Link>
                         ),
                     },
                     {

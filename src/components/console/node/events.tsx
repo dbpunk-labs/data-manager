@@ -40,12 +40,12 @@ export const EventsTable = () => {
                         title: 'addr',
                         width: 200,
                         render: (text: string, record) => (
-                                    <Link
-                                        to={`https://polygonscan.com/address/${record.addr}`} 
-                                    >
-                                        {text}
-                                    </Link>
-                        )
+                            <Link
+                                to={`https://polygonscan.com/address/${record.addr}`}
+                            >
+                                {text}
+                            </Link>
+                        ),
                     },
                     {
                         dataIndex: 'evmNodeUrl',

@@ -26,7 +26,6 @@ const account = createFromPrivateKey(private_key)
 
 export const ConnectWallet = () => {
     useEffect(() => {
-
         if (account) {
             Wallet.setAccount(account)
             // Wallet.setClient(client)
