@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=/data-manager/ && shx cp 404.html dist/",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
