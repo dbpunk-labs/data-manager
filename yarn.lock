@@ -2287,10 +2287,10 @@ db3-bson@5.1.2:
   resolved "https://registry.npmjs.org/db3-bson/-/db3-bson-5.1.2.tgz"
   integrity sha512-NhH7GylEF1pX9zNv83nj7bZkuXSSwOrAa6i2Yn4eUz9XLJ6JiHkMFWbjIMk8Z2FAjOv47X5wtiJBu4BgG3aoOQ==
 
-db3.js@^0.3.13:
-  version "0.3.13"
-  resolved "https://registry.npmjs.org/db3.js/-/db3.js-0.3.13.tgz"
-  integrity sha512-9fG1ohv1w9cIrL5g8/jOwGMxNzGUxz/WN3jUgGvMEMSYecDR3xVW287JyKnYFGlQpKcJM5CrU365yuVPyvJbsg==
+db3.js@^0.3.14:
+  version "0.3.14"
+  resolved "https://registry.npmjs.org/db3.js/-/db3.js-0.3.14.tgz#cdf65d045a4dde05ee4e97fc6ec9413501f8210c"
+  integrity sha512-RqClb16SR26x7j+eWKot3W7nQX5gKh6lG26ehv/aMFD+idPqaSM6f5myfAP4NnrJ+rXxpNYeew7IowUXwRBEWQ==
   dependencies:
     "@noble/secp256k1" "^1.7.0"
     "@protobuf-ts/grpcweb-transport" "^2.8.2"
@@ -3900,11 +3900,6 @@ regenerator-runtime@^0.13.11:
   version "0.13.11"
   resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz"
   integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
-
-relative-time-format@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.npmjs.org/relative-time-format/-/relative-time-format-1.1.6.tgz#724a5fbc3794b8e0471b6b61419af2ce699eb9f1"
-  integrity sha512-aCv3juQw4hT1/P/OrVltKWLlp15eW1GRcwP1XdxHrPdZE9MtgqFpegjnTjLhi2m2WI9MT/hQQtE+tjEWG1hgkQ==
 
 require-directory@^2.1.1:
   version "2.1.1"

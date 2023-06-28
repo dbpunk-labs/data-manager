@@ -65,7 +65,7 @@ interface Dashboard {
     rollupBytesLabel: string
     mutationAvgCost: string
     rollupStorageCost: string
-    compressRatio:string
+    compressRatio: string
 }
 
 function toHEX(bytes: Uint8Array): string {
@@ -78,21 +78,20 @@ function toHEX(bytes: Uint8Array): string {
     )
 }
 
-function getCompressRatio(totalRollupBytes:string, totalRawDataBytes:string) {
+function getCompressRatio(totalRollupBytes: string, totalRawDataBytes: string) {
     const totalRollupBytesNum = new Number(totalRollupBytes)
     const totalRollupRawBytesNum = new Number(totalRawDataBytes)
-    if (totalRollupRawBytesNum == 0 || totalRollupBytesNum == 0)
-        return 0
-    return (totalRollupBytes * 100.0 / totalRollupRawBytesNum).toFixed(2)
+    if (totalRollupRawBytesNum == 0 || totalRollupBytesNum == 0) return 0
+    return ((totalRollupBytes * 100.0) / totalRollupRawBytesNum).toFixed(2)
 }
-function getGBCost(totalBytes:string, totalCostInUsd:number) {
+function getGBCost(totalBytes: string, totalCostInUsd: number) {
     const totalBytesNum = new Number(totalBytes)
     if (totalCostInUsd == 0 || totalBytesNum == 0) return 0
     const gb = 1024 * 1024 * 1024
-    if (totalBytesNum < gb ) {
-        return ((gb * 1.0 / totalBytesNum ) * totalCostInUsd).toFixed(4)
-    }else {
-        return (totalCostInUsd / (totalBytesNum * 1.0 / gb)).toFixed(4)
+    if (totalBytesNum < gb) {
+        return (((gb * 1.0) / totalBytesNum) * totalCostInUsd).toFixed(4)
+    } else {
+        return (totalCostInUsd / ((totalBytesNum * 1.0) / gb)).toFixed(4)
     }
 }
 
@@ -131,8 +130,14 @@ export const MutationsTable = () => {
                 const mutationAvgCost = (
                     totalCostInUsd / view.mutationCount
                 ).toFixed(8)
-                const rollupStorageCost = getGBCost(view.totalRollupRawBytes, totalCostInUsd)
-                const compressRatio = getCompressRatio(view.totalRollupBytes, view.totalRollupRawBytes)
+                const rollupStorageCost = getGBCost(
+                    view.totalRollupRawBytes,
+                    totalCostInUsd
+                )
+                const compressRatio = getCompressRatio(
+                    view.totalRollupBytes,
+                    view.totalRollupRawBytes
+                )
                 setDashboard({
                     mutationCount: view.mutationCount,
                     rollupCount: view.rollupCount,
@@ -142,7 +147,7 @@ export const MutationsTable = () => {
                     rollupBytesLabel,
                     mutationAvgCost,
                     rollupStorageCost,
-                    compressRatio
+                    compressRatio,
                 } as Dashboard)
                 const records = await scanMutationHeaders(client, 0, 10)
                 const current = new Date().getTime() / 1000
@@ -252,8 +257,7 @@ export const MutationsTable = () => {
                     />
                 </Col>
 
-                <Col span={6}>
-                </Col>
+                <Col span={6}></Col>
             </Row>
 
             <Row gutter={[32, 32]}>

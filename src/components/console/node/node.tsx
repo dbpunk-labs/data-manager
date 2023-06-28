@@ -5,7 +5,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 export const NodeConsole = () => {
     const navigate = useNavigate()
     useEffect(() => {
-        navigate('/console/node/mutations')
+        navigate('/console/node/dashboard')
     }, [])
     return (
         <div style={{ width: '100%', height: '100%' }}>
@@ -16,12 +16,8 @@ export const NodeConsole = () => {
                 defaultSelectedKeys={['mutations']}
                 items={[
                     {
-                        key: 'mutations',
-                        label: 'Mutations',
-                    },
-                    {
-                        key: 'rollup',
-                        label: 'Roll-up',
+                        key: 'dashboard',
+                        label: 'Dashboard',
                     },
                     {
                         key: 'events',

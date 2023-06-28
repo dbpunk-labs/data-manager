@@ -14,7 +14,7 @@
     "@rainbow-me/rainbowkit": "^1.0.2",
     "antd": "^5.0.7",
     "buffer": "^6.0.3",
-    "db3.js": "^0.3.13",
+    "db3.js": "^0.3.14",
     "react": "^18.2.0",
     "react-countup": "^6.4.2",
     "react-dom": "^18.2.0",
