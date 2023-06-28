@@ -42,8 +42,6 @@ export const WelcomePage = () => {
         parseInt(new Date().getTime() / 1000)
     )
 
-    const { chain, chains } = useNetwork()
-
     const [context, updateContext] = React.useState({
         adminAddress: '',
         storageNodeEvmAddress: '',
@@ -61,37 +59,29 @@ export const WelcomePage = () => {
     const [client, setClient] = React.useState<Client>()
     const [inited, setInited] = React.useState(false)
     const [initFnRet, initFn] = useAsyncFn(async () => {
-        if (chain) {
-            try {
-                const account = await createFromExternal(chain)
-                const c = createClient(
-                    STORAGE_NODE_URL,
-                    INDEX_NODE_URL,
-                    account
-                )
-                await syncAccountNonce(c)
-                setClient(c)
-                const status = await getStorageNodeStatus(c)
-                const indexStatus = await getIndexNodeStatus(c)
-                updateContext({
-                    ...context,
-                    storageNodeArAddress: status.arAccount,
-                    storageNodeEvmAddress: status.evmAccount,
-                    storageNodeArBalance: status.arBalance,
-                    storageNodeUrl: status.nodeUrl,
-                    indexNodeUrl: indexStatus.nodeUrl,
-                    indexNodeEvmAddress: indexStatus.evmAccount,
-                    hasInited: status.hasInited,
-                    networkId: status.hasInited ? status.config.networkId : 0,
-                    adminAddress: status.adminAddr,
-                })
-            } catch (e) {
-                console.log(e)
-            }
-        } else {
-            console.log('no chain')
+        try {
+            const account = await createFromExternal()
+            const c = createClient(STORAGE_NODE_URL, INDEX_NODE_URL, account)
+            await syncAccountNonce(c)
+            setClient(c)
+            const status = await getStorageNodeStatus(c)
+            const indexStatus = await getIndexNodeStatus(c)
+            updateContext({
+                ...context,
+                storageNodeArAddress: status.arAccount,
+                storageNodeEvmAddress: status.evmAccount,
+                storageNodeArBalance: status.arBalance,
+                storageNodeUrl: status.nodeUrl,
+                indexNodeUrl: indexStatus.nodeUrl,
+                indexNodeEvmAddress: indexStatus.evmAccount,
+                hasInited: status.hasInited,
+                networkId: status.hasInited ? status.config.networkId : 0,
+                adminAddress: status.adminAddr,
+            })
+        } catch (e) {
+            console.log(e)
         }
-    }, [chain, context])
+    }, [context])
     const accountHandle = useAccount({
         onConnect({ address, connector, isReconnected }) {
             initFn()
@@ -111,8 +101,6 @@ export const WelcomePage = () => {
         try {
             const rollupInterval = parseInt(context.rollupInterval) * 60 * 1000
             const minRollSize = parseInt(context.minRollSize) * 1024 * 1024
-            console.log(rollupInterval)
-            console.log(minRollSize)
             const response = await setupStorageNode(
                 client,
                 networkId.toString(),
