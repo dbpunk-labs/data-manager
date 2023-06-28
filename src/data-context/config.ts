@@ -14,7 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
+//export const STORAGE_NODE_URL: string = 'http://127.0.0.1:26619'
+//export const INDEX_NODE_URL: string = 'http://127.0.0.1:26639'
 export const STORAGE_NODE_URL: string = 'https://rollup.cloud.db3.network'
 export const INDEX_NODE_URL: string = 'https://index.cloud.db3.network'
 export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'

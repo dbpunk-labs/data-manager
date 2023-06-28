@@ -17,7 +17,6 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import Editor from '@monaco-editor/react'
 
 export function defaultCode() {
-
     return `// create client
 const private_key = '0xdc6f560254643be3b4e90a6ba85138017aadd78639fbbb43c57669067c3bbe76'
 const account = createFromPrivateKey(private_key)

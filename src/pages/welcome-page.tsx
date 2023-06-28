@@ -24,6 +24,13 @@ import { useBalance } from 'wagmi'
 import { useSignTypedData } from 'wagmi'
 import { useNetwork } from 'wagmi'
 
+function rollupIntervalReadableNum(units: string): string {
+    return (Number(BigInt(units) / BigInt(1000)) / 60.0).toFixed(2)
+}
+
+function minRollupSizeReadableNum(units: string): string {
+    return (Number(BigInt(units) / BigInt(1024)) / 1024.0).toFixed(2)
+}
 function unitsToReadableNum(units: string): string {
     return (Number(BigInt(units) / BigInt(1000_000)) / 1000_000.0).toFixed(6)
 }
@@ -42,8 +49,6 @@ export const WelcomePage = () => {
         parseInt(new Date().getTime() / 1000)
     )
 
-    const { chain, chains } = useNetwork()
-
     const [context, updateContext] = React.useState({
         adminAddress: '',
         storageNodeEvmAddress: '',
@@ -51,7 +56,7 @@ export const WelcomePage = () => {
         storageNodeArBalance: '',
         storageNodeUrl: '',
         rollupInterval: '10',
-        minRollSize: '10',
+        minRollupSize: '10',
         indexNodeUrl: '',
         indexNodeEvmAddress: '',
         hasInited: false,
@@ -61,37 +66,35 @@ export const WelcomePage = () => {
     const [client, setClient] = React.useState<Client>()
     const [inited, setInited] = React.useState(false)
     const [initFnRet, initFn] = useAsyncFn(async () => {
-        if (chain) {
-            try {
-                const account = await createFromExternal(chain)
-                const c = createClient(
-                    STORAGE_NODE_URL,
-                    INDEX_NODE_URL,
-                    account
-                )
-                await syncAccountNonce(c)
-                setClient(c)
-                const status = await getStorageNodeStatus(c)
-                const indexStatus = await getIndexNodeStatus(c)
-                updateContext({
-                    ...context,
-                    storageNodeArAddress: status.arAccount,
-                    storageNodeEvmAddress: status.evmAccount,
-                    storageNodeArBalance: status.arBalance,
-                    storageNodeUrl: status.nodeUrl,
-                    indexNodeUrl: indexStatus.nodeUrl,
-                    indexNodeEvmAddress: indexStatus.evmAccount,
-                    hasInited: status.hasInited,
-                    networkId: status.hasInited ? status.config.networkId : 0,
-                    adminAddress: status.adminAddr,
-                })
-            } catch (e) {
-                console.log(e)
-            }
-        } else {
-            console.log('no chain')
+        try {
+            const account = await createFromExternal()
+            const c = createClient(STORAGE_NODE_URL, INDEX_NODE_URL, account)
+            await syncAccountNonce(c)
+            setClient(c)
+            const status = await getStorageNodeStatus(c)
+            const indexStatus = await getIndexNodeStatus(c)
+            updateContext({
+                ...context,
+                storageNodeArAddress: status.arAccount,
+                storageNodeEvmAddress: status.evmAccount,
+                storageNodeArBalance: status.arBalance,
+                storageNodeUrl: status.nodeUrl,
+                indexNodeUrl: indexStatus.nodeUrl,
+                indexNodeEvmAddress: indexStatus.evmAccount,
+                hasInited: status.hasInited,
+                networkId: status.hasInited ? status.config.networkId : 0,
+                adminAddress: status.adminAddr,
+                rollupInterval: status.hasInited
+                    ? rollupIntervalReadableNum(status.config.rollupInterval)
+                    : '10',
+                minRollupSize: status.hasInited
+                    ? minRollupSizeReadableNum(status.config.minRollupSize)
+                    : '10',
+            })
+        } catch (e) {
+            console.log(e)
         }
-    }, [chain, context])
+    }, [context])
     const accountHandle = useAccount({
         onConnect({ address, connector, isReconnected }) {
             initFn()
@@ -110,14 +113,12 @@ export const WelcomePage = () => {
     const [setupRollupNodeRet, setupRollupNodeHandle] = useAsyncFn(async () => {
         try {
             const rollupInterval = parseInt(context.rollupInterval) * 60 * 1000
-            const minRollSize = parseInt(context.minRollSize) * 1024 * 1024
-            console.log(rollupInterval)
-            console.log(minRollSize)
+            const minRollupSize = parseInt(context.minRollupSize) * 1024 * 1024
             const response = await setupStorageNode(
                 client,
                 networkId.toString(),
                 rollupInterval.toString(),
-                minRollSize.toString()
+                minRollupSize.toString()
             )
             if (response.code == 0) {
                 setMsg('config rollup done!')
@@ -333,11 +334,11 @@ export const WelcomePage = () => {
                         {''}
                         <h3>Min Rollup Size (Mb):</h3>
                         <input
-                            defaultValue="10"
+                            value={context.minRollupSize}
                             onChange={(e) =>
                                 updateContext({
                                     ...context,
-                                    minRollSize: e.target.value,
+                                    minRollupSize: e.target.value,
                                 })
                             }
                         />{' '}
@@ -347,7 +348,7 @@ export const WelcomePage = () => {
                         </p>
                         <h3>Rollup Interval (min):</h3>
                         <input
-                            defaultValue="10"
+                            value={context.rollupInterval}
                             onChange={(e) =>
                                 updateContext({
                                     ...context,

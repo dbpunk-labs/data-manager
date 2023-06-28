@@ -95,11 +95,7 @@ const router = createBrowserRouter([
                         element: <NodeConsole />,
                         children: [
                             {
-                                path: '/console/node/rollup',
-                                element: <RollupTable />,
-                            },
-                            {
-                                path: '/console/node/mutations',
+                                path: '/console/node/dashboard',
                                 element: <MutationsTable />,
                             },
                             {
