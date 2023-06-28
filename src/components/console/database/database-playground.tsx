@@ -17,12 +17,13 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 import Editor from '@monaco-editor/react'
 
 export function defaultCode() {
+
     return `// create client
 const private_key = '0xdc6f560254643be3b4e90a6ba85138017aadd78639fbbb43c57669067c3bbe76'
 const account = createFromPrivateKey(private_key)
 const client = createClient(
-    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26619',
-    'http://ec2-18-162-230-6.ap-east-1.compute.amazonaws.com:26639',
+    'https://rollup.cloud.db3.network',
+    'https://index.cloud.db3.network',
     account
 )
 await syncAccountNonce(client)
@@ -31,12 +32,17 @@ await syncAccountNonce(client)
 // const { db } = await createDocumentDatabase(client, 'desc')
 // const index = { path: '/name', indexType: IndexType.StringKey}
 
-// create a collection
-const  collection = await getCollection('0x127ff39de458fef51d1fa9f3d3b2388ee4c43578','col',client)
+// use your database addr
+const dbAddr = "0x127ff39de458fef51d1fa9f3d3b2388ee4c43578"
+// use your collection name
+const colName = "col"
+
+// get the collection instance
+const  collection = await getCollection(dbAddr, colName, client)
 
 // add a document
-const [txId, block, order] = await addDoc(collection, {
-    name: 'book3',
+const {id} = await addDoc(collection, {
+    name: 'book1',
     author: 'db3 developers',
     tag: 'web3',
     time: 1686285013,
