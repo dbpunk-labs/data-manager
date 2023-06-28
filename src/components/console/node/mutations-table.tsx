@@ -239,14 +239,15 @@ export const MutationsTable = () => {
                     <Statistic
                         title="Mutation Avg Cost"
                         value={dashboard.mutationAvgCost}
-                        suffix="$"
+                        prefix="$"
                     />
                 </Col>
                 <Col span={6}>
                     <Statistic
                         title="Rollup Avg Cost"
+                        prefix="$"
                         value={dashboard.rollupStorageCost}
-                        suffix="$/GB"
+                        suffix="/GB"
                     />
                 </Col>
                 <Col span={6}>
