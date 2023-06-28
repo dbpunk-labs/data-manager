@@ -246,7 +246,7 @@ export const MutationsTable = () => {
                 </Col>
                 <Col span={6}>
                     <Statistic
-                        title="Compressi Avg Ratio"
+                        title="Compress Avg Ratio"
                         value={dashboard.compressRatio}
                         suffix="%"
                     />
