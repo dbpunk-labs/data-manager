@@ -94,9 +94,7 @@ export const Playground: React.FC<{}> = memo((props) => {
 
     return (
         <div className="code-view" style={{ padding: 24 }}>
-            <div>
-                the playground for database
-            </div>
+            <div>the playground for database</div>
             <div>
                 <Typography.Title level={5}>Code editor</Typography.Title>
             </div>

@@ -11,14 +11,29 @@ import {
     Client,
     createFromExternal,
     createClient,
+    createReadonlyClient,
     syncAccountNonce,
 } from 'db3.js'
 
 export const ConsolePage = (props) => {
+    const [isInited, setInited] = React.useState<boolean>(false)
     const [pageContext, setPageContext] = React.useState<IPageContext>(
         {} as IPageContext
     )
     const { chain } = useNetwork()
+    const [initReadClientRet, initReadClientFn] = useAsyncFn(async () => {
+        try {
+            const account = await createReadonlyClient(chain)
+            const c = createReadonlyClient(STORAGE_NODE_URL, INDEX_NODE_URL)
+            setPageContext({
+                ...pageContext,
+                readClient: c,
+            } as IPageContext)
+        } catch (e) {
+            console.log(e)
+        }
+    }, [pageContext])
+
     const [initClientRet, initClientFn] = useAsyncFn(async () => {
         if (chain) {
             try {
@@ -30,6 +45,7 @@ export const ConsolePage = (props) => {
                 )
                 await syncAccountNonce(c)
                 setPageContext({
+                    ...pageContext,
                     client: c,
                 } as IPageContext)
             } catch (e) {
@@ -38,7 +54,7 @@ export const ConsolePage = (props) => {
         } else {
             console.log('no chain')
         }
-    }, [chain])
+    }, [chain, pageContext])
     const accountHandle = useAccount({
         onConnect({ address, connector, isReconnected }) {
             initClientFn()
@@ -50,7 +66,10 @@ export const ConsolePage = (props) => {
     useEffect(() => {
         if (!activeMenu) navigate('/console/home')
     }, [activeMenu])
-
+    if (!isInited) {
+        setInited(true)
+        initReadClientFn()
+    }
     return (
         <PageContext.Provider value={pageContext}>
             <div

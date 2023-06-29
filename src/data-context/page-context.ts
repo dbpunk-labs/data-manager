@@ -16,10 +16,11 @@
 //
 
 import React from 'react'
-import { Client } from 'db3.js'
+import { Client, ReadClient } from 'db3.js'
 
 export interface IPageContext {
     client: Client
+    readClient: ReadClient
 }
 
 const PageContext = React.createContext({} as IPageContext)
