@@ -9,6 +9,7 @@ import {
     LikeOutlined,
     MessageOutlined,
     StarOutlined,
+    DollarOutlined
 } from '@ant-design/icons'
 
 import { Space, Col, Row, Statistic } from 'antd'
@@ -49,13 +50,13 @@ interface RollupRecord {
     compressDataSize: string
     arweaveTx: string
     mutationCount: string
-    arCost: string
     time: string
-    evmCost: string
     evmTx: string
     key: string
     pending: boolean
+    cost: string
 }
+
 interface Dashboard {
     mutationCount: string
     rollupCount: string
@@ -84,6 +85,7 @@ function getCompressRatio(totalRollupBytes: string, totalRawDataBytes: string) {
     if (totalRollupRawBytesNum == 0 || totalRollupBytesNum == 0) return 0
     return ((totalRollupBytes * 100.0) / totalRollupRawBytesNum).toFixed(2)
 }
+
 function getGBCost(totalBytes: string, totalCostInUsd: number) {
     const totalBytesNum = new Number(totalBytes)
     if (totalCostInUsd == 0 || totalBytesNum == 0) return 0
@@ -93,6 +95,13 @@ function getGBCost(totalBytes: string, totalCostInUsd: number) {
     } else {
         return (totalCostInUsd / ((totalBytesNum * 1.0) / gb)).toFixed(4)
     }
+}
+
+function getSingleRollupCost(arPrice:number, evmTokenPrice:number,
+                             arUnits:string, evmUnits:string) {
+    return ((Number(BigInt(arUnits) / BigInt(1000_000)) / 1000_000.0) * arPrice
+    + 
+        (Number(BigInt(evmUnits) / BigInt(1000_000_000)) / 1000_000_000.0) * evmTokenPrice).toFixed(6)
 }
 
 export const MutationsTable = () => {
@@ -118,14 +127,18 @@ export const MutationsTable = () => {
                 const { data } = await response.json()
                 setIsLoading(true)
                 const view = await getMutationState(client)
+
                 const [mutationBytesNum, mutationBytesLabel] =
                     bytesToReadableNumRaw(view.totalMutationBytes)
+
                 const [rollupBytesNum, rollupBytesLabel] =
                     bytesToReadableNumRaw(view.totalRollupBytes)
+
                 const totalCostInUsd =
                     data[0].price[0].price_latest *
                         Number(view.totalStorageCost) +
                     data[1].price[0].price_latest * Number(view.totalEvmCost)
+
                 console.log(totalCostInUsd)
                 const mutationAvgCost = (
                     totalCostInUsd / view.mutationCount
@@ -172,10 +185,11 @@ export const MutationsTable = () => {
                             record.compressDataSize
                         ),
                         mutationCount: record.mutationCount,
-                        arCost: unitsToReadableNum(record.cost),
                         time: timeDifference(current, record.time),
                         arweaveTx: record.arweaveTx,
-                        evmCost: evmUnitsToReadableNum(record.evmCost),
+                        cost: getSingleRollupCost(data[0].price[0].price_latest, 
+                                                  data[1].price[0].price_latest,
+                                                  record.cost, record.evmCost),
                         evmTx: record.evmTx,
                         pending: record.arweaveTx.length == 0,
                     } as RollupRecord
@@ -311,23 +325,13 @@ export const MutationsTable = () => {
                                 actions={[
                                     <IconText
                                         icon={DatabaseOutlined}
-                                        text={item.rawDataSize}
+                                        text={`${item.compressDataSize}/${item.rawDataSize}`}
                                         key="list-vertical-star-o"
                                     />,
                                     <IconText
-                                        icon={DatabaseOutlined}
-                                        text={item.compressDataSize}
-                                        key="list-vertical-star-o"
-                                    />,
-                                    <IconText
-                                        icon={TransactionOutlined}
-                                        text={item.arCost}
+                                        icon={DollarOutlined}
+                                        text={item.cost}
                                         key="list-vertical-like-o"
-                                    />,
-                                    <IconText
-                                        icon={TransactionOutlined}
-                                        text={item.evmCost}
-                                        key="list-vertical-message"
                                     />,
                                     <IconText
                                         icon={FieldTimeOutlined}
@@ -350,7 +354,7 @@ export const MutationsTable = () => {
                                                 >
                                                     {shortString(
                                                         item.arweaveTx,
-                                                        14
+                                                        12
                                                     )}
                                                 </a>
                                                 <a
@@ -358,7 +362,7 @@ export const MutationsTable = () => {
                                                 >
                                                     {shortString(
                                                         item.evmTx,
-                                                        14
+                                                        12
                                                     )}
                                                 </a>
                                             </Space>
