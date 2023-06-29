@@ -9,7 +9,7 @@ import {
     LikeOutlined,
     MessageOutlined,
     StarOutlined,
-    DollarOutlined
+    DollarOutlined,
 } from '@ant-design/icons'
 
 import { Space, Col, Row, Statistic } from 'antd'
@@ -98,21 +98,27 @@ function getGBCost(totalBytes: string, totalCostInUsd: number) {
     }
 }
 
-function getSingleRollupCost(arPrice:number, evmTokenPrice:number,
-                             arUnits:string, evmUnits:string) {
-    return ((Number(BigInt(arUnits) / BigInt(1000_000)) / 1000_000.0) * arPrice
-    + 
-        (Number(BigInt(evmUnits) / BigInt(1000_000_000)) / 1000_000_000.0) * evmTokenPrice).toFixed(6)
+function getSingleRollupCost(
+    arPrice: number,
+    evmTokenPrice: number,
+    arUnits: string,
+    evmUnits: string
+) {
+    return (
+        (Number(BigInt(arUnits) / BigInt(1000_000)) / 1000_000.0) * arPrice +
+        (Number(BigInt(evmUnits) / BigInt(1000_000_000)) / 1000_000_000.0) *
+            evmTokenPrice
+    ).toFixed(6)
 }
 
 export const MutationsTable = () => {
-    const { client } = usePageContext()
+    const { readClient } = usePageContext()
     const [dashboard, setDashboard] = React.useState<Dashboard>({})
     const [mutations, setMutations] = React.useState<any[]>([])
     const [rollupRecords, setRollupRecords] = React.useState<RollupRecord[]>()
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [fetchDataRet, fetchDataFn] = useAsyncFn(async () => {
-        if (client) {
+        if (readClient) {
             try {
                 const response = await fetch(
                     'https://api.tokeninsight.com/api/v1/simple/price?ids=arweave%2Cpolygon',
@@ -127,8 +133,7 @@ export const MutationsTable = () => {
                 )
                 const { data } = await response.json()
                 setIsLoading(true)
-                const view = await getMutationState(client)
-
+                const view = await getMutationState(readClient)
                 const [mutationBytesNum, mutationBytesLabel] =
                     bytesToReadableNumRaw(view.totalMutationBytes)
 
@@ -162,9 +167,9 @@ export const MutationsTable = () => {
                     mutationAvgCost,
                     rollupStorageCost,
                     compressRatio,
-                    totalCostInUsd: totalCostInUsd.toFixed(2)
+                    totalCostInUsd: totalCostInUsd.toFixed(2),
                 } as Dashboard)
-                const records = await scanMutationHeaders(client, 0, 10)
+                const records = await scanMutationHeaders(readClient, 0, 10)
                 const current = new Date().getTime() / 1000
                 const mutations = records.map((item) => {
                     return {
@@ -176,7 +181,7 @@ export const MutationsTable = () => {
                         action: MutationAction[item.action],
                     } as MutationHeader
                 })
-                const rollupRecords = await scanRollupRecords(client, 0, 20)
+                const rollupRecords = await scanRollupRecords(readClient, 0, 20)
                 const newRecords = rollupRecords.map((record) => {
                     return {
                         key: record.startBlock + '_' + record.endBlock,
@@ -189,9 +194,12 @@ export const MutationsTable = () => {
                         mutationCount: record.mutationCount,
                         time: timeDifference(current, record.time),
                         arweaveTx: record.arweaveTx,
-                        cost: getSingleRollupCost(data[0].price[0].price_latest, 
-                                                  data[1].price[0].price_latest,
-                                                  record.cost, record.evmCost),
+                        cost: getSingleRollupCost(
+                            data[0].price[0].price_latest,
+                            data[1].price[0].price_latest,
+                            record.cost,
+                            record.evmCost
+                        ),
                         evmTx: record.evmTx,
                         pending: record.arweaveTx.length == 0,
                     } as RollupRecord
@@ -205,11 +213,11 @@ export const MutationsTable = () => {
         } else {
             console.log('no client')
         }
-    }, [client])
+    }, [readClient])
 
     useEffect(() => {
         fetchDataFn()
-    }, [client])
+    }, [readClient])
 
     const formatter = (value: number) => <CountUp end={value} separator="," />
     const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
@@ -280,7 +288,6 @@ export const MutationsTable = () => {
                         prefix="$"
                         value={dashboard.totalCostInUsd}
                     />
-
                 </Col>
             </Row>
 
