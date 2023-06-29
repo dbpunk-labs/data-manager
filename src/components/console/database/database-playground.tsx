@@ -80,6 +80,7 @@ export const Playground: React.FC<{}> = memo((props) => {
             createClient,
             createDocumentDatabase,
             createCollection,
+            createFromExternal,
             addDoc,
             queryDoc,
             syncAccountNonce,
@@ -94,10 +95,7 @@ export const Playground: React.FC<{}> = memo((props) => {
     return (
         <div className="code-view" style={{ padding: 24 }}>
             <div>
-                <Typography.Text>
-                    This table gives the most recent erc-20 token balance of an
-                    address. The data refreshes every ETH block or 13s
-                </Typography.Text>
+                the playground for database
             </div>
             <div>
                 <Typography.Title level={5}>Code editor</Typography.Title>
