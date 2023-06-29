@@ -67,6 +67,7 @@ interface Dashboard {
     mutationAvgCost: string
     rollupStorageCost: string
     compressRatio: string
+    totalCostInUsd: string
 }
 
 function toHEX(bytes: Uint8Array): string {
@@ -161,6 +162,7 @@ export const MutationsTable = () => {
                     mutationAvgCost,
                     rollupStorageCost,
                     compressRatio,
+                    totalCostInUsd: totalCostInUsd.toFixed(2)
                 } as Dashboard)
                 const records = await scanMutationHeaders(client, 0, 10)
                 const current = new Date().getTime() / 1000
@@ -272,7 +274,14 @@ export const MutationsTable = () => {
                     />
                 </Col>
 
-                <Col span={6}></Col>
+                <Col span={6}>
+                    <Statistic
+                        title="Rollup Total Cost"
+                        prefix="$"
+                        value={dashboard.totalCostInUsd}
+                    />
+
+                </Col>
             </Row>
 
             <Row gutter={[32, 32]}>
