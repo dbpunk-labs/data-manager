@@ -101,14 +101,10 @@ export const EventDbTable = (props) => {
     const [createDBForm] = Form.useForm()
     const [isCreating, setIsCreating] = React.useState<boolean>(false)
     const [currentStep, setCurrentStep] = React.useState<number>(0)
-
-    // `[{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"wad","type":"uint256"}],"name":"withdraw","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"dst","type":"address"},{"name":"wad","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"deposit","outputs":[],"payable":true,"stateMutability":"payable","type":"function"},{"constant":true,"inputs":[{"name":"","type":"address"},{"name":"","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"payable":true,"stateMutability":"payable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"guy","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"dst","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"src","type":"address"},{"indexed":false,"name":"wad","type":"uint256"}],"name":"Withdrawal","type":"event"}]`
-    const evmNodeUrl =
-        'wss://polygon-mainnet.g.alchemy.com/v2/EH9ZSJ0gS7a1DEIohAWMbhP33lK6qHj9'
-
+    const [block, setBlock] = React.useState<string>('0')
     const [eventAbi, setEventAbi] = React.useState<string>('')
     const [eventEvmNodeUrl, setEventEvmNodeUrl] =
-        React.useState<string>(evmNodeUrl)
+        React.useState<string>("")
     const [contractIndexName, setContractIndexName] = React.useState<string>('')
     const [contractAddress, setContractAddress] = React.useState<string>('')
 
@@ -156,13 +152,14 @@ export const EventDbTable = (props) => {
                 contractAddress,
                 eventTypes,
                 eventAbi,
-                eventEvmNodeUrl
+                eventEvmNodeUrl,
+                block
             )
             setIsCreating(false)
             setShowCreateIndexModal(false)
             loadData()
         }
-    }, [client, dbName, dbDesc, eventTypes])
+    }, [client, dbName, dbDesc, eventTypes, block])
 
     const [onSelectRet, onSelectFn] = useAsyncFn(
         async (e) => {
@@ -273,6 +270,19 @@ export const EventDbTable = (props) => {
                                         }}
                                     />
                                 </Form.Item>
+                            <Form.Item
+                                    required={true}
+                                    label="Start Block"
+                                    key="block"
+                                >
+                                    <Input
+                                        value={block}
+                                        onChange={(e) => {
+                                            setBlock(e.target.value)
+                                        }}
+                                    />
+                                </Form.Item>
+
                                 <Form.Item
                                     required={true}
                                     label="ABI"
