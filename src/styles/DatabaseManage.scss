@@ -1,0 +1,99 @@
+.database-manage {
+    width: 100%;
+    background-color: #222324;
+    padding: 0px 16px;
+    display: flex;
+    .database-left {
+        width: 200px;
+        border-right: 1px solid #1c1d1e;
+        padding: 16px;
+        padding-left: 0;
+        .ant-input-search {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            margin-bottom: 16px;
+            .anticon-search {
+                color: rgba(255, 255, 255, 0.45);
+            }
+            .ant-btn {
+                border: none;
+                background-color: transparent;
+            }
+        }
+        .ant-input {
+            color: rgba(255, 255, 255, 0.25);
+            background-color: transparent;
+            border: none;
+        }
+        .ant-input-group-addon {
+            background-color: transparent;
+        }
+        .ant-tree {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 32px;
+            background: transparent;
+        }
+        .ant-tree-node-content-wrapper {
+            line-height: 32px;
+        }
+        // .ant-tree-treenode-selected {
+        //     border-radius: 8px;
+        //     background: rgba(34, 85, 255, 0.15) !important;
+        // }
+        .ant-tree-node-selected {
+            border-radius: 8px;
+            background: rgba(34, 85, 255, 0.15);
+            color: #25f;
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 32px;
+        }
+    }
+
+    .database-right {
+        flex: 1;
+        padding: 16px 24px;
+    }
+    .database-table-header {
+        display: flex;
+        margin-bottom: 15px;
+    }
+    .table-header-title {
+        display: flex;
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        margin-bottom: 12px;
+        .ant-typography {
+            display: flex;
+            align-items: end;
+            margin-left: 8px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 14px;
+            line-height: 14px;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+    }
+    .table-header-desc {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+    .ant-table-wrapper {
+        margin-left: -15px;
+    }
+}

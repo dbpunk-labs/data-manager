@@ -1,0 +1,36 @@
+.database {
+    flex: 1;
+    display: flex;
+    .ant-tabs {
+        display: flex;
+        flex: 1;
+        .ant-tabs-nav {
+            &::before {
+                border: none;
+            }
+        }
+        .ant-tabs-ink-bar {
+            display: none;
+        }
+        .ant-tabs-tab {
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Roboto;
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+        .ant-tabs-content-holder {
+            display: flex;
+            flex: 1;
+        }
+        .ant-tabs-content {
+            display: flex;
+            flex: 1;
+        }
+        .ant-tabs-tabpane {
+            display: flex;
+            flex: 1;
+        }
+    }
+}

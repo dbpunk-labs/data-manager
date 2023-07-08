@@ -1,13 +1,5 @@
-#root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-    font-weight: 400;
-    height: 100%;
-    margin: 0 auto;
-
-    > div {
-        height: 100%;
-    }
+body {
+    overflow: hidden;
 }
 
 a {
@@ -68,11 +60,4 @@ button:focus-visible {
     button {
         background-color: #f9f9f9;
     }
-}
-
-html,
-body {
-    height: 100%;
-    overflow-x: hidden;
-    margin: 0;
 }

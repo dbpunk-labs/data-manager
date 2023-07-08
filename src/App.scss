@@ -1,0 +1,102 @@
+#root {
+    background-color: #1c1d1e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 100vh;
+    max-height: 100vh;
+}
+.header {
+    height: 57px;
+    padding: 12px 24px;
+    box-sizing: border-box;
+    background-color: #222324;
+    display: flex;
+    justify-content: space-between;
+    .logo {
+        display: flex;
+        align-items: center;
+        .title {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Exo;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        img {
+            margin-right: 12px;
+        }
+    }
+    .header-right {
+        display: flex;
+        .ant-btn-default {
+            background-color: transparent !important;
+            border-radius: 39px;
+            border: 1px solid #214ee2;
+            color: #214ee2;
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            &:focus {
+                outline: none;
+            }
+            .ant-btn-icon {
+                position: relative;
+                top: 2px;
+            }
+        }
+    }
+}
+.content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    max-height: calc(100vh - 57px);
+}
+.left-sider {
+    flex: 1;
+    max-width: 262px;
+    background-color: #222324;
+    .ant-menu {
+        background-color: #222324;
+        border-right: none;
+        .ant-menu-item {
+            height: 48px;
+            line-height: 48px;
+            padding: 0 24px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            &:hover {
+                color: #fff;
+            }
+            &:focus {
+                color: #fff;
+            }
+            &.ant-menu-item-selected {
+                background-color: #1c1d1e;
+                color: #fff;
+            }
+        }
+        .ant-menu-title-content {
+            position: relative;
+            top: 2px;
+        }
+        .ant-menu-item-selected {
+            color: #25f !important;
+            border-radius: 8px;
+            background: rgba(34, 85, 255, 0.15) !important;
+        }
+    }
+}
+.content-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 24px 40px;
+    overflow-y: auto;
+}

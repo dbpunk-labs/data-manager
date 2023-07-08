@@ -1,0 +1,175 @@
+.db3-modal,
+.db3-modal-confirm {
+    .ant-modal-content {
+        background-color: #222324;
+        border-radius: 8px;
+        padding: 32px;
+    }
+    .ant-modal-header {
+        background-color: transparent !important;
+    }
+    .ant-modal-close {
+        color: rgba(255, 255, 255, 0.45);
+    }
+    .ant-modal-title,
+    .ant-modal-confirm-title {
+        color: #fff !important;
+        font-family: Roboto;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+    }
+    .ant-input {
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        background: var(--gray-8, #161617);
+        width: 480px;
+        height: 40px;
+        line-height: 40px;
+        color: #fff;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+    }
+    .ant-btn {
+        border: none;
+        border-radius: 8px;
+    }
+    .ant-btn-default {
+        background: #383a3d;
+        color: #fff;
+        text-align: center;
+        font-family: Roboto;
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+}
+.db3-steps {
+    .ant-steps-item {
+        .ant-steps-item-icon {
+            background-color: #2255ff;
+            border-color: #2255ff;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            .ant-steps-icon {
+                color: #fff;
+                text-align: center;
+                font-family: Roboto;
+                font-size: 13px;
+                font-style: italic;
+                font-weight: 500;
+            }
+        }
+        .ant-steps-item-tail {
+            padding: 0 !important;
+            inset-inline-start: 12px !important;
+            &:after {
+                background-color: #2255ff !important;
+            }
+        }
+        .ant-steps-item-title {
+            color: #fff !important;
+            font-family: Roboto;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+        }
+    }
+}
+.db3-ghost {
+    background-color: transparent !important;
+    border-radius: 39px;
+    border: 1px solid #214ee2;
+    color: #214ee2;
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    &:focus {
+        outline: none;
+    }
+    .ant-btn-icon {
+        position: relative;
+        top: 2px;
+    }
+}
+.ant-table {
+    background-color: transparent !important;
+    .ant-table-cell {
+        border: none !important;
+        color: rgba(255, 255, 255, 0.85) !important;
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        background-color: transparent !important;
+        &::before {
+            height: 0 !important;
+        }
+    }
+}
+.require-label {
+    &::before {
+        display: inline-block;
+        margin-inline-end: 2px;
+        color: #ef2525;
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        content: '*';
+    }
+}
+#root {
+    .ant-radio-wrapper {
+        color: #fff;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+        .ant-radio-inner {
+            background-color: transparent;
+            border: 1px solid #434343;
+        }
+        .ant-radio-checked {
+            .ant-radio-inner {
+                border: 1px solid #2255ff !important;
+                &:after {
+                    background-color: #2255ff !important;
+                }
+            }
+        }
+    }
+}
+.db3-code {
+    color: rgba(255, 255, 255, 0.85);
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%;
+}
+.ant-btn {
+    border: none;
+    outline: none !important;
+}
+.ant-btn-primary {
+    border-radius: 8px;
+    background: #25f;
+    color: #fff;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
