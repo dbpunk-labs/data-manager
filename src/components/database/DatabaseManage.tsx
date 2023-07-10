@@ -7,6 +7,7 @@ import {
     PlusCircleOutlined,
 } from '@ant-design/icons'
 import { DataNode } from 'antd/es/tree'
+import { Link, Outlet } from 'react-router-dom'
 
 const { Paragraph } = Typography
 
@@ -18,12 +19,12 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
             icon: <DatabaseOutlined />,
             children: [
                 {
-                    title: 'accounts1',
+                    title: <Link to="/database/0x223fddaa">accounts1</Link>,
                     key: 'accounts1',
                     icon: null,
                 },
                 {
-                    title: 'accounts2',
+                    title: <Link to="/database/0x223fddaa">accounts2</Link>,
                     key: 'accounts2',
                 },
             ],
@@ -34,11 +35,11 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
             icon: <DatabaseOutlined />,
             children: [
                 {
-                    title: 'accounts2',
+                    title: <Link to="/database/0x223fddaa">accounts1</Link>,
                     key: 'accounts21',
                 },
                 {
-                    title: 'accounts2',
+                    title: <Link to="/database/0x223fddaa">accounts2</Link>,
                     key: 'accounts22',
                 },
             ],
@@ -49,14 +50,7 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
             icon: <DatabaseOutlined />,
         },
     ]
-    const tableData = [
-        {
-            name: 'accounts1',
-            documents: 100,
-            size: '1.2MB',
-            index: 10,
-        },
-    ]
+
     return (
         <div className="database-manage">
             <div className="database-left">
@@ -70,35 +64,7 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
                 />
             </div>
             <div className="database-right">
-                <div className="database-table-header">
-                    <div className="table-header-left">
-                        <div className="table-header-title">
-                            Book_Store
-                            <Paragraph copyable>
-                                addr：asdfsfdghretgbxegtbfdheadg
-                            </Paragraph>
-                        </div>
-                        <div className="table-header-desc">
-                            This is a paragraph explaining the database, and the
-                            specific content needs to be provided by PD
-                        </div>
-                    </div>
-                    <div className="table-header-right">
-                        <Button
-                            type="ghost"
-                            className="db3-ghost"
-                            icon={<PlusCircleOutlined />}
-                        >
-                            Create Collection
-                        </Button>
-                    </div>
-                </div>
-                <Table dataSource={tableData}>
-                    <Table.Column title="Collection Name" dataIndex="name" />
-                    <Table.Column title="Documents" dataIndex="documents" />
-                    <Table.Column title="Total Size" dataIndex="size" />
-                    <Table.Column title="Indexes" dataIndex="index" />
-                </Table>
+                <Outlet />
             </div>
         </div>
     )

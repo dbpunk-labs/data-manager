@@ -36,6 +36,9 @@ import Database from './pages/Database'
 import './reset.scss'
 import './index.css'
 import '@rainbow-me/rainbowkit/styles.css'
+import Collections from './components/database/Collections'
+import DatabaseAccount from './components/database/DatabaseAccount'
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -52,6 +55,16 @@ const router = createBrowserRouter([
             {
                 path: 'database',
                 element: <Database />,
+                children: [
+                    {
+                        path: '',
+                        element: <Collections />,
+                    },
+                    {
+                        path: ':account',
+                        element: <DatabaseAccount />,
+                    },
+                ],
             },
             {
                 path: '/eventdb',

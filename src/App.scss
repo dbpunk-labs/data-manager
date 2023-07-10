@@ -1,10 +1,13 @@
 #root {
     background-color: #1c1d1e;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
     min-height: 100vh;
     max-height: 100vh;
+    > div {
+        min-height: 100vh;
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
 }
 .header {
     height: 57px;

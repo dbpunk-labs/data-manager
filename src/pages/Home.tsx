@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import '../styles//Home.scss'
-import StepGuide from '../components/home/Step-guide'
+import StepGuide from '../components/home/StepGuide'
 import WelComeModal from '../components/home/WelcomeModal'
 import Welcome from '../components/home/Welcome'
 

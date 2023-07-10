@@ -1,36 +1,32 @@
 .database {
     flex: 1;
     display: flex;
-    .ant-tabs {
-        display: flex;
-        flex: 1;
-        .ant-tabs-nav {
-            &::before {
-                border: none;
+    .indexes,
+    .playground {
+        width: 100%;
+    }
+}
+.db3-modal {
+    .index-table {
+        .ant-table-thead {
+            .ant-table-cell {
+                padding: 0;
+                padding-bottom: 8px;
             }
         }
-        .ant-tabs-ink-bar {
-            display: none;
+        .ant-table-tbody {
+            .ant-table-cell {
+                padding: 0;
+                padding-top: 8px;
+                padding-right: 8px;
+            }
         }
-        .ant-tabs-tab {
-            color: rgba(255, 255, 255, 0.65);
-            font-family: Roboto;
-            font-size: 24px;
-            font-style: normal;
-            font-weight: 400;
-            line-height: normal;
-        }
-        .ant-tabs-content-holder {
-            display: flex;
-            flex: 1;
-        }
-        .ant-tabs-content {
-            display: flex;
-            flex: 1;
-        }
-        .ant-tabs-tabpane {
-            display: flex;
-            flex: 1;
-        }
+    }
+    .add-index {
+        width: 100%;
+        background-color: transparent;
+        border-radius: 8px;
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        margin-top: 8px;
     }
 }

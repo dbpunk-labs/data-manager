@@ -3,6 +3,7 @@
     background-color: #222324;
     padding: 0px 16px;
     display: flex;
+    flex: 1;
     .database-left {
         width: 200px;
         border-right: 1px solid #1c1d1e;
@@ -96,4 +97,26 @@
     .ant-table-wrapper {
         margin-left: -15px;
     }
+}
+.documents {
+    width: 100%;
+    .db3-label {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 18px;
+    }
+    .db3-space {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .ant-input {
+            margin: 0 18px;
+        }
+    }
+}
+.ant-tabs-tabpane {
+    width: 100%;
 }
