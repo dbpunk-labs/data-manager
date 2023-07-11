@@ -1,0 +1,32 @@
+.database {
+    flex: 1;
+    display: flex;
+    .indexes,
+    .playground {
+        width: 100%;
+    }
+}
+.db3-modal {
+    .index-table {
+        .ant-table-thead {
+            .ant-table-cell {
+                padding: 0;
+                padding-bottom: 8px;
+            }
+        }
+        .ant-table-tbody {
+            .ant-table-cell {
+                padding: 0;
+                padding-top: 8px;
+                padding-right: 8px;
+            }
+        }
+    }
+    .add-index {
+        width: 100%;
+        background-color: transparent;
+        border-radius: 8px;
+        border: 1px dashed rgba(255, 255, 255, 0.25);
+        margin-top: 8px;
+    }
+}

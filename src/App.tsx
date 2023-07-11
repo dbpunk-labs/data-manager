@@ -8,10 +8,16 @@ import { polygonMumbai } from 'viem/chains'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 import { injectedWallet } from '@rainbow-me/rainbowkit/wallets'
+import './App.scss'
+import { Header } from './components/header'
+import LeftSider from './components/LeftSider'
+import Content from './components/Content'
+import './styles/common.scss'
+import { RecoilRoot } from 'recoil'
 
 export const App = () => {
     // TODO
-    // if first enter, go to welcome page, else console page
+    // if first enter, go to welcome page, else console page.
     const customeMumbai = {
         id: 80001,
         name: 'local Testnet',
@@ -61,11 +67,19 @@ export const App = () => {
         publicClient,
     })
     return (
-        <WagmiConfig config={wagmiConfig}>
-            <RainbowKitProvider chains={chains}>
-                <div style={{ height: '100%' }}>{<Outlet />}</div>
-            </RainbowKitProvider>
-        </WagmiConfig>
+        <RecoilRoot>
+            <WagmiConfig config={wagmiConfig}>
+                <RainbowKitProvider chains={chains}>
+                    <Header />
+                    <div className="content">
+                        <LeftSider />
+                        <Content>
+                            <Outlet />
+                        </Content>
+                    </div>
+                </RainbowKitProvider>
+            </WagmiConfig>
+        </RecoilRoot>
     )
 }
 

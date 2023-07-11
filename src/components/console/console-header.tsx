@@ -1,5 +1,4 @@
 import React from 'react'
-import icon from '../../assets/Logo_cycle.png'
 import { Breadcrumb } from 'antd'
 import { ConnectWallet } from '../connect-wallet'
 import { Link } from 'react-router-dom'
@@ -48,9 +47,7 @@ export const ConsoleHeader = () => {
                 alignItems: 'center',
             }}
         >
-            <div style={{ width: 60 }}>
-                <img style={{ width: 36 }} src={icon} />
-            </div>
+            <div style={{ width: 60 }}></div>
             <div
                 style={{
                     width: 'calc(100% - 60px)',

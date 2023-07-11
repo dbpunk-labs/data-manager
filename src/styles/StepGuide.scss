@@ -1,0 +1,211 @@
+.step-guide {
+    padding: 40px;
+    flex: 1;
+    background-color: #222324;
+    .ant-input {
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        background: var(--gray-8, #161617);
+        width: 480px;
+        height: 40px;
+        line-height: 40px;
+        color: #fff;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+    }
+    .signin {
+        .ant-radio {
+            position: relative;
+            top: -2px;
+        }
+    }
+    .register {
+        padding: 19px 0 32px 0;
+        .desc-box {
+            padding: 16px !important;
+            pre {
+                margin: 0 !important;
+            }
+            .ant-typography {
+                margin-bottom: 0;
+                color: #fff;
+                font-family: Inter;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 100%;
+            }
+        }
+    }
+    .chain-account-info {
+        display: flex;
+    }
+    .chain-account-info-item-left {
+        margin-right: 111px;
+    }
+
+    .chain-account-info-item-right {
+        .chain-account-info-item-title {
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+        }
+        .chain-account-info-item-content {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+        }
+    }
+    .chain-account-info-item-title {
+        height: 20px;
+        margin-bottom: 9px;
+        color: #fff;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+    }
+    .chain-account-info-item-content {
+        line-height: 20px;
+        .ant-typography {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+    }
+    .input-unit {
+        color: rgba(255, 255, 255, 0.65);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+    }
+    .step-item-title {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+    }
+    .step-item-subtitle {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+    }
+    .signin-tips {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: italic;
+        font-weight: 400;
+        line-height: 24px;
+    }
+}
+.step-content-item-desc {
+    color: #fff !important;
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    opacity: 0.8;
+    margin: 16px 0;
+}
+.step-title {
+    color: #fff;
+    font-family: Roboto;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    margin-bottom: 24px;
+}
+.desc-box {
+    padding: 24px 32px;
+    border-radius: 8px;
+    background: #1c1d1e;
+    margin-top: 17px;
+}
+.address-tips {
+    color: #13a8a8;
+    font-family: Roboto;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 13px;
+}
+.step-box-item {
+    margin-bottom: 24px;
+}
+.step-box-item-title {
+    color: #fff;
+    font-family: Roboto;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+    margin-bottom: 8px;
+}
+.step-box-item-content {
+    color: #fff;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%;
+    opacity: 0.6;
+}
+.step-box-item-sub-title {
+    display: inline-block;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    margin-left: 11px;
+}
+.bk-private-key {
+    color: #25f;
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+.step-box-item-tips {
+    width: 480px;
+    color: rgba(255, 255, 255, 0.45);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+}
+.db3-modal-confirm {
+    .confirm-paragraph {
+        list-style: disc;
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px;
+    }
+}

@@ -1,5 +1,4 @@
-import './index.css'
-import '@rainbow-me/rainbowkit/styles.css'
+import React from 'react'
 
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
@@ -9,18 +8,17 @@ import { publicProvider } from 'wagmi/providers/public'
 
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 
-import App from './app'
+import App from './App'
 import { CollectionDetail } from './components/console/database/collection-detail'
 import { CollectionList } from './components/console/database/collection-list'
 import { DatabaseManagement } from './components/console/database/database-management'
 import { Playground } from './components/console/database/database-playground'
 import { DatabaseTable } from './components/console/database/database-table'
-import { EventDB } from './components/console/event-db/event-db'
+// import { EventDB } from './components/console/event-db/event-db'
 import { EventDbList } from './components/console/event-db/event-db-list'
 import { EventDbPlayground } from './components/console/event-db/event-db-playground'
 import { EventDbTable } from './components/console/event-db/event-db-table'
 import { EventDetail } from './components/console/event-db/event-detail'
-import { Home } from './components/console/home'
 import { NodeAccount } from './components/console/node/account'
 import { MutationsTable } from './components/console/node/mutations-table'
 import { NodeConsole } from './components/console/node/node'
@@ -30,7 +28,16 @@ import { EventsTable } from './components/console/node/events'
 import { ConsolePage } from './pages/console-page'
 import { LaunchPage } from './pages/launch-page'
 import { WelcomePage } from './pages/welcome-page'
-import React from 'react'
+import Home from './pages/Home'
+import EventDB from './pages/EventDB'
+import Node from './pages/Node'
+import Database from './pages/Database'
+
+import './reset.scss'
+import './index.css'
+import '@rainbow-me/rainbowkit/styles.css'
+import Collections from './components/database/Collections'
+import DatabaseAccount from './components/database/DatabaseAccount'
 
 const router = createBrowserRouter([
     {
@@ -38,85 +45,34 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {
-                path: '/console',
-                element: <ConsolePage />,
+                path: 'home',
+                element: <Home />,
+            },
+            {
+                path: 'welcome',
+                element: <WelcomePage />,
+            },
+            {
+                path: 'database',
+                element: <Database />,
                 children: [
-                    { path: '/console/home', element: <Home /> },
                     {
-                        path: '/console/database',
-                        element: <DatabaseManagement />,
-                        children: [
-                            {
-                                path: '/console/database/db',
-                                element: <DatabaseTable />,
-                                children: [
-                                    {
-                                        path: '/console/database/db/:id',
-                                        element: <CollectionList />,
-                                    },
-                                    {
-                                        path: '/console/database/db/:dbId/:collectionId',
-                                        element: <CollectionDetail />,
-                                    },
-                                ],
-                            },
-                            {
-                                path: '/console/database/playground',
-                                element: <Playground />,
-                            },
-                        ],
+                        path: '',
+                        element: <Collections />,
                     },
                     {
-                        path: '/console/event-db',
-                        element: <EventDB />,
-                        children: [
-                            {
-                                path: '/console/event-db/events',
-                                element: <EventDbTable />,
-                                children: [
-                                    {
-                                        path: '/console/event-db/events/:id',
-                                        element: <EventDbList />,
-                                    },
-                                    {
-                                        path: '/console/event-db/events/:dbId/:collectionId',
-                                        element: <EventDetail />,
-                                    },
-                                ],
-                            },
-                            {
-                                path: '/console/event-db/playground',
-                                element: <EventDbPlayground />,
-                            },
-                        ],
-                    },
-                    {
-                        path: '/console/node',
-                        element: <NodeConsole />,
-                        children: [
-                            {
-                                path: '/console/node/dashboard',
-                                element: <MutationsTable />,
-                            },
-                            {
-                                path: '/console/node/events',
-                                element: <EventsTable />,
-                            },
-                            {
-                                path: '/console/node/account',
-                                element: <NodeAccount />,
-                            },
-                            {
-                                path: '/console/node/setting',
-                                element: <NodeSetting />,
-                            },
-                        ],
+                        path: ':account',
+                        element: <DatabaseAccount />,
                     },
                 ],
             },
             {
-                path: '/welcome',
-                element: <WelcomePage />,
+                path: '/eventdb',
+                element: <EventDB />,
+            },
+            {
+                path: '/node',
+                element: <Node />,
             },
         ],
     },
