@@ -17,7 +17,7 @@ import { RecoilRoot } from 'recoil'
 
 export const App = () => {
     // TODO
-    // if first enter, go to welcome page, else console page
+    // if first enter, go to welcome page, else console page.
     const customeMumbai = {
         id: 80001,
         name: 'local Testnet',
