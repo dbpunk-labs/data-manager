@@ -44,7 +44,6 @@
         font-size: 13px;
         font-style: normal;
         font-weight: 500;
-        line-height: normal;
     }
 }
 .db3-steps {
@@ -352,4 +351,26 @@
         font-weight: 400;
         line-height: 24px;
     }
+}
+.ant-breadcrumb {
+    color: rgba(255, 255, 255, 0.45) !important;
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    .ant-breadcrumb-separator {
+        color: rgba(255, 255, 255, 0.45) !important;
+    }
+    .ant-breadcrumb-link {
+        color: rgba(255, 255, 255, 0.45) !important;
+    }
+}
+.ant-btn-default {
+    background: #383a3d;
+    color: #fff;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
 }

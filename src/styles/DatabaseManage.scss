@@ -1,10 +1,12 @@
-.database-manage {
+.database-manage,
+.events {
     width: 100%;
     background-color: #222324;
     padding: 0px 16px;
     display: flex;
     flex: 1;
-    .database-left {
+    .database-left,
+    .events-left {
         width: 200px;
         border-right: 1px solid #1c1d1e;
         padding: 16px;
@@ -40,6 +42,10 @@
         }
         .ant-tree-node-content-wrapper {
             line-height: 32px;
+            .ant-tree-iconEle {
+                height: 32px;
+                line-height: 32px;
+            }
         }
         // .ant-tree-treenode-selected {
         //     border-radius: 8px;
@@ -57,7 +63,8 @@
         }
     }
 
-    .database-right {
+    .database-right,
+    .events-right {
         flex: 1;
         padding: 16px 24px;
     }
@@ -72,7 +79,6 @@
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
-        line-height: normal;
         margin-bottom: 12px;
         .ant-typography {
             display: flex;
@@ -92,7 +98,16 @@
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: normal;
+        .ant-typography {
+            display: inline-block;
+            margin-left: 8px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 14px;
+            line-height: 14px;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
     }
     .ant-table-wrapper {
         margin-left: -15px;

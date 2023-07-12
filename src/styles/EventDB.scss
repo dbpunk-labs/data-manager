@@ -1,0 +1,104 @@
+.event-db {
+    display: flex;
+    flex: 1;
+    .events-playground {
+        width: 100%;
+    }
+}
+.create-contract-indexes {
+    .create-title {
+        color: #fff;
+        font-family: Roboto;
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 400;
+        margin: 9px 0 24px 0;
+    }
+    .create-step {
+        border-radius: 10px;
+        background: #222324;
+        padding: 24px;
+        width: 100%;
+    }
+    .create-step {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        .db3-box {
+            background: #1c1d1e;
+        }
+        .ant-steps,
+        .step-content {
+            width: 623px;
+        }
+        .step-content {
+            margin-top: 52px;
+        }
+        .ant-steps-item-content,
+        .contract-info {
+            width: 100%;
+        }
+        .ant-steps-item-description {
+            max-width: 300px;
+        }
+        .ant-steps-item-title {
+            color: rgba(255, 255, 255, 0.65) !important;
+            font-family: Roboto;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            // line-height: 24px;
+            &::after {
+                background-color: rgba(255, 255, 255, 0.1) !important;
+            }
+        }
+        .ant-steps-item-active {
+            .ant-steps-item-title {
+                color: rgba(255, 255, 255, 0.85) !important;
+            }
+        }
+        .ant-steps-item-wait {
+            .ant-steps-item-icon {
+                background: rgba(255, 255, 255, 0.45);
+                .ant-steps-icon {
+                    color: rgba(255, 255, 255, 0.85) !important;
+                }
+            }
+        }
+        .ant-form {
+            .ant-input {
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+            }
+        }
+        .event-checkbox {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            height: 48px;
+            line-height: 48px;
+            color: #fff;
+            font-family: Roboto;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 0 16px;
+            img {
+                display: none;
+            }
+            &.event-active {
+                border: 1px solid #25f;
+                background: rgba(34, 85, 255, 0.1);
+                img {
+                    display: block;
+                    float: right;
+                    position: relative;
+                    right: -16px;
+                }
+            }
+        }
+    }
+    .step-btn-toolbar {
+        width: 100%;
+        text-align: left;
+    }
+}
