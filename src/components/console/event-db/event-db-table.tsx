@@ -103,8 +103,7 @@ export const EventDbTable = (props) => {
     const [currentStep, setCurrentStep] = React.useState<number>(0)
     const [block, setBlock] = React.useState<string>('0')
     const [eventAbi, setEventAbi] = React.useState<string>('')
-    const [eventEvmNodeUrl, setEventEvmNodeUrl] =
-        React.useState<string>("")
+    const [eventEvmNodeUrl, setEventEvmNodeUrl] = React.useState<string>('')
     const [contractIndexName, setContractIndexName] = React.useState<string>('')
     const [contractAddress, setContractAddress] = React.useState<string>('')
 
@@ -270,7 +269,7 @@ export const EventDbTable = (props) => {
                                         }}
                                     />
                                 </Form.Item>
-                            <Form.Item
+                                <Form.Item
                                     required={true}
                                     label="Start Block"
                                     key="block"
