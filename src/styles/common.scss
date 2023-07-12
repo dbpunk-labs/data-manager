@@ -213,6 +213,9 @@
     color: rgba(255, 255, 255, 0.25);
     background-color: transparent;
     border: none;
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.25);
+    }
 }
 .db3-input {
     color: rgba(255, 255, 255, 0.25);
@@ -273,6 +276,11 @@
     .ant-tabs-tabpane-active {
         display: flex !important;
         flex: 1;
+    }
+    &.tabs-smill {
+        .ant-tabs-tab {
+            font-size: 16px !important;
+        }
     }
 }
 .db3-collapse {
@@ -373,4 +381,123 @@
     font-size: 13px;
     font-style: normal;
     font-weight: 500;
+}
+.db3-banner-descriptions {
+    .ant-descriptions-item {
+        padding-bottom: 5px !important;
+    }
+    .ant-descriptions-item-label {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        &::after {
+            content: '';
+        }
+    }
+    .ant-descriptions-item-content {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+}
+.db3-descriptions {
+    .ant-descriptions-item {
+        padding-bottom: 5px !important;
+    }
+    .ant-descriptions-item-label {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+    }
+    .ant-descriptions-item-content {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        .ant-typography {
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+        }
+    }
+}
+.ant-input-group {
+    color: rgba(255, 255, 255, 0.25) !important;
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+}
+.chain-account-info {
+    display: flex;
+    .chain-account-info-item-left {
+        margin-right: 111px;
+    }
+
+    .chain-account-info-item-right {
+        .chain-account-info-item-title {
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+        }
+        .chain-account-info-item-content {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+        }
+    }
+    .chain-account-info-item-title {
+        height: 20px;
+        margin-bottom: 9px;
+        color: #fff;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+    }
+    .chain-account-info-item-content {
+        line-height: 20px;
+        .ant-typography {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+    }
+}
+.ant-alert-warning {
+    background-color: rgba(216, 150, 20, 0.1) !important;
+    border: 1px solid #594214;
+    color: var(--calendula-gold-6, #d89614);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+.input-unit {
+    color: rgba(255, 255, 255, 0.65);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
 }

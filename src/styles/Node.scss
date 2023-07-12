@@ -1,0 +1,102 @@
+.node-view {
+    .account {
+        width: 100%;
+    }
+    .list-header {
+        display: flex;
+        justify-content: space-between;
+    }
+    .list-header-title {
+        color: rgba(255, 255, 255, 0.85);
+
+        /* 16_medium */
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+    .list-item {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        color: rgba(255, 255, 255, 0.65);
+        font-family: Roboto;
+        font-size: 10px;
+        font-style: normal;
+        font-weight: 400;
+    }
+    .ant-list {
+        border-radius: 10px;
+        background: #222324;
+        .ant-list-header {
+            border-bottom: 1px solid #1f1f1f;
+            padding: 12px 24px;
+        }
+        .ant-spin-container {
+            padding: 0 24px;
+        }
+    }
+    .table-toobar {
+        display: flex;
+        justify-content: space-between;
+        .table-title {
+            padding-left: 15px;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Roboto;
+            font-size: 18px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 32px;
+        }
+        .ant-input-group-wrapper {
+            width: auto;
+        }
+    }
+    .ant-table {
+        background-color: #222324 !important;
+        .ant-table-placeholder {
+            background-color: #222324 !important;
+        }
+        .ant-table-cell {
+            background-color: #222324 !important;
+        }
+    }
+    .setting {
+        .ant-table {
+            .ant-input {
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                background: #2223;
+            }
+        }
+        .ant-input {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: #222324;
+            height: 40px;
+            line-height: 40px;
+        }
+        .ant-form-item-explain {
+            color: rgba(255, 255, 255, 0.45);
+            font-family: Roboto;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 400;
+        }
+        .ant-input-affix-wrapper {
+            padding: 0;
+            background-color: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 40px;
+            .ant-input-suffix {
+                margin-left: 10px;
+            }
+        }
+    }
+}
