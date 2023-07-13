@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Header } from '../components/header'
 import { Button, Form, Input, Modal, message, Card, Space } from 'antd'
 import { CopyOutlined } from '@ant-design/icons'
-import { STORAGE_NODE_URL, INDEX_NODE_URL } from '../data-context/config'
+import { STORAGE_NODE_URL, INDEX_NODE_URL } from '../data-context/Config'
 import { Alert } from 'antd'
 import {
     createClient,
@@ -14,7 +14,7 @@ import {
     DB3Account,
     Client,
     db3MetaStoreContractConfig,
-    setupStorageNode,
+    setup,
 } from 'db3.js'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { useAsyncFn } from 'react-use'
@@ -112,17 +112,17 @@ export const WelcomePage = () => {
 
     const [setupRollupNodeRet, setupRollupNodeHandle] = useAsyncFn(async () => {
         try {
-            const rollupInterval = parseInt(context.rollupInterval) * 60 * 1000
-            const minRollupSize = parseInt(context.minRollupSize) * 1024 * 1024
-            const response = await setupStorageNode(
-                client,
-                networkId.toString(),
-                rollupInterval.toString(),
-                minRollupSize.toString()
-            )
-            if (response.code == 0) {
-                setMsg('config rollup done!')
-            }
+            // const rollupInterval = parseInt(context.rollupInterval) * 60 * 1000
+            // const minRollupSize = parseInt(context.minRollupSize) * 1024 * 1024
+            // const response = await setupStorageNode(
+            //     client,
+            //     networkId.toString(),
+            //     rollupInterval.toString(),
+            //     minRollupSize.toString()
+            // )
+            // if (response.code == 0) {
+            //     setMsg('config rollup done!')
+            // }
         } catch (e) {
             console.log(e)
             setMsg('config rollup failed!')

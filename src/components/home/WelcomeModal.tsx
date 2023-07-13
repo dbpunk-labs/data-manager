@@ -4,7 +4,7 @@ import welcomeImg from '../../assets/welcome.png'
 import '../../styles/WelcomeModal.scss'
 
 const WelComeModal: React.FC<{}> = memo((props) => {
-    const [visible, setVisible] = React.useState(true)
+    const [visible, setVisible] = React.useState(false)
     return (
         <Modal
             wrapClassName="db3-modal welcome-modal"
