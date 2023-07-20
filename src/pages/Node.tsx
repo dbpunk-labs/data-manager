@@ -44,7 +44,7 @@ const Node: React.FC<{}> = memo((props) => {
     ]
     return (
         <div className="node-view">
-            <Tabs className="db3-tabs tabs-smill" items={items} />
+            <Tabs className="db3-tabs tabs-smill db3-sub-tabs" items={items} />
         </div>
     )
 })

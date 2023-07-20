@@ -208,6 +208,10 @@
         border: none;
         background-color: transparent;
     }
+    .ant-input-search-button {
+        padding: 0 !important;
+        line-height: inherit !important;
+    }
 }
 .ant-input {
     color: rgba(255, 255, 255, 0.25);
@@ -281,6 +285,16 @@
         .ant-tabs-tab {
             font-size: 16px !important;
         }
+    }
+}
+.db3-sub-tabs {
+    .ant-tabs-tab {
+        padding: 8px 16px;
+        font-size: 16px !important;
+    }
+    .ant-tabs-tab-active {
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
     }
 }
 .db3-collapse {
@@ -500,4 +514,45 @@
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
+}
+.ant-table-wrapper {
+    .ant-table-filter-column,
+    .ant-table-column-sorters {
+        justify-content: flex-start;
+        .ant-table-column-title {
+            white-space: nowrap;
+            margin-right: 5px;
+            flex: 0;
+        }
+    }
+}
+.ant-message {
+    .ant-message-notice-content {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        border-radius: 8px !important;
+        background: #2e2f30 !important;
+        box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.06),
+            0px 3px 6px 0px rgba(0, 0, 0, 0.15),
+            0px 2px 4px 0px rgba(0, 0, 0, 0.15) !important;
+    }
+}
+.db3-delete-modal {
+    .delete-check {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px; /* 171.429% */
+        margin-top: 24px;
+        margin-bottom: 8px;
+    }
+    .delete-btn {
+        border-radius: 8px;
+        border: 1px solid #eb5757;
+    }
 }

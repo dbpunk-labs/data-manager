@@ -10,6 +10,7 @@ import {
     Typography,
 } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
+import sortSrc from '../../assets/sort.svg'
 
 const { Paragraph } = Typography
 
@@ -21,8 +22,23 @@ const Collections: React.FC<{}> = memo((props) => {
             size: '1.2MB',
             index: 10,
         },
+        {
+            name: 'accounts1',
+            documents: 100,
+            size: '1.2MB',
+            index: 10,
+        },
     ]
     const [visible, setVisible] = React.useState(false)
+    function tableOnChange(
+        pagination,
+        filters,
+        sorter,
+        extra: { currentDataSource: []; action: 'paginate' | 'sort' | 'filter' }
+    ) {
+        // 分页
+        // 排序
+    }
     return (
         <>
             <div className="collections">
@@ -50,11 +66,26 @@ const Collections: React.FC<{}> = memo((props) => {
                         </Button>
                     </div>
                 </div>
-                <Table dataSource={tableData}>
+                <Table dataSource={tableData} onChange={tableOnChange}>
                     <Table.Column title="Collection Name" dataIndex="name" />
-                    <Table.Column title="Documents" dataIndex="documents" />
-                    <Table.Column title="Total Size" dataIndex="size" />
-                    <Table.Column title="Indexes" dataIndex="index" />
+                    <Table.Column
+                        title="Documents"
+                        dataIndex="documents"
+                        sorter={true}
+                        sortIcon={() => <img src={sortSrc} />}
+                    />
+                    <Table.Column
+                        title="Total Size"
+                        dataIndex="size"
+                        sorter={true}
+                        sortIcon={() => <img src={sortSrc} />}
+                    />
+                    <Table.Column
+                        title="Indexes"
+                        dataIndex="index"
+                        sorter={true}
+                        sortIcon={() => <img src={sortSrc} />}
+                    />
                 </Table>
             </div>
             <Modal

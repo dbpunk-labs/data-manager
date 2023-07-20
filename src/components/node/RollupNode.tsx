@@ -1,5 +1,6 @@
 import React, { memo } from 'react'
 import { Descriptions, Input, Table } from 'antd'
+import sortSrc from '../../assets/sort.svg'
 
 const RollupNode: React.FC<{}> = memo((props) => {
     return (
@@ -32,13 +33,43 @@ const RollupNode: React.FC<{}> = memo((props) => {
                 <Input.Search placeholder="Search" />
             </div>
             <Table dataSource={[]}>
-                <Table.Column title="Batch No." dataIndex="" />
-                <Table.Column title="Age" dataIndex="" />
-                <Table.Column title="Origin Size" dataIndex="" />
-                <Table.Column title="Batch Size" dataIndex="" />
-                <Table.Column title="Mutation" dataIndex="" />
+                <Table.Column
+                    title="Batch No."
+                    dataIndex=""
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
+                <Table.Column
+                    title="Age"
+                    dataIndex=""
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
+                <Table.Column
+                    title="Origin Size"
+                    dataIndex=""
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
+                <Table.Column
+                    title="Batch Size"
+                    dataIndex=""
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
+                <Table.Column
+                    title="Mutation"
+                    dataIndex=""
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
                 <Table.Column title="AR Block" dataIndex="" />
-                <Table.Column title="Fees" dataIndex="" />
+                <Table.Column
+                    title="Fees"
+                    dataIndex=""
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
                 <Table.Column title="AR tx" dataIndex="" />
                 <Table.Column title="evm tx" dataIndex="" />
             </Table>

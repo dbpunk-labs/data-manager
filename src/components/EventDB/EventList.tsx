@@ -3,6 +3,7 @@ import React, { memo } from 'react'
 import { Button, Input, Space, Tabs, TabsProps, Typography } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { Table } from 'antd'
+import sortSrc from '../../assets/sort.svg'
 
 const { Paragraph } = Typography
 
@@ -35,9 +36,24 @@ const EventList: React.FC<{}> = memo((props) => {
             </div>
             <Table dataSource={tableData}>
                 <Table.Column title="Indexer Name" dataIndex="name" />
-                <Table.Column title="Documents" dataIndex="documents" />
-                <Table.Column title="Total Size" dataIndex="size" />
-                <Table.Column title="Indexes" dataIndex="index" />
+                <Table.Column
+                    title="Documents"
+                    dataIndex="documents"
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
+                <Table.Column
+                    title="Total Size"
+                    dataIndex="size"
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
+                <Table.Column
+                    title="Indexes"
+                    dataIndex="index"
+                    sorter={true}
+                    sortIcon={() => <img src={sortSrc} />}
+                />
                 <Table.Column title="Operation" dataIndex="name" />
             </Table>
         </div>
