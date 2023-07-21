@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import { Tabs, TabsProps } from 'antd'
-import NodeDatabase from '../components/node/Database'
+import NodeDashboard from '../components/node/Dashboard'
 
 import '../styles/Node.scss'
 import RollupNode from '../components/node/RollupNode'
@@ -12,9 +12,9 @@ import Setting from '../components/node/Setting'
 const Node: React.FC<{}> = memo((props) => {
     const items: TabsProps['items'] = [
         {
-            key: 'database',
-            label: 'Database',
-            children: <NodeDatabase />,
+            key: 'Dashboard',
+            label: 'Dashboard',
+            children: <NodeDashboard />,
         },
         {
             key: 'RollupNode',

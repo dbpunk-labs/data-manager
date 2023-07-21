@@ -35,6 +35,18 @@ import { useAccount } from 'wagmi'
 import { useNetwork } from 'wagmi'
 import { useAsyncFn } from 'react-use'
 
+import { atom } from 'recoil'
+
+const appDatabases = atom({
+    key: 'appDatabases',
+    default: [],
+})
+
+const appCurrentDatabase = atom({
+    key: 'appCurrentDatabase',
+    default: {},
+})
+
 interface IPageContext {
     // the db3 network read and write client
     client?: Client
@@ -118,4 +130,11 @@ function PageContextProvider({ children }) {
         </PageContext.Provider>
     )
 }
-export { PageContext, usePageContext, PageContextProvider }
+
+export {
+    PageContext,
+    usePageContext,
+    PageContextProvider,
+    appDatabases,
+    appCurrentDatabase,
+}

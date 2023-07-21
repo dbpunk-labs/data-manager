@@ -20,6 +20,7 @@ import { Link, Outlet } from 'react-router-dom'
 import { useAsyncFn } from 'react-use'
 import { showDatabase, showCollection } from 'db3.js'
 import { useAccount } from 'wagmi'
+import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { usePageContext } from '../../pages/Context'
 
 const { Paragraph } = Typography
@@ -34,23 +35,22 @@ export const TreeTitle: React.FC<TreeTitleProps> = (props) => {
             key: '1',
             label: <a>Create Collection</a>,
         },
-        {
-            key: '2',
-            label: <a>Edit</a>,
-        },
     ]
     return (
-        <div className="tree-title">
-            {props.title}
-            <Dropdown
-                menu={{ items }}
-                overlayClassName="tree-dropdown"
-                placement="bottomRight"
-                trigger={['contextMenu']}
-            >
-                <EllipsisOutlined />
-            </Dropdown>
-        </div>
+        <Link to={`/database/${props.addr}`}>
+            <div className="tree-title">
+                {props.title}
+
+                <Dropdown
+                    menu={{ items }}
+                    overlayClassName="tree-dropdown"
+                    placement="bottomRight"
+                    trigger={['contextMenu']}
+                >
+                    <EllipsisOutlined />
+                </Dropdown>
+            </div>
+        </Link>
     )
 }
 
@@ -72,13 +72,17 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
                             const desc = item.internal?.database?.docDb?.desc
                             const name = desc.split(':')[0]
                             return {
-                                title: <TreeTitle title={name} />,
+                                title: (
+                                    <TreeTitle title={name} addr={item.addr} />
+                                ),
                                 key: item.addr,
                                 icon: <DatabaseOutlined />,
                                 children: collections.map((c) => {
                                     return {
                                         title: (
-                                            <Link to={`/database/${c.db.addr}/${c.name}`}>
+                                            <Link
+                                                to={`/database/${c.db.addr}/${c.name}`}
+                                            >
                                                 {c.name}
                                             </Link>
                                         ),

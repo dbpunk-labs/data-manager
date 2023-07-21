@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 import { Col, Descriptions, List, Row, Space, Table } from 'antd'
 
-const NodeDatabase: React.FC<{}> = memo((props) => {
+const NodeDashboard: React.FC<{}> = memo((props) => {
     const items = [
         {
             account: 'AddDocument from Oxefe5c7d...9ea051c82',
@@ -19,6 +19,7 @@ const NodeDatabase: React.FC<{}> = memo((props) => {
             time: '9 min ago',
         },
     ]
+
     return (
         <div className="node-database">
             <div className="db3-box">
@@ -115,4 +116,4 @@ const NodeDatabase: React.FC<{}> = memo((props) => {
         </div>
     )
 })
-export default NodeDatabase
+export default NodeDashboard

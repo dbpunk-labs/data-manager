@@ -81,6 +81,9 @@
     .database-table-header {
         display: flex;
         margin-bottom: 15px;
+        .table-header-right {
+            margin-left: 120px;
+        }
     }
     .table-header-title {
         display: flex;

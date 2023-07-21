@@ -53,15 +53,15 @@ const router = createBrowserRouter([
                 element: <Setup />,
             },
             {
-                path: 'database',
+                path: '/database',
                 element: <Database />,
                 children: [
                     {
-                        path: '',
+                        path: '/database/:addr',
                         element: <Collections />,
                     },
                     {
-                        path: ':account',
+                        path: '/database/:addr/:name',
                         element: <DatabaseAccount />,
                     },
                 ],

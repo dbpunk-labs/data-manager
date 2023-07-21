@@ -36,6 +36,14 @@ export const chainToNodes = [
         logo: polygonSrc,
         contractAddr: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     },
+    {
+        chainId: 80001,
+        dataRollupUrl: 'http://127.0.0.1:26619',
+        dataIndexUrl: 'http://127.0.0.1:26639',
+        name: 'Mumbai',
+        logo: polygonSrc,
+        contractAddr: '0x0d33fD31b322e122FFd9d7a9725e813a2824D9D6',
+    },
 ]
 
 export const chainList = [
@@ -52,6 +60,37 @@ export const chainList = [
             public: {
                 http: ['http://127.0.0.1:8545'],
                 webSocket: ['ws://127.0.0.1:8545'],
+            },
+        },
+        blockExplorers: {
+            default: {
+                name: 'Explorers',
+                url: 'https://mumbai.polygonscan.com/',
+            },
+        },
+        testnet: true,
+    },
+    {
+        id: 80001,
+        name: 'Polygon Mumbai',
+        network: 'Polygon Mumbai',
+        nativeCurrency: { name: 'matic', symbol: 'matic', decimals: 18 },
+        rpcUrls: {
+            default: {
+                http: [
+                    'https://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+                ],
+                webSocket: [
+                    'wss://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+                ],
+            },
+            public: {
+                http: [
+                    'https://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+                ],
+                webSocket: [
+                    'wss://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
+                ],
             },
         },
         blockExplorers: {

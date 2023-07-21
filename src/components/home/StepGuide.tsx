@@ -31,11 +31,6 @@ import { arToReadableNum } from '../../utils/utils'
 
 const { Paragraph } = Typography
 
-const availableChainState = atom({
-    key: 'availableChainState',
-    default: 31337,
-})
-
 const dataNetwork = atom({
     key: 'dataNetwork',
     default: {},
@@ -58,10 +53,10 @@ function minRollupSizeReadableNum(units: string): string {
 }
 
 const Signin: React.FC<{}> = memo((props) => {
-    const [availableChain, setAvailableChain] =
-        useRecoilState(availableChainState)
     const [modal, contextHolder] = Modal.useModal()
     const { address, isConnecting, isDisconnected } = useAccount()
+    const { chain } = useNetwork()
+    const switchNetworkHandle = useSwitchNetwork()
     const { openConnectModal } = useConnectModal()
     const confirm = () => {
         modal.confirm({
@@ -99,8 +94,12 @@ const Signin: React.FC<{}> = memo((props) => {
             </Space>
             <div style={{ margin: '8px 0 22px 0' }}>
                 <Radio.Group
-                    value={availableChain}
-                    onChange={(e) => setAvailableChain(e.target.value)}
+                    value={chain ? chain.id : 31337}
+                    onChange={(e) => {
+                        if (chain && chain.id != e.target.value) {
+                            switchNetworkHandle?.switchNetwork(e.target.value)
+                        }
+                    }}
                 >
                     {chainToNodes.map((item) => {
                         return (
@@ -135,7 +134,8 @@ const Register: React.FC<{}> = memo((props) => {
     const { address } = useAccount()
     const unwatch = useContractEvent(
         {
-            address: db3MetaStoreContractConfig.address,
+            address: chainToNodes.find((item) => item.chainId === chain.id)
+                ?.contractAddr,
             abi: db3MetaStoreContractConfig.abi,
             eventName: 'CreateNetwork',
             listener(log) {
@@ -145,12 +145,17 @@ const Register: React.FC<{}> = memo((props) => {
                 }
             },
         },
-        [address]
+        [address, chain]
     )
-    const registerDataNetworkHandle = useContractWrite({
-        ...db3MetaStoreContractConfig,
-        functionName: 'registerDataNetwork',
-    })
+    const registerDataNetworkHandle = useContractWrite(
+        {
+            address: chainToNodes.find((item) => item.chainId === chain.id)
+                ?.contractAddr,
+            abi: db3MetaStoreContractConfig.abi,
+            functionName: 'registerDataNetwork',
+        },
+        [chain]
+    )
 
     useEffect(() => {
         if (rollupStatus && indexStatus) {
@@ -177,12 +182,13 @@ const Register: React.FC<{}> = memo((props) => {
                     }}
                     src={
                         chain &&
-                        chainToNodes.find((item) => item.chainId == chain.id)
+                        chainToNodes.find((item) => item.chainId === chain.id)
                             ?.logo
                     }
                 />
                 {chain &&
-                    chainToNodes.find((item) => item.chainId == chain.id)?.name}
+                    chainToNodes.find((item) => item.chainId === chain.id)
+                        ?.name}
             </div>
             <div className="desc-box">
                 <pre>
@@ -216,21 +222,24 @@ const Register: React.FC<{}> = memo((props) => {
             >
                 Register
             </Button>
-
-            <div className="step-item-title">Transaction</div>
-            <div className="desc-box">
-                {registerDataNetworkHandle.data && (
-                    <Paragraph copyable>
-                        {registerDataNetworkHandle.data.hash}
-                    </Paragraph>
-                )}
-            </div>
-            <div className="step-item-title">Network</div>
-            <div className="desc-box">
-                {newNetworkIdValue != '0' && (
-                    <Paragraph copyable>{newNetworkIdValue}</Paragraph>
-                )}
-            </div>
+            {!rollupStatus?.hasInited && (
+                <>
+                    <div className="step-item-title">Transaction</div>
+                    <div className="desc-box">
+                        {registerDataNetworkHandle.data && (
+                            <Paragraph copyable>
+                                {registerDataNetworkHandle.data.hash}
+                            </Paragraph>
+                        )}
+                    </div>
+                    <div className="step-item-title">Network</div>
+                    <div className="desc-box">
+                        {newNetworkIdValue != '0' && (
+                            <Paragraph copyable>{newNetworkIdValue}</Paragraph>
+                        )}
+                    </div>
+                </>
+            )}
         </div>
     )
 })
@@ -322,8 +331,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
             </div>
             <div className="step-content-item-desc">
                 A wallet have generated for you, and private key is stored on
-                your own machine that only you can access. You can find both
-                addresses’ private key under the path : /usr/db3/.....
+                your own machine that only you can access.
             </div>
             <div className="desc-box">
                 {rollupStatus && chain ? (

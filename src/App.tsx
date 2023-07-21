@@ -22,20 +22,17 @@ export const App = () => {
     const { chains, publicClient } = configureChains(chainList, [
         publicProvider(),
     ])
-
     const connectors = connectorsForWallets([
         {
             groupName: 'Recommended',
             wallets: [injectedWallet({ chains })],
         },
     ])
-
     const wagmiConfig = createConfig({
         autoConnect: true,
         connectors,
         publicClient,
     })
-
     return (
         <RecoilRoot>
             <WagmiConfig config={wagmiConfig}>
