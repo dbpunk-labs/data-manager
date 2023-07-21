@@ -19,6 +19,7 @@
 import React, { memo } from 'react'
 import arbitrumSrc from '../assets/arbitrum.png'
 import polygonSrc from '../assets/polygon.png'
+import scrollSrc from '../assets/scroll.svg'
 
 export const STORAGE_NODE_URL: string = 'http://127.0.0.1:26619'
 export const INDEX_NODE_URL: string = 'http://127.0.0.1:26639'
@@ -44,9 +45,41 @@ export const chainToNodes = [
         logo: polygonSrc,
         contractAddr: '0x0d33fD31b322e122FFd9d7a9725e813a2824D9D6',
     },
+    {
+        chainId: 534353,
+        dataRollupUrl: 'http://127.0.0.1:26619',
+        dataIndexUrl: 'http://127.0.0.1:26639',
+        name: 'Scroll Testnet',
+        logo: scrollSrc,
+        contractAddr: '0x91B4BB6c2e6F70F93D89B04c049bFB2D36839d9A'
+    }
 ]
 
 export const chainList = [
+    {
+        id: 534353,
+        name: 'scroll',
+        network: 'scroll testnet',
+        nativeCurrency: { name: 'test', symbol: 'test', decimals: 18 },
+        rpcUrls: {
+            default: {
+                http: ['https://alpha-rpc.scroll.io/l2'],
+                webSocket: ['wss://scroll-alpha.unifra.io/ws/8f98cfc6f5484d08bad532e3850e18b7'],
+            },
+            public: {
+                http: ['https://alpha-rpc.scroll.io/l2'],
+                webSocket: ['wss://scroll-alpha.unifra.io/ws/8f98cfc6f5484d08bad532e3850e18b7'],
+            },
+        },
+        blockExplorers: {
+            default: {
+                name: 'Explorers',
+                url: 'https://scroll.l2scan.co/'
+            },
+        },
+        testnet: true,
+    },
+
     {
         id: 31337,
         name: 'localnet',
