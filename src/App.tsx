@@ -16,6 +16,7 @@ import Content from './components/Content'
 import './styles/common.scss'
 import { RecoilRoot } from 'recoil'
 import { chainList } from './data-context/Config'
+import { PageContextProvider } from './pages/Context'
 
 export const App = () => {
     const { chains, publicClient } = configureChains(chainList, [
@@ -46,13 +47,15 @@ export const App = () => {
                     })}
                     chains={chains}
                 >
-                    <Header />
-                    <div className="content">
-                        <LeftSider />
-                        <Content>
-                            <Outlet />
-                        </Content>
-                    </div>
+                    <PageContextProvider>
+                        <Header />
+                        <div className="content">
+                            <LeftSider />
+                            <Content>
+                                <Outlet />
+                            </Content>
+                        </div>
+                    </PageContextProvider>
                 </RainbowKitProvider>
             </WagmiConfig>
         </RecoilRoot>

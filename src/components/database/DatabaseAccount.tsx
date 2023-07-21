@@ -36,12 +36,12 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
     const tableData = [
         {
             name: 'accounts1',
-            type: 'key',
+            type: 'key1',
             attribute: 'name',
         },
         {
             name: 'accounts1',
-            type: 'key',
+            type: 'key2',
             attribute: 'name',
         },
     ]

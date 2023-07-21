@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import '../../styles/DatabaseManage.scss'
 import {
     Button,
@@ -17,6 +17,10 @@ import {
 } from '@ant-design/icons'
 import { DataNode } from 'antd/es/tree'
 import { Link, Outlet } from 'react-router-dom'
+import { useAsyncFn } from 'react-use'
+import { showDatabase, showCollection } from 'db3.js'
+import { useAccount } from 'wagmi'
+import { usePageContext } from '../../pages/Context'
 
 const { Paragraph } = Typography
 
@@ -31,7 +35,7 @@ export const TreeTitle: React.FC<TreeTitleProps> = (props) => {
             label: <a>Create Collection</a>,
         },
         {
-            key: '1',
+            key: '2',
             label: <a>Edit</a>,
         },
     ]
@@ -51,45 +55,52 @@ export const TreeTitle: React.FC<TreeTitleProps> = (props) => {
 }
 
 const DatabaseManage: React.FC<{}> = memo((props) => {
-    const treeData: DataNode[] = [
-        {
-            title: <TreeTitle title="Book_Store" />,
-            key: 'Book_Store',
-            icon: <DatabaseOutlined />,
-            children: [
-                {
-                    title: <Link to="/database/0x223fddaa">accounts1</Link>,
-                    key: 'accounts1',
-                    icon: null,
-                },
-                {
-                    title: <Link to="/database/0x223fddaa">accounts2</Link>,
-                    key: 'accounts2',
-                },
-            ],
-        },
-        {
-            title: 'Book_Store2',
-            key: 'Book_Store2',
-            icon: <DatabaseOutlined />,
-            children: [
-                {
-                    title: <Link to="/database/0x223fddaa">accounts1</Link>,
-                    key: 'accounts21',
-                },
-                {
-                    title: <Link to="/database/0x223fddaa">accounts2</Link>,
-                    key: 'accounts22',
-                },
-            ],
-        },
-        {
-            title: 'Book_Store3',
-            key: 'Book_Store3',
-            icon: <DatabaseOutlined />,
-        },
-    ]
+    const { address, isConnecting, isDisconnected } = useAccount()
+    const [treeData, setTreeData] = React.useState<DataNode[]>([])
+    const { client } = usePageContext()
+    const [getTreeDataState, getTreeData] = useAsyncFn(async () => {
+        if (address && client) {
+            try {
+                const databases = await showDatabase(address, client)
+                const docDatabases = databases.filter(
+                    (item) => item.internal?.database?.oneofKind === 'docDb'
+                )
+                const treeData = await Promise.all(
+                    docDatabases.map(async (item) => {
+                        try {
+                            const collections = await showCollection(item)
+                            const desc = item.internal?.database?.docDb?.desc
+                            const name = desc.split(':')[0]
+                            return {
+                                title: <TreeTitle title={name} />,
+                                key: item.addr,
+                                icon: <DatabaseOutlined />,
+                                children: collections.map((c) => {
+                                    return {
+                                        title: (
+                                            <Link to={`/database/${c.db.addr}/${c.name}`}>
+                                                {c.name}
+                                            </Link>
+                                        ),
+                                        key: c.name,
+                                    }
+                                }),
+                            }
+                        } catch (e) {
+                            console.log(e)
+                        }
+                    })
+                )
+                setTreeData(treeData)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [address, client])
 
+    useEffect(() => {
+        getTreeData()
+    }, [client])
     return (
         <div className="database-manage">
             <div className="database-left">

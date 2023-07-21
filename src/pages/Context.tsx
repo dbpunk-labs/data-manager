@@ -25,6 +25,8 @@ import {
     createReadonlyClient,
     syncAccountNonce,
     getStorageNodeStatus,
+    getIndexNodeStatus,
+    SystemStatus,
 } from 'db3.js'
 
 import { chainToNodes } from '../data-context/Config'
@@ -35,11 +37,17 @@ import { useAsyncFn } from 'react-use'
 
 interface IPageContext {
     // the db3 network read and write client
-    client: Client | undefined
+    client?: Client
     // the read client
-    readClient: ReadClient | undefined
+    readClient?: ReadClient
     // the selected chain
-    selectedChain: Chain | undefined
+    selectedChain?: Chain
+    // the rollup node status
+    rollupStatus?: SystemStatus
+    // the index node status
+    indexStatus?: SystemStatus
+    // the network id
+    networkId?: string
 }
 
 const PageContext = React.createContext({} as IPageContext)
@@ -49,12 +57,9 @@ function usePageContext() {
 }
 
 function PageContextProvider({ children }) {
-    const [pageContext, setPageContext] = React.useState<IPageContext>({
-        client: undefined,
-        readClient: undefined,
-        selectedChain: undefined,
-    } as IPageContext)
-
+    const [pageContext, setPageContext] = React.useState<IPageContext>(
+        {} as IPageContext
+    )
     const { chain } = useNetwork()
     const [doLoginState, doLogin] = useAsyncFn(async () => {
         if (chain) {
@@ -76,10 +81,17 @@ function PageContextProvider({ children }) {
                         account
                     )
                     await syncAccountNonce(client)
+                    const rollupStatus = await getStorageNodeStatus(client)
+                    const indexStatus = await getIndexNodeStatus(client)
                     setPageContext({
                         readClient: undefined,
                         client,
                         selectedChain: chain,
+                        rollupStatus,
+                        indexStatus,
+                        networkId: rollupStatus.hasInited
+                            ? rollupStatus.config.networkId
+                            : '0',
                     } as IPageContext)
                 } catch (e) {
                     console.log(e)
@@ -89,7 +101,7 @@ function PageContextProvider({ children }) {
                 console.log('no node to support chains', chain)
             }
         }
-    }, [chain, pageContext])
+    }, [chain])
 
     const accountHandle = useAccount({
         onConnect({ address, connector, isReconnected }) {

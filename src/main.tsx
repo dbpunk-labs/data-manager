@@ -25,13 +25,11 @@ import { NodeConsole } from './components/console/node/node'
 import { RollupTable } from './components/console/node/rollup-table'
 import { NodeSetting } from './components/console/node/setting'
 import { EventsTable } from './components/console/node/events'
-import { ConsolePage } from './pages/console-page'
-import { LaunchPage } from './pages/launch-page'
-import { WelcomePage } from './pages/welcome-page'
 import Home from './pages/Home'
 import EventDB from './pages/EventDB'
 import Node from './pages/Node'
 import Database from './pages/Database'
+import Setup from './pages/Setup'
 
 import './reset.scss'
 import './index.css'
@@ -51,8 +49,8 @@ const router = createBrowserRouter([
                 element: <Home />,
             },
             {
-                path: 'welcome',
-                element: <WelcomePage />,
+                path: 'setup',
+                element: <Setup />,
             },
             {
                 path: 'database',

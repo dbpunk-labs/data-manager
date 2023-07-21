@@ -20,19 +20,14 @@ import {
     useNetwork,
     useSwitchNetwork,
 } from 'wagmi'
+
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { usePageContext } from '../../pages/Context'
 import { useAsyncFn } from 'react-use'
 import { stringToHex } from 'viem'
-import {
-    getStorageNodeStatus,
-    getIndexNodeStatus,
-    SystemStatus,
-    db3MetaStoreContractConfig,
-    setup,
-} from 'db3.js'
+import { SystemStatus, db3MetaStoreContractConfig, setup } from 'db3.js'
 import ReactJson from 'react-json-view'
-import {arToReadableNum} from '../../utils/utils'
+import { arToReadableNum } from '../../utils/utils'
 
 const { Paragraph } = Typography
 
@@ -41,23 +36,12 @@ const availableChainState = atom({
     default: 31337,
 })
 
-const dataRollupNodeStatus = atom({
-    key: 'dataRollupNodeStatus',
-    default: {},
-})
-
-const dataIndexNodeStatus = atom({
-    key: 'dataIndexNodeStatus',
-    default: {},
-})
-
 const dataNetwork = atom({
     key: 'dataNetwork',
     default: {},
 })
-
-const networkId = atom({
-    key: 'networkId',
+const newNetworkId = atom({
+    key: 'newNetwork',
     default: '0',
 })
 
@@ -142,15 +126,12 @@ const Signin: React.FC<{}> = memo((props) => {
         </div>
     )
 })
+
 const Register: React.FC<{}> = memo((props) => {
-    const [rollupNodeStatus, setRollupNodeStatus] =
-        useRecoilState(dataRollupNodeStatus)
-    const [indexNodeStatus, setIndexNodeStatus] =
-        useRecoilState(dataIndexNodeStatus)
     const [dataNetworkValue, setDataNetwork] = useRecoilState(dataNetwork)
-    const [networkIdValue, setNetworkId] = useRecoilState(networkId)
+    const [newNetworkIdValue, setNewNetworkId] = useRecoilState(newNetworkId)
     const { chain } = useNetwork()
-    const { client } = usePageContext()
+    const { rollupStatus, indexStatus } = usePageContext()
     const { address } = useAccount()
     const unwatch = useContractEvent(
         {
@@ -160,7 +141,7 @@ const Register: React.FC<{}> = memo((props) => {
             listener(log) {
                 if (log[0].args.sender === address) {
                     unwatch?.()
-                    setNetworkId(log[0].args.networkId.toString())
+                    setNewNetworkId(log[0].args.networkId.toString())
                 }
             },
         },
@@ -170,26 +151,17 @@ const Register: React.FC<{}> = memo((props) => {
         ...db3MetaStoreContractConfig,
         functionName: 'registerDataNetwork',
     })
-    const [getSystemStatusState, getSystemStatus] = useAsyncFn(async () => {
-        if (client) {
-            const rollupStatus = await getStorageNodeStatus(client)
-            setRollupNodeStatus(rollupStatus)
-            const indexStatus = await getIndexNodeStatus(client)
-            setIndexNodeStatus(indexStatus)
+
+    useEffect(() => {
+        if (rollupStatus && indexStatus) {
             setDataNetwork({
                 rollupAddress: rollupStatus.evmAccount,
                 rollupNodeUrl: rollupStatus.nodeUrl,
                 indexAddresses: [indexStatus.evmAccount],
                 indexUrls: [indexStatus.nodeUrl],
             })
-            if (rollupStatus.hasInited) {
-                setNetworkId(rollupStatus.config.networkId)
-            }
         }
-    }, [client])
-    useEffect(() => {
-        getSystemStatus()
-    }, [client])
+    }, [rollupStatus, indexStatus])
 
     return (
         <div className="register">
@@ -226,19 +198,17 @@ const Register: React.FC<{}> = memo((props) => {
                 </pre>
             </div>
             <Button
-                disabled={
-                    !registerDataNetworkHandle || rollupNodeStatus.hasInited
-                }
+                disabled={!registerDataNetworkHandle || rollupStatus?.hasInited}
                 type="primary"
                 style={{ margin: '16px 0' }}
                 loading={registerDataNetworkHandle?.isLoading}
                 onClick={() =>
                     registerDataNetworkHandle.write({
                         args: [
-                            rollupNodeStatus.nodeUrl,
-                            rollupNodeStatus.evmAccount,
-                            [indexNodeStatus.nodeUrl],
-                            [indexNodeStatus.evmAccount],
+                            rollupStatus?.nodeUrl,
+                            rollupStatus?.evmAccount,
+                            [indexStatus?.nodeUrl],
+                            [indexStatus?.evmAccount],
                             stringToHex('data network desc', { size: 32 }),
                         ],
                     })
@@ -257,8 +227,8 @@ const Register: React.FC<{}> = memo((props) => {
             </div>
             <div className="step-item-title">Network</div>
             <div className="desc-box">
-                {networkIdValue != '0' && (
-                    <Paragraph copyable>{networkIdValue}</Paragraph>
+                {newNetworkIdValue != '0' && (
+                    <Paragraph copyable>{newNetworkIdValue}</Paragraph>
                 )}
             </div>
         </div>
@@ -268,44 +238,44 @@ const Register: React.FC<{}> = memo((props) => {
 const FundYourNode: React.FC<{}> = memo((props) => {
     const { address } = useAccount()
     const { chain } = useNetwork()
-    const [adminArBalance, setAdminArBalance] = React.useState<string>("")
-    const rollupNodeStatus = useRecoilValue(dataRollupNodeStatus)
+    const [adminArBalance, setAdminArBalance] = React.useState<string>('')
+    const { rollupStatus } = usePageContext()
     const [loadArBalanceState, loadArBalance] = useAsyncFn(async () => {
-        if (rollupNodeStatus && rollupNodeStatus.config) {
-            const url = rollupNodeStatus.config.arNodeUrl + "/wallet/" + rollupNodeStatus.arAccount + "/balance"
-            const response = await fetch(url,
-                    {
-                        method: 'GEt',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    }
-            )
+        if (rollupStatus && rollupStatus.config) {
+            const url =
+                rollupStatus.config.arNodeUrl +
+                '/wallet/' +
+                rollupStatus.arAccount +
+                '/balance'
+            const response = await fetch(url, {
+                method: 'GEt',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
             if (response.status == 200) {
                 const body = await response.json()
                 setAdminArBalance(arToReadableNum(body))
             }
         }
-    }, [rollupNodeStatus])
+    }, [rollupStatus])
     const adminBalance = useBalance({ address }, [address])
     const rollupNodeEvmBalance = useBalance(
-        { address: rollupNodeStatus.evmAccount },
-        [rollupNodeStatus]
+        { address: rollupStatus?.evmAccount },
+        [rollupStatus]
     )
     useEffect(() => {
         loadArBalance()
-    }, [rollupNodeStatus])
+    }, [rollupStatus])
     return (
         <div className="request-test-token">
+            <div className="step-content-item-desc"></div>
             <div className="step-content-item-desc">
-                
-            </div>
-            <div className="step-content-item-desc">
-                On the other hand, will cost some tokens. That include
-                Arweave native token $Ar and EVM token (currently will only
-                support Polygon Mumbai). We’ve already generated the two
-                addresses on your node when you install
+                On the other hand, will cost some tokens. That include Arweave
+                native token $Ar and EVM token (currently will only support
+                Polygon Mumbai). We’ve already generated the two addresses on
+                your node when you install
             </div>
             <div className="step-item-title">Admin Address</div>
             <div className="desc-box">
@@ -356,7 +326,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                 addresses’ private key under the path : /usr/db3/.....
             </div>
             <div className="desc-box">
-                {rollupNodeStatus && chain ? (
+                {rollupStatus && chain ? (
                     <div className="chain-account-info">
                         <div className="chain-account-info-item-left">
                             <div className="chain-account-info-item-title">
@@ -378,7 +348,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                             </div>
                             <div className="chain-account-info-item-content">
                                 <Paragraph copyable>
-                                    {rollupNodeStatus?.evmAccount}
+                                    {rollupStatus?.evmAccount}
                                 </Paragraph>
                             </div>
                         </div>
@@ -400,7 +370,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                 )}
             </div>
             <div className="desc-box">
-                {rollupNodeStatus ? (
+                {rollupStatus ? (
                     <div className="chain-account-info">
                         <div className="chain-account-info-item-left">
                             <div className="chain-account-info-item-title">
@@ -410,7 +380,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                             </div>
                             <div className="chain-account-info-item-content">
                                 <Paragraph copyable>
-                                    {rollupNodeStatus.arAccount}
+                                    {rollupStatus.arAccount}
                                 </Paragraph>
                             </div>
                         </div>
@@ -435,45 +405,51 @@ const FundYourNode: React.FC<{}> = memo((props) => {
 })
 
 const SetupDataRollupRules: React.FC<{}> = memo((props) => {
+    const newNetworkIdValue = useRecoilValue(newNetworkId)
     const [systemConfig, setSystemConfig] = React.useState<SystemConfig>({
         rollupInterval: (10 * 60 * 1000).toString(),
         rollupMaxInterval: (2 * 24 * 60 * 60 * 1000).toString(),
         minRollupSize: (10 * 1024 * 1024).toString(),
     })
+    const { client, rollupStatus, networkId } = usePageContext()
 
-    const rollupNodeStatus = useRecoilValue(dataRollupNodeStatus)
     useEffect(() => {
-        if (rollupNodeStatus.hasInited) {
-            setSystemConfig(rollupNodeStatus.config)
+        if (rollupStatus?.hasInited) {
+            setSystemConfig(rollupStatus.config)
         }
-    }, [rollupNodeStatus])
-
-    const networkIdValue = useRecoilValue(networkId)
+    }, [rollupStatus, newNetworkIdValue])
     const { chain } = useNetwork()
-    const { client } = usePageContext()
     const [setupState, setupHandle] = useAsyncFn(async () => {
         if (client && chain) {
             try {
-                console.log(client.account)
                 const address = chainToNodes.find(
                     (item) => item.chainId == chain.id
                 ).contractAddr
-                console.log(address)
                 const config: SystemConfig = {
                     ...systemConfig,
                     chainId: chain.id.toString(),
-                    networkId: networkIdValue,
+                    networkId: rollupStatus.hasInited
+                        ? networkId
+                        : newNetworkIdValue,
                     contractAddr: address,
                     minGcOffset: (10 * 24 * 60 * 60).toString(),
                 }
-                console.log(config)
                 const response = await setup(client, config)
-                console.log(response)
+                return response
             } catch (e) {
                 console.log(e.message)
+                return [1, 1]
             }
         }
-    }, [client, chain, networkIdValue, systemConfig])
+        return [1, 1]
+    }, [
+        client,
+        chain,
+        networkId,
+        systemConfig,
+        newNetworkIdValue,
+        rollupStatus,
+    ])
 
     return (
         <div className="steup-data-rules">
@@ -489,7 +465,14 @@ const SetupDataRollupRules: React.FC<{}> = memo((props) => {
                     <div className="step-box-item-title">Data Network</div>
                     <div className="step-box-item-content">
                         <Space>
-                            <Input value={networkIdValue} disabled />
+                            <Input
+                                value={
+                                    rollupStatus?.hasInited
+                                        ? networkId
+                                        : newNetworkIdValue
+                                }
+                                disabled
+                            />
                             <div className="input-unit"></div>
                         </Space>
                     </div>

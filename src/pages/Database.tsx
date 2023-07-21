@@ -1,57 +1,48 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import { Button, Form, Input, Modal, Tabs, TabsProps, Typography } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
-import {
-    useContractWrite,
-} from 'wagmi'
+import { useContractWrite,useAccount, useContractEvent } from 'wagmi'
+import { stringToHex } from 'viem'
+import { db3MetaStoreContractConfig } from 'db3.js'
 import '../styles/Database.scss'
 import DatabaseManage from '../components/database/DatabaseManage'
 import Playground from '../components/database/Playground'
 import { usePageContext } from './Context'
+import { useAsyncFn } from 'react-use'
 
-const dataRollupNodeStatus = atom({
-    key: 'dataRollupNodeStatus',
-    default: {},
-})
-const dataNetwork = atom({
-    key: 'dataNetwork',
-    default: {},
-})
-
-const networkId = atom({
-    key: 'networkId',
-    default: '0',
-})
+const { Paragraph } = Typography
 
 const Database: React.FC<{}> = memo((props) => {
-
     const createDatabaseHandle = useContractWrite({
         ...db3MetaStoreContractConfig,
-        functionName: 'createDatabase',
+        functionName: 'createDocDatabase',
     })
 
-    const { client } = usePageContext()
+    const { networkId } = usePageContext()
+    const [newDatabaseAddr, setNewDatabase] = React.useState("")
+    const [databaseForm, setDatabaseForm] = React.useState({
+        name: '',
+        desc: '',
+    })
 
-    const [getSystemStatusState, getSystemStatus] = useAsyncFn(async () => {
-        if (client) {
-            const rollupStatus = await getStorageNodeStatus(client)
-            setRollupNodeStatus(rollupStatus)
-            setDataNetwork({
-                rollupAddress: rollupStatus.evmAccount,
-                rollupNodeUrl: rollupStatus.nodeUrl,
-                indexAddresses: [indexStatus.evmAccount],
-                indexUrls: [indexStatus.nodeUrl],
-            })
-            if (rollupStatus.hasInited) {
-                setNetworkId(rollupStatus.config.networkId)
-            }
-        }
-    }, [client])
-    useEffect(() => {
-        getSystemStatus()
-    }, [client])
-
+    const { address } = useAccount()
+    const addWatch = () => {
+        const unwatch = useContractEvent(
+            {
+                address: db3MetaStoreContractConfig.address,
+                abi: db3MetaStoreContractConfig.abi,
+                eventName: 'CreateDatabase',
+                listener(log) {
+                    if (log[0].args.sender === address) {
+                        unwatch?.()
+                        setNewDatabase(log[0].args.databaseAddress.toString())
+                    }
+                },
+            },
+            [address]
+        )
+    }
 
     const items: TabsProps['items'] = [
         {
@@ -88,26 +79,54 @@ const Database: React.FC<{}> = memo((props) => {
                 open={visible}
                 onCancel={() => setVisible(false)}
                 okText="Create"
-                onOk={() => 
-                    createDatabaseHandle.write({
-                        args: [
-                            rollupNodeStatus.nodeUrl,
-                            stringToHex('data network desc', { size: 32 }),
-                        ],
-                    })
+                confirmLoading={createDatabaseHandle?.isLoading}
+                onOk={() =>{
+                        createDatabaseHandle.write({
+                            args: [
+                                networkId,
+                                stringToHex(
+                                    databaseForm.name + ':' + databaseForm.desc,
+                                    { size: 32 }
+                                ),
+                            ],
+                        })
+                        addWatch()
+                    }
                 }
             >
                 <Form layout="vertical">
-                    <Form.Item label="Database Name">
-                        <Input />
+                    <Form.Item label="Database Name" key="k1">
+                        <Input
+                            value={databaseForm.name}
+                            onChange={(e) =>
+                                setDatabaseForm({
+                                    ...databaseForm,
+                                    name: e.target.value,
+                                })
+                            }
+                        />
                     </Form.Item>
-                    <Form.Item label="Description">
-                        <Input />
+                    <Form.Item label="Description" key="k2">
+                        <Input
+                            value={databaseForm.desc}
+                            onChange={(e) =>
+                                setDatabaseForm({
+                                    ...databaseForm,
+                                    desc: e.target.value,
+                                })
+                            }
+                        />
                     </Form.Item>
-                    <Form.Item label="Unique database ID">
+                    <Form.Item label="Unique database ID" key="k3">
                         <Typography.Text>
-                            A unique database ID will be generated by system{' '}
+                            A unique database address will be generated by
+                            system{' '}
                         </Typography.Text>
+                        {newDatabaseAddr &&
+                            <Paragraph copyable>
+                                {newDatabaseAddr}
+                            </Paragraph>
+                        }
                     </Form.Item>
                 </Form>
             </Modal>

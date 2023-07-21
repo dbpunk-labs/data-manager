@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo,useEffect } from 'react'
 import {
     Button,
     Form,
@@ -11,24 +11,37 @@ import {
 } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import sortSrc from '../../assets/sort.svg'
+import { usePageContext } from '../../pages/Context'
+import { useContractWrite,useAccount, useContractEvent } from 'wagmi'
+import { useAsyncFn } from 'react-use'
+import { stringToHex } from 'viem'
+import { showDatabase, db3MetaStoreContractConfig } from 'db3.js'
+const { Option } = Select;
+
+interface DatabaseNameAddress {
+    label:string,
+    value:string
+}
 
 const { Paragraph } = Typography
-
 const Collections: React.FC<{}> = memo((props) => {
-    const tableData = [
+     const tableData = [
         {
+            key: '1',
             name: 'accounts1',
             documents: 100,
             size: '1.2MB',
             index: 10,
         },
         {
+            key: '2',
             name: 'accounts1',
             documents: 100,
             size: '1.2MB',
             index: 10,
         },
     ]
+
     const [visible, setVisible] = React.useState(false)
     function tableOnChange(
         pagination,
@@ -96,10 +109,11 @@ const Collections: React.FC<{}> = memo((props) => {
             >
                 <Form layout="vertical">
                     <Form.Item label="Database">
-                        <Select />
+                        <Select/>
                     </Form.Item>
                     <Form.Item label="Collection Name">
-                        <Input />
+                        <Input
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
