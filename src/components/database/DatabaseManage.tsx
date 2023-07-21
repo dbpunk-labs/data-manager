@@ -14,6 +14,7 @@ import {
     DatabaseOutlined,
     PlusCircleOutlined,
     EllipsisOutlined,
+    TableOutlined
 } from '@ant-design/icons'
 import { DataNode } from 'antd/es/tree'
 import { Link, Outlet } from 'react-router-dom'
@@ -22,6 +23,7 @@ import { showDatabase, showCollection } from 'db3.js'
 import { useAccount } from 'wagmi'
 import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { usePageContext } from '../../pages/Context'
+
 
 const { Paragraph } = Typography
 
@@ -83,10 +85,11 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
                                             <Link
                                                 to={`/database/${c.db.addr}/${c.name}`}
                                             >
-                                                {c.name}
+                                                <div className="tree-title">{c.name}</div>
                                             </Link>
                                         ),
                                         key: c.name,
+                                        icon: <TableOutlined />,
                                     }
                                 }),
                             }

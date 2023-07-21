@@ -9,6 +9,7 @@ import {
     Tree,
     Typography,
 } from 'antd'
+
 import { PlusCircleOutlined } from '@ant-design/icons'
 import sortSrc from '../../assets/sort.svg'
 import { usePageContext } from '../../pages/Context'
@@ -26,7 +27,7 @@ import {
     db3MetaStoreContractConfig,
     Collection,
 } from 'db3.js'
-import { useLocation, useMatch } from 'react-router-dom'
+import { Link, useLocation, useMatch } from 'react-router-dom'
 import { chainToNodes } from '../../data-context/Config'
 const { Option } = Select
 
@@ -151,27 +152,44 @@ const Collections: React.FC<{}> = memo((props) => {
                         </Button>
                     </div>
                 </div>
-                <Table dataSource={collections} onChange={tableOnChange}>
-                    <Table.Column title="Collection Name" dataIndex="name" />
-                    <Table.Column
-                        title="Documents"
-                        dataIndex="documents"
-                        sorter={true}
-                        sortIcon={() => <img src={sortSrc} />}
-                    />
-                    <Table.Column
-                        title="Total Size"
-                        dataIndex="size"
-                        sorter={true}
-                        sortIcon={() => <img src={sortSrc} />}
-                    />
-                    <Table.Column
-                        title="Indexes"
-                        dataIndex="index"
-                        sorter={true}
-                        sortIcon={() => <img src={sortSrc} />}
-                    />
-                </Table>
+                <Table dataSource={collections} onChange={tableOnChange}
+
+                   columns= {[
+                            {
+                                dataIndex: 'name',
+                                title: 'Collection Name',
+                                render: (text: string, record) => (
+                                    <Link
+                                        to={`/database/${routeParams.addr}/${record.name}`}
+                                    >
+                                        {text}
+                                    </Link>
+                                ),
+                                sorter: true,
+                                sortIcon: ()=> <img src={sortSrc} />
+                            },
+                            {
+                                dataIndex: 'documents',
+                                title: 'Documents',
+                                sorter: true,
+                                sortIcon: ()=> <img src={sortSrc} />
+                            },
+                            {
+                                dataIndex: 'size',
+                                title: 'Total Size',
+                                sorter: true,
+                                sortIcon: ()=> <img src={sortSrc} />
+                            },
+                            {
+                                dataIndex: 'index',
+                                title: 'Indexes',
+                                sorter: true,
+                                sortIcon: ()=> <img src={sortSrc} />
+                            }
+
+
+                   ]}
+                />
             </div>
             <Modal
                 className="db3-modal"
