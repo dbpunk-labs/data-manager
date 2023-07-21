@@ -1,12 +1,58 @@
 import React, { memo } from 'react'
 import { Button, Form, Input, Modal, Tabs, TabsProps, Typography } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
-
+import { atom, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import {
+    useContractWrite,
+} from 'wagmi'
 import '../styles/Database.scss'
 import DatabaseManage from '../components/database/DatabaseManage'
 import Playground from '../components/database/Playground'
+import { usePageContext } from './Context'
+
+const dataRollupNodeStatus = atom({
+    key: 'dataRollupNodeStatus',
+    default: {},
+})
+const dataNetwork = atom({
+    key: 'dataNetwork',
+    default: {},
+})
+
+const networkId = atom({
+    key: 'networkId',
+    default: '0',
+})
 
 const Database: React.FC<{}> = memo((props) => {
+
+    const createDatabaseHandle = useContractWrite({
+        ...db3MetaStoreContractConfig,
+        functionName: 'createDatabase',
+    })
+
+    const { client } = usePageContext()
+
+    const [getSystemStatusState, getSystemStatus] = useAsyncFn(async () => {
+        if (client) {
+            const rollupStatus = await getStorageNodeStatus(client)
+            setRollupNodeStatus(rollupStatus)
+            setDataNetwork({
+                rollupAddress: rollupStatus.evmAccount,
+                rollupNodeUrl: rollupStatus.nodeUrl,
+                indexAddresses: [indexStatus.evmAccount],
+                indexUrls: [indexStatus.nodeUrl],
+            })
+            if (rollupStatus.hasInited) {
+                setNetworkId(rollupStatus.config.networkId)
+            }
+        }
+    }, [client])
+    useEffect(() => {
+        getSystemStatus()
+    }, [client])
+
+
     const items: TabsProps['items'] = [
         {
             key: 'Database',
@@ -19,6 +65,7 @@ const Database: React.FC<{}> = memo((props) => {
             children: <Playground />,
         },
     ]
+
     const [visible, setVisible] = React.useState(false)
     return (
         <div className="database">
@@ -41,6 +88,14 @@ const Database: React.FC<{}> = memo((props) => {
                 open={visible}
                 onCancel={() => setVisible(false)}
                 okText="Create"
+                onOk={() => 
+                    createDatabaseHandle.write({
+                        args: [
+                            rollupNodeStatus.nodeUrl,
+                            stringToHex('data network desc', { size: 32 }),
+                        ],
+                    })
+                }
             >
                 <Form layout="vertical">
                     <Form.Item label="Database Name">

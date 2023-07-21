@@ -32,6 +32,7 @@ import {
     setup,
 } from 'db3.js'
 import ReactJson from 'react-json-view'
+import {arToReadableNum} from '../../utils/utils'
 
 const { Paragraph } = Typography
 
@@ -267,24 +268,41 @@ const Register: React.FC<{}> = memo((props) => {
 const FundYourNode: React.FC<{}> = memo((props) => {
     const { address } = useAccount()
     const { chain } = useNetwork()
-    const adminBalance = useBalance({ address }, [address])
+    const [adminArBalance, setAdminArBalance] = React.useState<string>("")
     const rollupNodeStatus = useRecoilValue(dataRollupNodeStatus)
+    const [loadArBalanceState, loadArBalance] = useAsyncFn(async () => {
+        if (rollupNodeStatus && rollupNodeStatus.config) {
+            const url = rollupNodeStatus.config.arNodeUrl + "/wallet/" + rollupNodeStatus.arAccount + "/balance"
+            const response = await fetch(url,
+                    {
+                        method: 'GEt',
+                        mode: 'cors',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    }
+            )
+            if (response.status == 200) {
+                const body = await response.json()
+                setAdminArBalance(arToReadableNum(body))
+            }
+        }
+    }, [rollupNodeStatus])
+    const adminBalance = useBalance({ address }, [address])
     const rollupNodeEvmBalance = useBalance(
         { address: rollupNodeStatus.evmAccount },
         [rollupNodeStatus]
     )
-
+    useEffect(() => {
+        loadArBalance()
+    }, [rollupNodeStatus])
     return (
         <div className="request-test-token">
             <div className="step-content-item-desc">
-                Since DB3 is a decentralized database, register this node info
-                to a public contract is required. Interact with on-chain
-                contract will need token. We currently support Polygon Mumbai.
-                If you don’t have the request token on Polygon Mumbai, please
-                don’t hesitate to request from us
+                
             </div>
             <div className="step-content-item-desc">
-                On the other hand, data-up will cost some tokens. That include
+                On the other hand, will cost some tokens. That include
                 Arweave native token $Ar and EVM token (currently will only
                 support Polygon Mumbai). We’ve already generated the two
                 addresses on your node when you install
@@ -401,7 +419,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                                 Balance
                             </div>
                             <div className="chain-account-info-item-content">
-                                0.0 AR
+                                {adminArBalance} AR
                             </div>
                         </div>
                     </div>
@@ -420,7 +438,7 @@ const SetupDataRollupRules: React.FC<{}> = memo((props) => {
     const [systemConfig, setSystemConfig] = React.useState<SystemConfig>({
         rollupInterval: (10 * 60 * 1000).toString(),
         rollupMaxInterval: (2 * 24 * 60 * 60 * 1000).toString(),
-        minRollupSize: (1024 * 1024).toString(),
+        minRollupSize: (10 * 1024 * 1024).toString(),
     })
 
     const rollupNodeStatus = useRecoilValue(dataRollupNodeStatus)
@@ -623,7 +641,7 @@ const StepGuide: React.FC<{}> = memo((props) => {
                     direction="vertical"
                     items={[
                         {
-                            title: 'Sign in as admin',
+                            title: 'Sign in',
                             description: <Signin />,
                         },
                         {

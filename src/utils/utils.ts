@@ -61,7 +61,7 @@ export function bytesToReadableNum(bytes_size_str: string): string {
     return value + label
 }
 
-export function unitsToReadableNum(units: string): string {
+export function arToReadableNum(units: string): string {
     return (Number(BigInt(units) / BigInt(1000_000)) / 1000_000.0).toFixed(4)
 }
 
