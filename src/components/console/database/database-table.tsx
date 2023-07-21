@@ -162,7 +162,11 @@ export const DatabaseTable = (props) => {
                     >
                         <PlusOutlined /> Create Database
                     </Button>
-                    <Input.Search style={{ marginBottom: 8 }} size="small" />
+                    <Input.Search
+                        style={{ marginBottom: 8 }}
+                        size="small"
+                        placeholder="Search"
+                    />
                     <Modal
                         title="Create Database"
                         open={showCreateDatabaseModal}

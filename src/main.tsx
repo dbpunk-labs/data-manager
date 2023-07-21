@@ -15,7 +15,7 @@ import { DatabaseManagement } from './components/console/database/database-manag
 import { Playground } from './components/console/database/database-playground'
 import { DatabaseTable } from './components/console/database/database-table'
 // import { EventDB } from './components/console/event-db/event-db'
-import { EventDbList } from './components/console/event-db/event-db-list'
+// import { EventDbList } from './components/console/event-db/event-db-list'
 import { EventDbPlayground } from './components/console/event-db/event-db-playground'
 import { EventDbTable } from './components/console/event-db/event-db-table'
 import { EventDetail } from './components/console/event-db/event-detail'
@@ -38,6 +38,8 @@ import './index.css'
 import '@rainbow-me/rainbowkit/styles.css'
 import Collections from './components/database/Collections'
 import DatabaseAccount from './components/database/DatabaseAccount'
+import EventList from './components/EventDB/EventList'
+import CreateContractIndexs from './components/EventDB/CreateContractIndexs'
 
 const router = createBrowserRouter([
     {
@@ -69,6 +71,16 @@ const router = createBrowserRouter([
             {
                 path: '/eventdb',
                 element: <EventDB />,
+                children: [
+                    {
+                        path: '',
+                        element: <EventList />,
+                    },
+                ],
+            },
+            {
+                path: '/contract/create',
+                element: <CreateContractIndexs />,
             },
             {
                 path: '/node',

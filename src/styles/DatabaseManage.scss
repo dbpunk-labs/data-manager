@@ -1,10 +1,12 @@
-.database-manage {
+.database-manage,
+.events {
     width: 100%;
     background-color: #222324;
     padding: 0px 16px;
     display: flex;
     flex: 1;
-    .database-left {
+    .database-left,
+    .events-left {
         width: 200px;
         border-right: 1px solid #1c1d1e;
         padding: 16px;
@@ -39,7 +41,21 @@
             background: transparent;
         }
         .ant-tree-node-content-wrapper {
+            display: flex;
             line-height: 32px;
+            .ant-tree-title {
+                flex: 1;
+            }
+
+            .ant-tree-iconEle {
+                height: 32px;
+                line-height: 32px;
+            }
+        }
+        .tree-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         // .ant-tree-treenode-selected {
         //     border-radius: 8px;
@@ -57,7 +73,8 @@
         }
     }
 
-    .database-right {
+    .database-right,
+    .events-right {
         flex: 1;
         padding: 16px 24px;
     }
@@ -72,7 +89,6 @@
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
-        line-height: normal;
         margin-bottom: 12px;
         .ant-typography {
             display: flex;
@@ -92,7 +108,16 @@
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
-        line-height: normal;
+        .ant-typography {
+            display: inline-block;
+            margin-left: 8px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 14px;
+            line-height: 14px;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
     }
     .ant-table-wrapper {
         margin-left: -15px;
@@ -119,4 +144,25 @@
 }
 .ant-tabs-tabpane {
     width: 100%;
+}
+.tree-dropdown {
+    .ant-dropdown-menu {
+        border-radius: 4px;
+        background: #2b2c2d;
+
+        box-shadow: 0px 9px 28px 8px rgba(0, 0, 0, 0.05),
+            0px 6px 16px 0px rgba(0, 0, 0, 0.08),
+            0px 3px 6px -4px rgba(0, 0, 0, 0.12);
+        .ant-dropdown-menu-item {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 22px; /* 157.143% */
+        }
+        .ant-dropdown-menu-item-active {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+        }
+    }
 }

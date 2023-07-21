@@ -40,58 +40,7 @@
             }
         }
     }
-    .chain-account-info {
-        display: flex;
-    }
-    .chain-account-info-item-left {
-        margin-right: 111px;
-    }
 
-    .chain-account-info-item-right {
-        .chain-account-info-item-title {
-            color: rgba(255, 255, 255, 0.65);
-            font-family: Inter;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-        }
-        .chain-account-info-item-content {
-            color: rgba(255, 255, 255, 0.85);
-            font-family: Inter;
-            font-size: 16px;
-            font-style: normal;
-            font-weight: 500;
-        }
-    }
-    .chain-account-info-item-title {
-        height: 20px;
-        margin-bottom: 9px;
-        color: #fff;
-        font-family: Roboto;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 20px;
-    }
-    .chain-account-info-item-content {
-        line-height: 20px;
-        .ant-typography {
-            color: rgba(255, 255, 255, 0.85);
-            font-family: Inter;
-            font-size: 14px;
-            font-style: normal;
-            font-weight: 400;
-            margin-bottom: 0;
-        }
-    }
-    .input-unit {
-        color: rgba(255, 255, 255, 0.65);
-        font-family: Roboto;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: 24px;
-    }
     .step-item-title {
         color: rgba(255, 255, 255, 0.85);
         font-family: Roboto;
