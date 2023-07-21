@@ -52,13 +52,16 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
                 <Paragraph copyable>addr：asdfsfdghretgbxegtbfdheadg</Paragraph>
             </div>
             <Tabs
-                className="db3-tabs"
+                className="db3-tabs db3-sub-tabs"
                 defaultActiveKey={activeKey}
                 items={items}
                 onChange={setActiveKey}
                 tabBarExtraContent={
                     <Space>
-                        <Input.Search style={{ marginBottom: 0 }} />
+                        <Input.Search
+                            style={{ marginBottom: 0 }}
+                            placeholder="Search"
+                        />
                         {activeKey === 'Documents' ? (
                             <Button
                                 type="primary"

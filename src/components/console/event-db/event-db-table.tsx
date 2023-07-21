@@ -210,7 +210,11 @@ export const EventDbTable = (props) => {
                     >
                         <PlusOutlined /> Create Contract Indexing
                     </Button>
-                    <Input.Search style={{ marginBottom: 8 }} size="small" />
+                    <Input.Search
+                        style={{ marginBottom: 8 }}
+                        size="small"
+                        placeholder="Search"
+                    />
                     <Modal
                         title="Create Contract Indexer"
                         open={showCreateIndexModal}

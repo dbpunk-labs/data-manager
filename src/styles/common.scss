@@ -44,7 +44,6 @@
         font-size: 13px;
         font-style: normal;
         font-weight: 500;
-        line-height: normal;
     }
 }
 .db3-steps {
@@ -209,11 +208,18 @@
         border: none;
         background-color: transparent;
     }
+    .ant-input-search-button {
+        padding: 0 !important;
+        line-height: inherit !important;
+    }
 }
 .ant-input {
     color: rgba(255, 255, 255, 0.25);
     background-color: transparent;
     border: none;
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.25);
+    }
 }
 .db3-input {
     color: rgba(255, 255, 255, 0.25);
@@ -274,6 +280,21 @@
     .ant-tabs-tabpane-active {
         display: flex !important;
         flex: 1;
+    }
+    &.tabs-smill {
+        .ant-tabs-tab {
+            font-size: 16px !important;
+        }
+    }
+}
+.db3-sub-tabs {
+    .ant-tabs-tab {
+        padding: 8px 16px;
+        font-size: 16px !important;
+    }
+    .ant-tabs-tab-active {
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
     }
 }
 .db3-collapse {
@@ -351,5 +372,187 @@
         font-style: normal;
         font-weight: 400;
         line-height: 24px;
+    }
+}
+.ant-breadcrumb {
+    color: rgba(255, 255, 255, 0.45) !important;
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    .ant-breadcrumb-separator {
+        color: rgba(255, 255, 255, 0.45) !important;
+    }
+    .ant-breadcrumb-link {
+        color: rgba(255, 255, 255, 0.45) !important;
+    }
+}
+.ant-btn-default {
+    background: #383a3d;
+    color: #fff;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 500;
+}
+.db3-banner-descriptions {
+    .ant-descriptions-item {
+        padding-bottom: 5px !important;
+    }
+    .ant-descriptions-item-label {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        &::after {
+            content: '';
+        }
+    }
+    .ant-descriptions-item-content {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+}
+.db3-descriptions {
+    .ant-descriptions-item {
+        padding-bottom: 5px !important;
+    }
+    .ant-descriptions-item-label {
+        color: rgba(255, 255, 255, 0.45);
+        font-family: Roboto;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+    }
+    .ant-descriptions-item-content {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        .ant-typography {
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Roboto;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+        }
+    }
+}
+.ant-input-group {
+    color: rgba(255, 255, 255, 0.25) !important;
+    font-family: Roboto;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+}
+.chain-account-info {
+    display: flex;
+    .chain-account-info-item-left {
+        margin-right: 111px;
+    }
+
+    .chain-account-info-item-right {
+        .chain-account-info-item-title {
+            color: rgba(255, 255, 255, 0.65);
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+        }
+        .chain-account-info-item-content {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Inter;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+        }
+    }
+    .chain-account-info-item-title {
+        height: 20px;
+        margin-bottom: 9px;
+        color: #fff;
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 20px;
+    }
+    .chain-account-info-item-content {
+        line-height: 20px;
+        .ant-typography {
+            color: rgba(255, 255, 255, 0.85);
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            margin-bottom: 0;
+        }
+    }
+}
+.ant-alert-warning {
+    background-color: rgba(216, 150, 20, 0.1) !important;
+    border: 1px solid #594214;
+    color: var(--calendula-gold-6, #d89614);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+.input-unit {
+    color: rgba(255, 255, 255, 0.65);
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 24px;
+}
+.ant-table-wrapper {
+    .ant-table-filter-column,
+    .ant-table-column-sorters {
+        justify-content: flex-start;
+        .ant-table-column-title {
+            white-space: nowrap;
+            margin-right: 5px;
+            flex: 0;
+        }
+    }
+}
+.ant-message {
+    .ant-message-notice-content {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        border-radius: 8px !important;
+        background: #2e2f30 !important;
+        box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.06),
+            0px 3px 6px 0px rgba(0, 0, 0, 0.15),
+            0px 2px 4px 0px rgba(0, 0, 0, 0.15) !important;
+    }
+}
+.db3-delete-modal {
+    .delete-check {
+        color: rgba(255, 255, 255, 0.85);
+        font-family: Roboto;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 24px; /* 171.429% */
+        margin-top: 24px;
+        margin-bottom: 8px;
+    }
+    .delete-btn {
+        border-radius: 8px;
+        border: 1px solid #eb5757;
     }
 }
