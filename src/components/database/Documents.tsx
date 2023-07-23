@@ -22,8 +22,15 @@ const Documents: React.FC<{}> = memo((props) => {
                             <Collapse.Panel
                                 key={index}
                                 header={item.id}
-                                items={
-                                    <ReactJson src={item.doc} theme="monokai" />
+                                children={
+                                    <ReactJson
+                                        name={false}
+                                        theme="tomorrow"
+                                        displayDataTypes={false}
+                                        displayObjectSize={false}
+                                        enableClipboard={false}
+                                        src={item.doc}
+                                    />
                                 }
                             />
                         )

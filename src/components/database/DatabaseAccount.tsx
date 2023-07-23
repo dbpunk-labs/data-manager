@@ -94,7 +94,8 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
                     col: col.name,
                 })
                 if (col) {
-                    const docs = await queryDoc(col, '/* | limit 10')
+                    const docs = await queryDoc<any>(col, '/* | limit 10')
+                    console.log(docs.docs)
                     if (docs?.docs) {
                         setItems([
                             {
