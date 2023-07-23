@@ -152,43 +152,42 @@ const Collections: React.FC<{}> = memo((props) => {
                         </Button>
                     </div>
                 </div>
-                <Table dataSource={collections} onChange={tableOnChange}
-
-                   columns= {[
-                            {
-                                dataIndex: 'name',
-                                title: 'Collection Name',
-                                render: (text: string, record) => (
-                                    <Link
-                                        to={`/database/${routeParams.addr}/${record.name}`}
-                                    >
-                                        {text}
-                                    </Link>
-                                ),
-                                sorter: true,
-                                sortIcon: ()=> <img src={sortSrc} />
-                            },
-                            {
-                                dataIndex: 'documents',
-                                title: 'Documents',
-                                sorter: true,
-                                sortIcon: ()=> <img src={sortSrc} />
-                            },
-                            {
-                                dataIndex: 'size',
-                                title: 'Total Size',
-                                sorter: true,
-                                sortIcon: ()=> <img src={sortSrc} />
-                            },
-                            {
-                                dataIndex: 'index',
-                                title: 'Indexes',
-                                sorter: true,
-                                sortIcon: ()=> <img src={sortSrc} />
-                            }
-
-
-                   ]}
+                <Table
+                    dataSource={collections}
+                    onChange={tableOnChange}
+                    columns={[
+                        {
+                            dataIndex: 'name',
+                            title: 'Collection Name',
+                            render: (text: string, record) => (
+                                <Link
+                                    to={`/database/${routeParams.addr}/${record.name}`}
+                                >
+                                    {text}
+                                </Link>
+                            ),
+                            sorter: true,
+                            sortIcon: () => <img src={sortSrc} />,
+                        },
+                        {
+                            dataIndex: 'documents',
+                            title: 'Documents',
+                            sorter: true,
+                            sortIcon: () => <img src={sortSrc} />,
+                        },
+                        {
+                            dataIndex: 'size',
+                            title: 'Total Size',
+                            sorter: true,
+                            sortIcon: () => <img src={sortSrc} />,
+                        },
+                        {
+                            dataIndex: 'index',
+                            title: 'Indexes',
+                            sorter: true,
+                            sortIcon: () => <img src={sortSrc} />,
+                        },
+                    ]}
                 />
             </div>
             <Modal

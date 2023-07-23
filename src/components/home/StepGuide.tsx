@@ -294,6 +294,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                             <div className="chain-account-info-item-title">
                                 <Space>
                                     <img
+                                        style={{ width: 16 }}
                                         src={
                                             chainToNodes.find(
                                                 (item) =>
@@ -340,6 +341,7 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                             <div className="chain-account-info-item-title">
                                 <Space>
                                     <img
+                                        style={{ width: 16 }}
                                         src={
                                             chainToNodes.find(
                                                 (item) =>
