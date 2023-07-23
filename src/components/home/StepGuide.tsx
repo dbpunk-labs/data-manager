@@ -196,6 +196,7 @@ const Register: React.FC<{}> = memo((props) => {
                         <ReactJson
                             src={dataNetworkValue}
                             theme="tomorrow"
+                            name={false}
                             displayDataTypes={false}
                             displayObjectSize={false}
                             enableClipboard={false}
