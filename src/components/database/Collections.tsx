@@ -6,11 +6,17 @@ import {
     Modal,
     Select,
     Table,
+    TablePaginationConfig,
     Tree,
     Typography,
 } from 'antd'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import sortSrc from '../../assets/sort.svg'
+import {
+    FilterValue,
+    SorterResult,
+    TableCurrentDataSource,
+} from 'antd/es/table/interface'
 
 const { Paragraph } = Typography
 
@@ -31,10 +37,10 @@ const Collections: React.FC<{}> = memo((props) => {
     ]
     const [visible, setVisible] = React.useState(false)
     function tableOnChange(
-        pagination,
-        filters,
-        sorter,
-        extra: { currentDataSource: []; action: 'paginate' | 'sort' | 'filter' }
+        pagination: TablePaginationConfig,
+        filters: Record<string, FilterValue | null>,
+        sorter: SorterResult<any> | SorterResult<any>[],
+        extra: TableCurrentDataSource<any>
     ) {
         // 分页
         // 排序
