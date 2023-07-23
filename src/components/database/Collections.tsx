@@ -6,6 +6,7 @@ import {
     Modal,
     Select,
     Table,
+    TablePaginationConfig,
     Tree,
     Typography,
 } from 'antd'
@@ -30,7 +31,11 @@ import {
 import { Link, useLocation, useMatch } from 'react-router-dom'
 import { chainToNodes } from '../../data-context/Config'
 const { Option } = Select
-
+import {
+    FilterValue,
+    SorterResult,
+    TableCurrentDataSource,
+} from 'antd/es/table/interface'
 interface DatabaseNameAddress {
     label: string
     value: string
@@ -118,10 +123,10 @@ const Collections: React.FC<{}> = memo((props) => {
 
     const [visible, setVisible] = React.useState(false)
     function tableOnChange(
-        pagination,
-        filters,
-        sorter,
-        extra: { currentDataSource: []; action: 'paginate' | 'sort' | 'filter' }
+        pagination: TablePaginationConfig,
+        filters: Record<string, FilterValue | null>,
+        sorter: SorterResult<any> | SorterResult<any>[],
+        extra: TableCurrentDataSource<any>
     ) {
         // 分页
         // 排序

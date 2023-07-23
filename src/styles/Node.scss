@@ -102,3 +102,14 @@
         }
     }
 }
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.progress-icon {
+    animation: rotate 2s linear infinite;
+}
