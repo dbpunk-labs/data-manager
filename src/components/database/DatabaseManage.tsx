@@ -37,6 +37,7 @@ export const TreeTitle: React.FC<TreeTitleProps> = (props) => {
             label: <a>Create Collection</a>,
         },
     ]
+
     return (
         <Link to={`/database/${props.addr}`}>
             <div className="tree-title">

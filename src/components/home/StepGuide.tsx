@@ -94,9 +94,9 @@ const Signin: React.FC<{}> = memo((props) => {
             </Space>
             <div style={{ margin: '8px 0 22px 0' }}>
                 <Radio.Group
-                    value={chain ? chain.id : 31337}
+                    value={chain ? chain?.id : 31337}
                     onChange={(e) => {
-                        if (chain && chain.id != e.target.value) {
+                        if (chain && chain?.id != e.target.value) {
                             switchNetworkHandle?.switchNetwork(e.target.value)
                         }
                     }}
@@ -135,7 +135,7 @@ const Register: React.FC<{}> = memo((props) => {
     const { address } = useAccount()
     const unwatch = useContractEvent(
         {
-            address: chainToNodes.find((item) => item.chainId === chain.id)
+            address: chainToNodes.find((item) => item.chainId === chain?.id)
                 ?.contractAddr,
             abi: db3MetaStoreContractConfig.abi,
             eventName: 'CreateNetwork',
@@ -151,7 +151,7 @@ const Register: React.FC<{}> = memo((props) => {
     )
     const registerDataNetworkHandle = useContractWrite(
         {
-            address: chainToNodes.find((item) => item.chainId === chain.id)
+            address: chainToNodes.find((item) => item.chainId === chain?.id)
                 ?.contractAddr,
             abi: db3MetaStoreContractConfig.abi,
             functionName: 'registerDataNetwork',
@@ -184,12 +184,12 @@ const Register: React.FC<{}> = memo((props) => {
                     }}
                     src={
                         chain &&
-                        chainToNodes.find((item) => item.chainId === chain.id)
+                        chainToNodes.find((item) => item.chainId === chain?.id)
                             ?.logo
                     }
                 />
                 {chain &&
-                    chainToNodes.find((item) => item.chainId === chain.id)
+                    chainToNodes.find((item) => item.chainId === chain?.id)
                         ?.name}
             </div>
             <div className="desc-box">
@@ -210,7 +210,7 @@ const Register: React.FC<{}> = memo((props) => {
                 disabled={!registerDataNetworkHandle || rollupStatus?.hasInited}
                 type="primary"
                 style={{ margin: '16px 0' }}
-                loading={networkLoading || registerDataNetworkHandle?.isError}
+                loading={networkLoading}
                 onClick={() => {
                     setNetworkLoading(true)
                     registerDataNetworkHandle.write({
