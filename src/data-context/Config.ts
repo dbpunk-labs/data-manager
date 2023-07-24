@@ -22,6 +22,7 @@ import polygonSrc from '../assets/polygon.png'
 import scrollSrc from '../assets/scroll.svg'
 import lineaSrc from '../assets/linea.svg'
 import zkSyncSrc from '../assets/zksync.png'
+import localhostSrc from '../assets/localhost.png'
 
 export const STORAGE_NODE_URL: string = 'http://127.0.0.1:26619'
 export const INDEX_NODE_URL: string = 'http://127.0.0.1:26639'
@@ -36,7 +37,7 @@ export const chainToNodes = [
         dataRollupUrl: 'http://127.0.0.1:26619',
         dataIndexUrl: 'http://127.0.0.1:26639',
         name: 'Localtest',
-        logo: polygonSrc,
+        logo: localhostSrc,
         contractAddr: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
     },
     {

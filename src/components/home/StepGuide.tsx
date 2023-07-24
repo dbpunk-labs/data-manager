@@ -129,6 +129,7 @@ const Signin: React.FC<{}> = memo((props) => {
 const Register: React.FC<{}> = memo((props) => {
     const [dataNetworkValue, setDataNetwork] = useRecoilState(dataNetwork)
     const [newNetworkIdValue, setNewNetworkId] = useRecoilState(newNetworkId)
+    const [networkLoading, setNetworkLoading] = React.useState(false)
     const { chain } = useNetwork()
     const { rollupStatus, indexStatus } = usePageContext()
     const { address } = useAccount()
@@ -142,6 +143,7 @@ const Register: React.FC<{}> = memo((props) => {
                 if (log[0].args.sender === address) {
                     unwatch?.()
                     setNewNetworkId(log[0].args.networkId.toString())
+                    setNetworkLoading(false)
                 }
             },
         },
@@ -208,8 +210,9 @@ const Register: React.FC<{}> = memo((props) => {
                 disabled={!registerDataNetworkHandle || rollupStatus?.hasInited}
                 type="primary"
                 style={{ margin: '16px 0' }}
-                loading={registerDataNetworkHandle?.isLoading}
-                onClick={() =>
+                loading={networkLoading || registerDataNetworkHandle?.isError}
+                onClick={() => {
+                    setNetworkLoading(true)
                     registerDataNetworkHandle.write({
                         args: [
                             rollupStatus?.nodeUrl,
@@ -219,7 +222,7 @@ const Register: React.FC<{}> = memo((props) => {
                             stringToHex('data network desc', { size: 32 }),
                         ],
                     })
-                }
+                }}
             >
                 Register
             </Button>
@@ -233,7 +236,7 @@ const Register: React.FC<{}> = memo((props) => {
                             </Paragraph>
                         )}
                     </div>
-                    <div className="step-item-title">Network</div>
+                    <div className="step-item-title">Generated Network Id</div>
                     <div className="desc-box">
                         {newNetworkIdValue != '0' && (
                             <Paragraph copyable>{newNetworkIdValue}</Paragraph>

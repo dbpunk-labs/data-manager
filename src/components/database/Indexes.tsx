@@ -2,26 +2,28 @@ import { Table } from 'antd'
 import React, { memo } from 'react'
 import sortSrc from '../../assets/sort.svg'
 import filterSrc from '../../assets/filter.svg'
+import { IndexType } from 'db3.js'
 
 const Indexes: React.FC<{}> = memo((props) => {
     return (
         <div className="indexes">
-            <Table dataSource={[]}>
+            <Table dataSource={props.collection.indexFields}>
                 <Table.Column
-                    title="Name"
-                    dataIndex="name"
+                    title="Path"
+                    dataIndex="path"
                     sorter={true}
                     sortIcon={() => <img src={sortSrc} />}
                 />
                 <Table.Column
                     title="Type"
-                    dataIndex="type"
+                    dataIndex="indexType"
                     filtered={true}
                     filters={[]}
+                    render={(text, record, index) =>
+                        IndexType[record.indexType]
+                    }
                     filterIcon={() => <img src={filterSrc} />}
                 />
-                <Table.Column title="Attributes" dataIndex="attributes" />
-                {/* <Table.Column title="Operation" dataIndex="operation" /> */}
             </Table>
         </div>
     )
