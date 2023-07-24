@@ -14,6 +14,7 @@ import {
     Database,
     syncAccountNonce,
     Collection,
+    queryDoc,
 } from 'db3.js'
 import { useAsyncFn } from 'react-use'
 import Editor from '@monaco-editor/react'
@@ -48,6 +49,18 @@ return result
    `
 }
 
+function generateQueryCode(addr, col, rollup, index) {
+    return `
+const account = createRandomAccount()
+const client = createClient("${rollup}", 
+                           "${index}",
+                           account)
+const collection = await getCollection("${addr}", "${col}", client)
+const result = await queryDoc(collection, '/* | limit 2')
+return result.docs
+   `
+}
+
 const Playground: React.FC<{}> = memo((props) => {
     const editorOptions = {
         selectOnLineNumbers: false,
@@ -59,10 +72,39 @@ const Playground: React.FC<{}> = memo((props) => {
     const { client } = usePageContext()
     const { chain } = useNetwork()
     const [insertCode, setInsertCode] = React.useState('')
+    const [queryCode, setQueryCode] = React.useState('')
     const [insertCodeResult, setRunInsertCodeResult] = React.useState({})
+    const [queryCodeResult, setRunQueryCodeResult] = React.useState({})
     const [colName, setCurrentColName] = React.useState('')
     const [record, setCurrentRecords] = React.useState<DatabaseRecord>({})
     const [records, setRecords] = React.useState<DatabaseRecord[]>([])
+
+    const [runQueryCodeState, runQueryCode] = useAsyncFn(async () => {
+        if (queryCode && record && colName.length > 0) {
+            try {
+                const AsyncFunction = Object.getPrototypeOf(
+                    async function () {}
+                ).constructor
+                const fn = new AsyncFunction(
+                    'createRandomAccount',
+                    'createClient',
+                    'getCollection',
+                    'queryDoc',
+                    queryCode
+                )
+                const data = await fn(
+                    createRandomAccount,
+                    createClient,
+                    getCollection,
+                    queryDoc
+                )
+                setRunQueryCodeResult(data)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [queryCode, record, colName])
+
     const [runInsertCodeState, runInsertCode] = useAsyncFn(async () => {
         if (insertCode && record && colName.length > 0) {
             try {
@@ -148,6 +190,13 @@ const Playground: React.FC<{}> = memo((props) => {
                 node.dataIndexUrl
             )
             setInsertCode(code)
+            const queryCode = generateQueryCode(
+                record.value,
+                value,
+                node.dataRollupUrl,
+                node.dataIndexUrl
+            )
+            setQueryCode(queryCode)
         }
     }
     useEffect(() => {
@@ -245,34 +294,50 @@ const Playground: React.FC<{}> = memo((props) => {
                         alignContent: 'center',
                     }}
                 >
-                    <div className="db3-box-title-large">Write Data</div>
-                    <a className="docs-link">
+                    <div className="db3-box-title-large">Query documents</div>
+                    <a
+                        className="docs-link"
+                        href="https://docs.db3.network/functions/queryDoc.html"
+                    >
                         <img src={doclink} />
                         Docs
                     </a>
                 </div>
                 <div className="db3-box-title">Code</div>
                 <div className="db3-box-code">
-                    <pre>
-                        <code>
-                            {
-                                'const result = await doc_store.insertDocs(doc_index, [transacion], _sign, 1);'
-                            }
-                        </code>
-                    </pre>
+                    {colName && colName.length > 0 && (
+                        <Editor
+                            theme="vs-dark"
+                            height="12vh"
+                            defaultLanguage="typescript"
+                            value={queryCode}
+                            options={editorOptions}
+                            onChange={(value) => setQueryCode(value!)}
+                        />
+                    )}
                 </div>
-                <Button type="primary" style={{ marginBottom: 32 }}>
+                <Button
+                    type="primary"
+                    style={{ marginBottom: 32 }}
+                    disabled={!(colName && colName.length > 0)}
+                    onClick={(e) => runQueryCode()}
+                    loading={runQueryCodeState.loading}
+                >
                     Run
                 </Button>
                 <div className="db3-box-title">Result</div>
                 <div className="db3-box-code">
-                    <pre>
-                        <code>
-                            {
-                                'const result = await doc_store.insertDocs(doc_index, [transacion], _sign, 1);'
-                            }
-                        </code>
-                    </pre>
+                    {queryCodeResult &&
+                        Object.keys(queryCodeResult).length > 0 && (
+                            <ReactJson
+                                name={false}
+                                theme="tomorrow"
+                                displayDataTypes={false}
+                                displayObjectSize={false}
+                                enableClipboard={false}
+                                src={queryCodeResult}
+                            />
+                        )}
                 </div>
             </div>
         </div>
