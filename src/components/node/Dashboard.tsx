@@ -30,7 +30,7 @@ const ProgressIcon = () => (
     </svg>
 )
 
-const NodeDatabase: React.FC<{}> = memo((props) => {
+const NodeDashboard: React.FC<{}> = memo((props) => {
     const items = [
         {
             pedding: true,
@@ -54,6 +54,7 @@ const NodeDatabase: React.FC<{}> = memo((props) => {
             time: '9 min ago',
         },
     ]
+
     return (
         <div className="node-database">
             <div className="db3-box">
@@ -162,4 +163,4 @@ const NodeDatabase: React.FC<{}> = memo((props) => {
         </div>
     )
 })
-export default NodeDatabase
+export default NodeDashboard

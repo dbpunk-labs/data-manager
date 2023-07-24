@@ -1,5 +1,5 @@
 //
-// context.ts
+// PageContext.ts
 // Copyright (C) 2023 db3.network Author imotai <codego.me@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-//export const STORAGE_NODE_URL: string = 'http://127.0.0.1:26619'
-//export const INDEX_NODE_URL: string = 'http://127.0.0.1:26639'
-export const STORAGE_NODE_URL: string = 'https://rollup.cloud.db3.network'
-export const INDEX_NODE_URL: string = 'https://index.cloud.db3.network'
-export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'
-export const EVM_SCAN_URL: string = 'https://mumbai.polygonscan.com/tx/'
+
+import React from 'react'
+import { Client, ReadClient } from 'db3.js'
+
+export interface IPageContext {
+    client: Client
+    readClient: ReadClient
+}
+
+const PageContext = React.createContext({} as IPageContext)
+export function usePageContext() {
+    return React.useContext(PageContext)
+}
+export default PageContext

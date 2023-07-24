@@ -1,5 +1,5 @@
 //
-// page-context.ts
+// ConnectWallet.tsx
 // Copyright (C) 2023 db3.network Author imotai <codego.me@gmail.com>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,6 @@
 // limitations under the License.
 //
 
-import React from 'react'
-import { Client, ReadClient } from 'db3.js'
+import React, { useState } from 'react'
 
-export interface IPageContext {
-    client: Client
-    readClient: ReadClient
-}
-
-const PageContext = React.createContext({} as IPageContext)
-
-export function usePageContext() {
-    return React.useContext(PageContext)
-}
-export default PageContext
+function ConnectWallet() {}

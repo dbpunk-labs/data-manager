@@ -1,6 +1,7 @@
 import {
     RainbowKitProvider,
     connectorsForWallets,
+    darkTheme,
 } from '@rainbow-me/rainbowkit'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
@@ -14,47 +15,13 @@ import LeftSider from './components/LeftSider'
 import Content from './components/Content'
 import './styles/common.scss'
 import { RecoilRoot } from 'recoil'
+import { chainList } from './data-context/Config'
+import { PageContextProvider } from './pages/Context'
 
 export const App = () => {
-    // TODO
-    // if first enter, go to welcome page, else console page.
-    const customeMumbai = {
-        id: 80001,
-        name: 'local Testnet',
-        network: 'local-testnet',
-        nativeCurrency: { name: 'matic', symbol: 'matic', decimals: 18 },
-        rpcUrls: {
-            default: {
-                http: [
-                    'https://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
-                ],
-                webSocket: [
-                    'wss://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
-                ],
-            },
-            public: {
-                http: [
-                    'https://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
-                ],
-                webSocket: [
-                    'wss://polygon-mumbai.g.alchemy.com/v2/KIUID-hlFzpnLetzQdVwO38IQn0giefR',
-                ],
-            },
-        },
-        blockExplorers: {
-            default: {
-                name: 'localhost',
-                url: 'https://mumbai.polygonscan.com/',
-            },
-        },
-        testnet: true,
-    }
-
-    const { chains, publicClient } = configureChains(
-        [customeMumbai],
-        [publicProvider()]
-    )
-
+    const { chains, publicClient } = configureChains(chainList, [
+        publicProvider(),
+    ])
     const connectors = connectorsForWallets([
         {
             groupName: 'Recommended',
@@ -69,18 +36,26 @@ export const App = () => {
     return (
         <RecoilRoot>
             <WagmiConfig config={wagmiConfig}>
-                <RainbowKitProvider chains={chains}>
-                    <Header />
-                    <div className="content">
-                        <LeftSider />
-                        <Content>
-                            <Outlet />
-                        </Content>
-                    </div>
+                <RainbowKitProvider
+                    theme={darkTheme({
+                        accentColor: '#7b3fe4',
+                        accentColorForeground: 'white',
+                        borderRadius: 'large',
+                    })}
+                    chains={chains}
+                >
+                    <PageContextProvider>
+                        <Header />
+                        <div className="content">
+                            <LeftSider />
+                            <Content>
+                                <Outlet />
+                            </Content>
+                        </div>
+                    </PageContextProvider>
                 </RainbowKitProvider>
             </WagmiConfig>
         </RecoilRoot>
     )
 }
-
 export default App

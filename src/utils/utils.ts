@@ -61,7 +61,7 @@ export function bytesToReadableNum(bytes_size_str: string): string {
     return value + label
 }
 
-export function unitsToReadableNum(units: string): string {
+export function arToReadableNum(units: string): string {
     return (Number(BigInt(units) / BigInt(1000_000)) / 1000_000.0).toFixed(4)
 }
 
@@ -80,5 +80,36 @@ export function shortString(id: string, limit: number) {
         )
     } else {
         return id
+    }
+}
+
+export function toHEX(bytes: Uint8Array): string {
+    return (
+        '0x' +
+        bytes.reduce(
+            (str, byte) => str + byte.toString(16).padStart(2, '0'),
+            ''
+        )
+    )
+}
+
+export function getCompressRatio(
+    totalRollupBytes: string,
+    totalRawDataBytes: string
+) {
+    const totalRollupBytesNum = new Number(totalRollupBytes)
+    const totalRollupRawBytesNum = new Number(totalRawDataBytes)
+    if (totalRollupRawBytesNum == 0 || totalRollupBytesNum == 0) return 0
+    return ((totalRollupBytes * 100.0) / totalRollupRawBytesNum).toFixed(2)
+}
+
+export function getGBCost(totalBytes: string, totalCostInUsd: number) {
+    const totalBytesNum = new Number(totalBytes)
+    if (totalCostInUsd == 0 || totalBytesNum == 0) return 0
+    const gb = 1024 * 1024 * 1024
+    if (totalBytesNum < gb) {
+        return (((gb * 1.0) / totalBytesNum) * totalCostInUsd).toFixed(4)
+    } else {
+        return (totalCostInUsd / ((totalBytesNum * 1.0) / gb)).toFixed(4)
     }
 }

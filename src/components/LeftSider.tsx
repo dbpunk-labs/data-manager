@@ -8,7 +8,7 @@ import eventdbIcon from '../assets/eventdb.svg'
 import eventActiveIcon from '../assets/eventdb-active.svg'
 import nodeIcon from '../assets/node.svg'
 import nodeActiveIcon from '../assets/node-active.svg'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 const LeftSider: React.FC<{}> = memo((props) => {
     const [currentKey, setCurrentKey] = React.useState('Home')

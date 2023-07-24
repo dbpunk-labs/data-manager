@@ -16,7 +16,7 @@ export const Header = () => {
                     style={{ marginLeft: 10 }}
                     icon={<img style={{ width: 16 }} src={btnLink} />}
                 >
-                    Connct Wallet
+                    ConnectWallet
                 </Button>
             </div>
         </div>

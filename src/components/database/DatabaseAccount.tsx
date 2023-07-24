@@ -1,4 +1,4 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
 import {
     Button,
     Form,
@@ -11,45 +11,134 @@ import {
     TabsProps,
     Typography,
 } from 'antd'
+import {
+    getCollection,
+    queryDoc,
+    showCollection,
+    getDatabase,
+    addDoc,
+} from 'db3.js'
 import { PlusCircleOutlined } from '@ant-design/icons'
+import { usePageContext } from '../../pages/Context'
+import { useMatch } from 'react-router-dom'
+import { useAsyncFn } from 'react-use'
 import Documents from './Documents'
 import Indexes from './Indexes'
 
 const { Paragraph } = Typography
 
 const DatabaseAccount: React.FC<{}> = memo((props) => {
-    const items: TabsProps['items'] = [
+    const { client, networkId } = usePageContext()
+    const routeParams = useMatch('/database/:addr/:name')?.params
+    const [dbName, setDbName] = React.useState('')
+    const [docValue, setDocValue] = React.useState({
+        doc: '',
+        col: '',
+    })
+    const [allCollectionNames, setAllCollectionNames] = React.useState<any[]>(
+        []
+    )
+    const [collection, setCollection] = React.useState({})
+    const [items, setItems] = React.useState<TabsProps['items']>([
         {
             key: 'Documents',
             label: 'Documents',
-            children: <Documents />,
+            children: <Documents docs={[]} />,
         },
         {
             key: 'Indexes',
             label: 'Indexes',
             children: <Indexes />,
         },
-    ]
+    ])
+    const [insertDocState, insertDocHandle] = useAsyncFn(async () => {
+        if (docValue.doc && docValue.col) {
+            try {
+                const col = await getCollection(
+                    routeParams.addr,
+                    docValue.col,
+                    client
+                )
+                if (col) {
+                    const object = JSON.parse(docValue.doc)
+                    await addDoc(col, object)
+                }
+            } catch (e) {
+                console.log(e.message)
+            }
+        }
+    }, [docValue, client])
+    const [queryCollectionState, queryCollection] = useAsyncFn(async () => {
+        if (client && routeParams.addr && routeParams.name) {
+            try {
+                const database = await getDatabase(routeParams.addr, client)
+                const collections = await showCollection(database)
+                const col = collections.find(
+                    (item) => item.name == routeParams.name
+                )
+                if (col && col.db.internal?.database?.docDb) {
+                    const desc = col.db.internal?.database?.docDb?.desc
+                    const parts = desc.split(':')
+                    setDbName(parts[0])
+                }
+                const names = collections.map((item) => {
+                    return {
+                        label: item.name,
+                        value: item.name,
+                    }
+                })
+                setAllCollectionNames(names)
+                setCollection(col)
+                setDocValue({
+                    doc: '',
+                    col: col.name,
+                })
+                if (col) {
+                    const docs = await queryDoc<any>(col, '/* | limit 10')
+                    console.log(docs.docs)
+                    if (docs?.docs) {
+                        setItems([
+                            {
+                                key: 'Documents',
+                                label: 'Documents',
+                                children: <Documents docs={docs?.docs} />,
+                            },
+                            {
+                                key: 'Indexes',
+                                label: 'Indexes',
+                                children: <Indexes />,
+                            },
+                        ])
+                    }
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    }, [client, routeParams])
+    useEffect(() => {
+        queryCollection()
+    }, [client, routeParams])
     const [docModalvisible, setDocModalvisible] = React.useState(false)
     const [indexModalvisible, setIndexModalvisible] = React.useState(false)
     const [activeKey, setActiveKey] = React.useState('Documents')
     const tableData = [
         {
             name: 'accounts1',
-            type: 'key',
+            type: 'key1',
             attribute: 'name',
         },
         {
             name: 'accounts1',
-            type: 'key',
+            type: 'key2',
             attribute: 'name',
         },
     ]
     return (
         <div className="database-account">
             <div className="table-header-title">
-                Book_Store/Account
-                <Paragraph copyable>addr：asdfsfdghretgbxegtbfdheadg</Paragraph>
+                {dbName}/{routeParams.name}
+                <Paragraph copyable>{collection?.db?.addr}</Paragraph>
             </div>
             <Tabs
                 className="db3-tabs db3-sub-tabs"
@@ -87,13 +176,37 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
                 title="Insert Doc"
                 open={docModalvisible}
                 onCancel={() => setDocModalvisible(false)}
+                confirmLoading={insertDocState.loading}
+                okText="Insert"
+                onOk={() => {
+                    insertDocHandle()
+                }}
             >
                 <Form layout="vertical">
                     <Form.Item label="Collection">
-                        <Select />
+                        <Select
+                            options={allCollectionNames}
+                            value={{
+                                value: collection.name,
+                                label: collection.name,
+                            }}
+                            onChange={(value) => {
+                                setDocValue({
+                                    ...docValue,
+                                    col: value,
+                                })
+                            }}
+                        />
                     </Form.Item>
                     <Form.Item label="Doc">
-                        <Input.TextArea />
+                        <Input.TextArea
+                            onChange={(e) => {
+                                setDocValue({
+                                    ...docValue,
+                                    doc: e.target.value,
+                                })
+                            }}
+                        />
                     </Form.Item>
                 </Form>
             </Modal>
