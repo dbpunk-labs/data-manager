@@ -21,22 +21,43 @@ const { Paragraph } = Typography
 
 const Database: React.FC<{}> = memo((props) => {
     const { chain } = useNetwork()
+    const { address } = useAccount()
+    const { networkId } = usePageContext()
+    const [createDatabaseLoading, setCreateDatabaseLoading] =
+        React.useState(false)
+    const [visible, setVisible] = React.useState(false)
     const createDatabaseHandle = useContractWrite(
         {
-            address: chainToNodes.find((item) => item.chainId === chain.id)
+            address: chainToNodes.find((item) => item.chainId === chain?.id)
                 ?.contractAddr,
             abi: db3MetaStoreContractConfig.abi,
             functionName: 'createDocDatabase',
         },
         [chain]
     )
-    const { networkId } = usePageContext()
+
+    const unwatch = useContractEvent(
+        {
+            address: chainToNodes.find((item) => item.chainId === chain?.id)
+                ?.contractAddr,
+            abi: db3MetaStoreContractConfig.abi,
+            eventName: 'CreateDatabase',
+            listener(log) {
+                if (log[0].args.sender === address) {
+                    setCreateDatabaseLoading(false)
+                    setVisible(false)
+                }
+            },
+        },
+        [address, chain]
+    )
+
     const [newDatabaseAddr, setNewDatabase] = React.useState('')
     const [databaseForm, setDatabaseForm] = React.useState({
         name: '',
         desc: '',
     })
-    const { address } = useAccount()
+
     const items: TabsProps['items'] = [
         {
             key: 'Database',
@@ -50,7 +71,6 @@ const Database: React.FC<{}> = memo((props) => {
         },
     ]
 
-    const [visible, setVisible] = React.useState(false)
     return (
         <div className="database">
             <Tabs
@@ -72,8 +92,9 @@ const Database: React.FC<{}> = memo((props) => {
                 open={visible}
                 onCancel={() => setVisible(false)}
                 okText="Create"
-                confirmLoading={createDatabaseHandle?.isLoading}
+                confirmLoading={createDatabaseLoading}
                 onOk={() => {
+                    setCreateDatabaseLoading(true)
                     createDatabaseHandle.write({
                         args: [
                             networkId,
