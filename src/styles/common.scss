@@ -214,15 +214,15 @@
     }
 }
 .ant-input {
-    color: rgba(255, 255, 255, 0.25);
+    color: #fff;
     background-color: transparent;
     border: none;
     &::placeholder {
-        color: rgba(255, 255, 255, 0.25);
+        color: #fff;
     }
 }
 .db3-input {
-    color: rgba(255, 255, 255, 0.25);
+    color: #fff;
     background-color: transparent;
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -234,6 +234,7 @@
     padding: 16px;
     margin: 16px 0 20px 0;
 }
+
 .db3-box-title-large {
     color: rgba(255, 255, 255, 0.85);
     font-family: Roboto;

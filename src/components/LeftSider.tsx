@@ -46,7 +46,7 @@ const LeftSider: React.FC<{}> = memo((props) => {
         },
         {
             key: 'Node',
-            label: <Link to="/node">Node</Link>,
+            label: <Link to="/node/dashboard">Node</Link>,
             icon: (
                 <img src={currentKey === 'Node' ? nodeActiveIcon : nodeIcon} />
             ),

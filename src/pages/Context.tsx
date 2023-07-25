@@ -29,7 +29,7 @@ import {
     SystemStatus,
 } from 'db3.js'
 
-import { chainToNodes } from '../data-context/Config'
+import { chainList, chainToNodes, defaultChainId } from '../data-context/Config'
 import type { Chain } from '@wagmi/chains'
 import { useAccount } from 'wagmi'
 import { useNetwork } from 'wagmi'
@@ -111,6 +111,32 @@ function PageContextProvider({ children }) {
             } else {
                 // throw error
                 console.log('no node to support chains', chain)
+            }
+        } else {
+            const node = chainToNodes.find((item) => {
+                return item.chainId == defaultChainId
+            })
+            if (node) {
+                try {
+                    const client = createReadonlyClient(
+                        node.dataRollupUrl,
+                        node.dataIndexUrl
+                    )
+                    const rollupStatus = await getStorageNodeStatus(client)
+                    const indexStatus = await getIndexNodeStatus(client)
+                    setPageContext({
+                        readClient: client,
+                        client: undefined,
+                        selectedChain: chainList.find(
+                            (item) => item.id === defaultChainId
+                        ),
+                        rollupStatus,
+                        indexStatus,
+                        networkId: 0,
+                    } as IPageContext)
+                } catch (e) {
+                    console.log(e)
+                }
             }
         }
     }, [chain])

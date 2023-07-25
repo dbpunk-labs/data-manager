@@ -47,6 +47,24 @@ const Collections: React.FC<{}> = memo((props) => {
     const { address, isConnecting, isDisconnected } = useAccount()
     const { chain } = useNetwork()
     const routeParams = useMatch('/database/:addr')?.params
+    const [visible, setVisible] = React.useState(false)
+    const [createCollectionLoading, setCreateCollectionLoading] =
+        React.useState(false)
+    const unwatch = useContractEvent(
+        {
+            address: chainToNodes.find((item) => item.chainId === chain?.id)
+                ?.contractAddr,
+            abi: db3MetaStoreContractConfig.abi,
+            eventName: 'CreateCollection',
+            listener(log) {
+                if (log[0].args.sender === address) {
+                    setCreateCollectionLoading(false)
+                    setVisible(false)
+                }
+            },
+        },
+        [address, chain]
+    )
     const createCollectionHandle = useContractWrite(
         {
             address: chainToNodes.find((item) => item.chainId === chain.id)
@@ -121,16 +139,12 @@ const Collections: React.FC<{}> = memo((props) => {
         queryDatabaseStatus()
     }, [client, routeParams])
 
-    const [visible, setVisible] = React.useState(false)
     function tableOnChange(
         pagination: TablePaginationConfig,
         filters: Record<string, FilterValue | null>,
         sorter: SorterResult<any> | SorterResult<any>[],
         extra: TableCurrentDataSource<any>
-    ) {
-        // 分页
-        // 排序
-    }
+    ) {}
     return (
         <>
             <div className="collections">
@@ -200,8 +214,11 @@ const Collections: React.FC<{}> = memo((props) => {
                 title="Create Collection"
                 open={visible}
                 onCancel={() => setVisible(false)}
-                confirmLoading={createCollectionHandle?.isLoading}
+                confirmLoading={
+                    !createCollectionHandle?.isError && createCollectionLoading
+                }
                 onOk={() => {
+                    setCreateCollectionLoading(true)
                     createCollectionHandle.write({
                         args: [
                             networkId,

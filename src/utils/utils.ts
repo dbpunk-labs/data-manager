@@ -15,6 +15,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+export function rollupIntervalReadableNum(units: string): string {
+    if (units) {
+        return (Number(BigInt(units) / BigInt(1000)) / 60.0).toFixed(0)
+    }
+    return '0'
+}
+
+export function rollupMaxIntervalReadableNum(units: string): string {
+    if (units) {
+        return (Number(BigInt(units) / BigInt(60 * 60 * 1000)) / 24.0).toFixed(
+            0
+        )
+    }
+    return '0'
+}
+
+export function minRollupSizeReadableNum(units: string): string {
+    if (units) {
+        return (Number(BigInt(units) / BigInt(1024)) / 1024.0).toFixed(0)
+    }
+    return '0'
+}
 
 export function timeDifference(current: number, previous: number) {
     const sPerMinute = 60
@@ -112,4 +134,16 @@ export function getGBCost(totalBytes: string, totalCostInUsd: number) {
     } else {
         return (totalCostInUsd / ((totalBytesNum * 1.0) / gb)).toFixed(4)
     }
+}
+export function getSingleRollupCost(
+    arPrice: number,
+    evmTokenPrice: number,
+    arUnits: string,
+    evmUnits: string
+) {
+    return (
+        (Number(BigInt(arUnits) / BigInt(1000_000)) / 1000_000.0) * arPrice +
+        (Number(BigInt(evmUnits) / BigInt(1000_000_000)) / 1000_000_000.0) *
+            evmTokenPrice
+    ).toFixed(6)
 }

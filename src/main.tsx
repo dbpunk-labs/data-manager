@@ -81,7 +81,7 @@ const router = createBrowserRouter([
                 element: <CreateContractIndexs />,
             },
             {
-                path: '/node',
+                path: '/node/:tab',
                 element: <Node />,
             },
         ],
