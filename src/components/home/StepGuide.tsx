@@ -11,6 +11,7 @@ import arbitrumSrc from '../../assets/arbitrum.png'
 import polygonSrc from '../../assets/polygon.png'
 import arweaveSrc from '../../assets/arweave.png'
 import btnLink from '../../assets/btn-link.svg'
+import doneSrc from '../../assets/done.svg'
 import { chainToNodes } from '../../data-context/Config'
 import {
     useContractEvent,
@@ -201,27 +202,29 @@ const Register: React.FC<{}> = memo((props) => {
                         />
                     </code>
                 </pre>
+                <Button
+                    disabled={
+                        !registerDataNetworkHandle || rollupStatus?.hasInited
+                    }
+                    type="primary"
+                    style={{ margin: '16px 0' }}
+                    loading={networkLoading}
+                    onClick={() => {
+                        setNetworkLoading(true)
+                        registerDataNetworkHandle.write({
+                            args: [
+                                rollupStatus?.nodeUrl,
+                                rollupStatus?.evmAccount,
+                                [indexStatus?.nodeUrl],
+                                [indexStatus?.evmAccount],
+                                stringToHex('data network desc', { size: 32 }),
+                            ],
+                        })
+                    }}
+                >
+                    Register
+                </Button>
             </div>
-            <Button
-                disabled={!registerDataNetworkHandle || rollupStatus?.hasInited}
-                type="primary"
-                style={{ margin: '16px 0' }}
-                loading={networkLoading}
-                onClick={() => {
-                    setNetworkLoading(true)
-                    registerDataNetworkHandle.write({
-                        args: [
-                            rollupStatus?.nodeUrl,
-                            rollupStatus?.evmAccount,
-                            [indexStatus?.nodeUrl],
-                            [indexStatus?.evmAccount],
-                            stringToHex('data network desc', { size: 32 }),
-                        ],
-                    })
-                }}
-            >
-                Register
-            </Button>
             {!rollupStatus?.hasInited && (
                 <>
                     <div className="step-item-title">Transaction</div>
@@ -345,13 +348,13 @@ const FundYourNode: React.FC<{}> = memo((props) => {
                                         src={
                                             chainToNodes.find(
                                                 (item) =>
-                                                    item.chainId == chain.id
+                                                    item.chainId == chain?.id
                                             )?.logo
                                         }
                                     />
                                     {
                                         chainToNodes.find(
-                                            (item) => item.chainId == chain.id
+                                            (item) => item.chainId == chain?.id
                                         )?.name
                                     }
                                 </Space>

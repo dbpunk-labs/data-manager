@@ -95,8 +95,8 @@ function PageContextProvider({ children }) {
                     rollupStatus,
                     indexStatus,
                     networkId: rollupStatus.hasInited
-                            ? rollupStatus.config.networkId
-                            : '0',
+                        ? rollupStatus.config.networkId
+                        : '0',
                 } as IPageContext)
             } catch (e) {
                 console.log(e)

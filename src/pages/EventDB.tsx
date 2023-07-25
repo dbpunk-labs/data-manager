@@ -13,6 +13,11 @@ const EventDB: React.FC<{}> = memo((props) => {
             label: 'Events',
             children: <Events />,
         },
+        {
+            key: 'Index',
+            label: 'Index Progress',
+            children: <Events />,
+        },
     ]
     const navigate = useNavigate()
     return (

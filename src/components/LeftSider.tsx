@@ -53,17 +53,15 @@ const LeftSider: React.FC<{}> = memo((props) => {
             ),
         },
     ]
-    useEffect(()=>{
-        if (location.pathname.startsWith("/home")) {
-            setCurrentKey("Home")
-        }else if (location.pathname.startsWith("/database")) {
-            setCurrentKey("Database")
-        }
-        else if (location.pathname.startsWith("/eventdb")) {
-            setCurrentKey("EventDB")
-        }
-        else if (location.pathname.startsWith("/node")) {
-            setCurrentKey("Node")
+    useEffect(() => {
+        if (location.pathname.startsWith('/home')) {
+            setCurrentKey('Home')
+        } else if (location.pathname.startsWith('/database')) {
+            setCurrentKey('Database')
+        } else if (location.pathname.startsWith('/eventdb')) {
+            setCurrentKey('EventDB')
+        } else if (location.pathname.startsWith('/node')) {
+            setCurrentKey('Node')
         }
     }, [location])
     return (
