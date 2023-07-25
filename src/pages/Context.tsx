@@ -74,6 +74,7 @@ function PageContextProvider({ children }) {
         {} as IPageContext
     )
     const { chain } = useNetwork()
+    const { isDisconnected } = useAccount()
     const [initState, initHandle] = useAsyncFn(async () => {
         const node = chainToNodes.find((item) => {
             return item.chainId == defaultChainId
@@ -117,6 +118,10 @@ function PageContextProvider({ children }) {
             }
             if (node) {
                 try {
+                    const readClient = createReadonlyClient(
+                        node.dataRollupUrl,
+                        node.dataIndexUrl
+                    )
                     const account = await createFromExternal(chain)
                     const client = createClient(
                         node.dataRollupUrl,
@@ -127,7 +132,7 @@ function PageContextProvider({ children }) {
                     const rollupStatus = await getStorageNodeStatus(client)
                     const indexStatus = await getIndexNodeStatus(client)
                     setPageContext({
-                        readClient: undefined,
+                        readClient,
                         client,
                         selectedChain: chain,
                         rollupStatus,
@@ -154,7 +159,9 @@ function PageContextProvider({ children }) {
     })
     if (!inited) {
         setInited(true)
-        initHandle()
+        if (isDisconnected) {
+            initHandle()
+        }
     }
     return (
         <PageContext.Provider value={pageContext}>

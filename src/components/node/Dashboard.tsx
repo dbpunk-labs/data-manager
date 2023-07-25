@@ -59,7 +59,18 @@ const ProgressIcon = () => (
 
 const NodeDashboard: React.FC<{}> = memo((props) => {
     const { client, readClient, selectedChain } = usePageContext()
-    const [dashboard, setDashboard] = React.useState<Dashboard>({})
+    const [dashboard, setDashboard] = React.useState<Dashboard>({
+        mutationCount: '0',
+        rollupCount: '0',
+        mutationBytesNum: 0,
+        mutationBytesLabel: 'B',
+        rollupBytesNum: 0,
+        rollupBytesLabel: 'B',
+        mutationAvgCost: '0',
+        rollupAvgCost: '0',
+        compressRatio: '0',
+        totalCostInUsd: '0',
+    })
     const [mutations, setMutations] = React.useState<MutationHeader[]>([])
     const [rollupRecords, setRollupRecords] = React.useState<RollupRecord[]>()
     const [buildDashboardState, buildDashboardHandle] = useAsyncFn(
@@ -185,13 +196,10 @@ const NodeDashboard: React.FC<{}> = memo((props) => {
                 } catch (e) {
                     console.log(e)
                 }
-            } else {
-                console.log('no client')
             }
         },
         [selectedChain]
     )
-
     useEffect(() => {
         if (client) {
             buildDashboardHandle(client)
