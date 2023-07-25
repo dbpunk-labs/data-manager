@@ -50,7 +50,8 @@ const Welcome: React.FC<{}> = memo((props) => {
             <div className="build-title">Build</div>
             <div className="build-desc-container">
                 <div className="build-desc-item">
-                    <div className="build-icon build-db3js"></div>
+                    <div className="build-icon build-db3js">
+                    </div>
                     <div className="build-desc">
                         <div className="build-db3js-title">DB3.js Library</div>
                         <div className="build-db3js-content">

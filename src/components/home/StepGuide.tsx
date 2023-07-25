@@ -58,7 +58,6 @@ const Signin: React.FC<{}> = memo((props) => {
     const confirm = () => {
         modal.confirm({
             wrapClassName: 'db3-modal-confirm',
-            // className: 'db3-modal-confirm',
             title: 'Connect Wallet First',
             icon: <ExclamationCircleOutlined />,
             content: (
@@ -614,14 +613,14 @@ const SetupDataRollupRules: React.FC<{}> = memo((props) => {
                         At least roll-up once before the period of time
                     </div>
                 </div>
+                <Button
+                    type="primary"
+                    loading={setupState.loading}
+                    onClick={() => setupHandle()}
+                >
+                    Setup
+                </Button>
             </div>
-            <Button
-                type="primary"
-                loading={setupState.loading}
-                onClick={() => setupHandle()}
-            >
-                Setup
-            </Button>
         </div>
     )
 })

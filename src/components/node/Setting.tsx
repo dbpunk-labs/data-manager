@@ -257,6 +257,7 @@ const Setting: React.FC<{}> = memo((props) => {
                         type="primary"
                         loading={setupState.loading}
                         onClick={() => setupHandle()}
+                        disabled={!client}
                     >
                         Save
                     </Button>

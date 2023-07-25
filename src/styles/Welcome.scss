@@ -10,6 +10,7 @@
             #222324;
         display: flex;
         margin-bottom: 25px;
+        width: 1098px;
     }
     .wall-right {
         margin-left: 40px;
@@ -52,6 +53,7 @@
         display: flex;
         justify-content: space-between;
         margin-bottom: 25px;
+        width: 1098px;
     }
     .example-item {
         display: flex;
@@ -89,7 +91,9 @@
     .build-desc-container {
         display: flex;
         justify-content: space-between;
+        width: 1098px;
     }
+
     .build-desc-item {
         border-radius: 10px;
         background-color: #222324;
@@ -98,7 +102,9 @@
         .anticon-right {
             color: #ffffff73;
         }
+        width: 537px;
     }
+
     .build-icon {
         width: 64px;
         height: 64px;
