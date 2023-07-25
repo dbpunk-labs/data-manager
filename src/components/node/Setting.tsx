@@ -30,6 +30,7 @@ const Setting: React.FC<{}> = memo((props) => {
         evmNodeUrl: '',
         arNodeUrl: '',
     })
+
     useEffect(() => {
         if (rollupStatus?.hasInited) {
             setSystemConfig(rollupStatus.config)
@@ -182,8 +183,8 @@ const Setting: React.FC<{}> = memo((props) => {
                     <div className="step-box-item-content">
                         <Space>
                             <Input
-                                defaultValue={minRollupSizeReadableNum(
-                                    rollupStatus?.config?.minRollupSize
+                                value={minRollupSizeReadableNum(
+                                    systemConfig.minRollupSize
                                 )}
                                 onChange={(e) =>
                                     setSystemConfig({
@@ -207,8 +208,8 @@ const Setting: React.FC<{}> = memo((props) => {
                     <div className="step-box-item-content">
                         <Space>
                             <Input
-                                defaultValue={rollupIntervalReadableNum(
-                                    rollupStatus?.config?.rollupInterval
+                                value={rollupIntervalReadableNum(
+                                    systemConfig.rollupInterval
                                 )}
                                 onChange={(e) =>
                                     setSystemConfig({
@@ -234,8 +235,8 @@ const Setting: React.FC<{}> = memo((props) => {
                     <div className="step-box-item-content">
                         <Space>
                             <Input
-                                defaultValue={rollupMaxIntervalReadableNum(
-                                    rollupStatus?.config?.rollupMaxInterval
+                                value={rollupMaxIntervalReadableNum(
+                                    systemConfig.rollupMaxInterval
                                 )}
                                 onChange={(e) =>
                                     setSystemConfig({

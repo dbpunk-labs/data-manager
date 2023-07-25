@@ -115,7 +115,7 @@ const Account: React.FC<{}> = memo((props) => {
                     </div>
                 </div>
             </div>
-          <Alert
+            <Alert
                 showIcon
                 message="Insufficient balance, please recharge promptly."
                 type="warning"

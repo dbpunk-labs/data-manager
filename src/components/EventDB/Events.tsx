@@ -15,14 +15,6 @@ const TreeTitle: React.FC<TreeTitleProps> = (props) => {
     const [visible, setVisible] = React.useState(false)
     const items: MenuProps['items'] = [
         {
-            key: '1',
-            label: <a>Create Collection</a>,
-        },
-        {
-            key: '2',
-            label: <a>Edit</a>,
-        },
-        {
             key: '3',
             label: <a onClick={() => setVisible(true)}>delete</a>,
         },
@@ -108,6 +100,7 @@ const Events: React.FC<{}> = memo((props) => {
             icon: <DatabaseOutlined />,
         },
     ]
+
     return (
         <div className="events">
             <div className="events-left">
