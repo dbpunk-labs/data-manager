@@ -92,7 +92,9 @@ const Database: React.FC<{}> = memo((props) => {
                 open={visible}
                 onCancel={() => setVisible(false)}
                 okText="Create"
-                confirmLoading={createDatabaseLoading}
+                confirmLoading={
+                    createDatabaseLoading && !createDatabaseHandle.isError
+                }
                 onOk={() => {
                     setCreateDatabaseLoading(true)
                     createDatabaseHandle.write({

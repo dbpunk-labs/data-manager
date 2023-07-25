@@ -25,10 +25,19 @@ import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { usePageContext } from '../../pages/Context'
 import { useAsyncFn } from 'react-use'
 import { stringToHex } from 'viem'
-import { SystemStatus, db3MetaStoreContractConfig, setup } from 'db3.js'
+import {
+    SystemStatus,
+    SystemConfig,
+    db3MetaStoreContractConfig,
+    setup,
+} from 'db3.js'
 import ReactJson from 'react-json-view'
-import { arToReadableNum } from '../../utils/utils'
-
+import {
+    rollupIntervalReadableNum,
+    rollupMaxIntervalReadableNum,
+    minRollupSizeReadableNum,
+    arToReadableNum,
+} from '../../utils/utils'
 const { Paragraph } = Typography
 
 const dataNetwork = atom({
@@ -40,18 +49,6 @@ const newNetworkId = atom({
     default: '0',
 })
 
-function rollupIntervalReadableNum(units: string): string {
-    return (Number(BigInt(units) / BigInt(1000)) / 60.0).toFixed(0)
-}
-
-function rollupMaxIntervalReadableNum(units: string): string {
-    return (Number(BigInt(units) / BigInt(60 * 60 * 1000)) / 24.0).toFixed(0)
-}
-
-function minRollupSizeReadableNum(units: string): string {
-    return (Number(BigInt(units) / BigInt(1024)) / 1024.0).toFixed(0)
-}
-
 const Signin: React.FC<{}> = memo((props) => {
     const [modal, contextHolder] = Modal.useModal()
     const { address, isConnecting, isDisconnected } = useAccount()
@@ -61,7 +58,6 @@ const Signin: React.FC<{}> = memo((props) => {
     const confirm = () => {
         modal.confirm({
             wrapClassName: 'db3-modal-confirm',
-            // className: 'db3-modal-confirm',
             title: 'Connect Wallet First',
             icon: <ExclamationCircleOutlined />,
             content: (
@@ -617,14 +613,14 @@ const SetupDataRollupRules: React.FC<{}> = memo((props) => {
                         At least roll-up once before the period of time
                     </div>
                 </div>
+                <Button
+                    type="primary"
+                    loading={setupState.loading}
+                    onClick={() => setupHandle()}
+                >
+                    Setup
+                </Button>
             </div>
-            <Button
-                type="primary"
-                loading={setupState.loading}
-                onClick={() => setupHandle()}
-            >
-                Setup
-            </Button>
         </div>
     )
 })

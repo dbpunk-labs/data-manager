@@ -68,6 +68,7 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
     ])
 
     const [indexRecords, setIndexRecords] = React.useState<IndexRecord[]>([])
+    const [indexModalvisible, setIndexModalvisible] = React.useState(false)
     const [addIndexState, addIndexHandle] = useAsyncFn(async () => {
         if (indexRecords.length > 0 && docValue.col) {
             try {
@@ -83,11 +84,13 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
                     } as Index
                 })
                 await addIndex(col, indexes)
+                setIndexModalvisible(false)
             } catch (e) {
                 console.log(e.message)
             }
         }
     }, [indexRecords, docValue, client])
+    const [docModalvisible, setDocModalvisible] = React.useState(false)
     const [insertDocState, insertDocHandle] = useAsyncFn(async () => {
         if (docValue.doc && docValue.col) {
             try {
@@ -99,6 +102,7 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
                 if (col) {
                     const object = JSON.parse(docValue.doc)
                     await addDoc(col, object)
+                    setDocModalvisible(false)
                 }
             } catch (e) {
                 console.log(e.message)
@@ -158,8 +162,6 @@ const DatabaseAccount: React.FC<{}> = memo((props) => {
     useEffect(() => {
         queryCollection('/* | limit 10')
     }, [client, routeParams])
-    const [docModalvisible, setDocModalvisible] = React.useState(false)
-    const [indexModalvisible, setIndexModalvisible] = React.useState(false)
     const [activeKey, setActiveKey] = React.useState('Documents')
 
     const addNewIndexRecords = () => {

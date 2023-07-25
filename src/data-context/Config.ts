@@ -30,6 +30,8 @@ export const INDEX_NODE_URL: string = 'http://127.0.0.1:26639'
 //export const INDEX_NODE_URL: string = 'https://index.cloud.db3.network'
 export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'
 export const EVM_SCAN_URL: string = 'https://mumbai.polygonscan.com/tx/'
+//
+export const defaultChainId = 31337
 
 export const chainToNodes = [
     {
@@ -133,7 +135,7 @@ export const chainList = [
         id: 534353,
         name: 'scroll',
         network: 'scroll testnet',
-        nativeCurrency: { name: 'test', symbol: 'test', decimals: 18 },
+        nativeCurrency: { name: 'eth', symbol: 'eth', decimals: 18 },
         rpcUrls: {
             default: {
                 http: ['https://alpha-rpc.scroll.io/l2'],

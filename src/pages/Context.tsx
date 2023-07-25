@@ -29,7 +29,7 @@ import {
     SystemStatus,
 } from 'db3.js'
 
-import { chainToNodes } from '../data-context/Config'
+import { chainList, chainToNodes, defaultChainId } from '../data-context/Config'
 import type { Chain } from '@wagmi/chains'
 import { useAccount } from 'wagmi'
 import { useNetwork } from 'wagmi'
@@ -69,10 +69,41 @@ function usePageContext() {
 }
 
 function PageContextProvider({ children }) {
+    const [inited, setInited] = React.useState(false)
     const [pageContext, setPageContext] = React.useState<IPageContext>(
         {} as IPageContext
     )
     const { chain } = useNetwork()
+    const [initState, initHandle] = useAsyncFn(async () => {
+        const node = chainToNodes.find((item) => {
+            return item.chainId == defaultChainId
+        })
+        if (node) {
+            try {
+                const client = createReadonlyClient(
+                    node.dataRollupUrl,
+                    node.dataIndexUrl
+                )
+                const rollupStatus = await getStorageNodeStatus(client)
+                const indexStatus = await getIndexNodeStatus(client)
+                setPageContext({
+                    readClient: client,
+                    client: undefined,
+                    selectedChain: chainList.find(
+                        (item) => item.id === defaultChainId
+                    ),
+                    rollupStatus,
+                    indexStatus,
+                    networkId: rollupStatus.hasInited
+                            ? rollupStatus.config.networkId
+                            : '0',
+                } as IPageContext)
+            } catch (e) {
+                console.log(e)
+            }
+        }
+    })
+
     const [doLoginState, doLogin] = useAsyncFn(async () => {
         if (chain) {
             const node = chainToNodes.find((item) => {
@@ -119,11 +150,12 @@ function PageContextProvider({ children }) {
         onConnect({ address, connector, isReconnected }) {
             doLogin()
         },
-        onDisconnect() {
-            // return the login page
-        },
+        onDisconnect() {},
     })
-
+    if (!inited) {
+        setInited(true)
+        initHandle()
+    }
     return (
         <PageContext.Provider value={pageContext}>
             {children}

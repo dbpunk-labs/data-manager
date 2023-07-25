@@ -1,4 +1,6 @@
-import React, { memo } from 'react'
+import React, { memo, useEffect } from 'react'
+import { usePageContext } from '../../pages/Context'
+import '../../styles/Settings.scss'
 import {
     Descriptions,
     Typography,
@@ -8,20 +10,49 @@ import {
     Space,
     Button,
 } from 'antd'
+import {
+    rollupIntervalReadableNum,
+    rollupMaxIntervalReadableNum,
+    minRollupSizeReadableNum,
+    arToReadableNum,
+} from '../../utils/utils'
+import { useAsyncFn } from 'react-use'
 
+import { SystemConfig, setup } from 'db3.js'
 const { Paragraph } = Typography
 
 const Setting: React.FC<{}> = memo((props) => {
-    const tableData = [
-        {
-            addr: '0x61e613F27b8B48144fbf93DFdBcC5B2BEa6eb7DD',
-            endpoint: '127.0.0.1:26659',
-        },
-        {
-            addr: '0x61e613F27b8B48144fbf93DFdBcC5B2BEa6eb7DD',
-            endpoint: '127.0.0.1:26659',
-        },
-    ]
+    const { client, rollupStatus, indexStatus, networkId } = usePageContext()
+    const [systemConfig, setSystemConfig] = React.useState<SystemConfig>({
+        rollupInterval: (10 * 60 * 1000).toString(),
+        rollupMaxInterval: (2 * 24 * 60 * 60 * 1000).toString(),
+        minRollupSize: (10 * 1024 * 1024).toString(),
+        evmNodeUrl: '',
+        arNodeUrl: '',
+    })
+    useEffect(() => {
+        if (rollupStatus?.hasInited) {
+            setSystemConfig(rollupStatus.config)
+        }
+    }, [rollupStatus])
+
+    const [setupState, setupHandle] = useAsyncFn(async () => {
+        if (client && rollupStatus) {
+            try {
+                const config: SystemConfig = {
+                    ...systemConfig,
+                    minGcOffset: (10 * 24 * 60 * 60).toString(),
+                }
+                const response = await setup(client, config)
+                return response
+            } catch (e) {
+                console.log(e.message)
+                return [1, 1]
+            }
+        }
+        return [1, 1]
+    }, [client, systemConfig])
+
     return (
         <div className="setting">
             <div className="db3-box">
@@ -30,82 +61,207 @@ const Setting: React.FC<{}> = memo((props) => {
                     column={1}
                     layout="vertical"
                 >
-                    <Descriptions.Item label="Node Admin">
-                        <Paragraph copyable>
-                            8AiVx-VNNV8NbEZ69qHfRDD27WbUZCndjEJp6COc{' '}
-                        </Paragraph>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Network ID">
-                        <Paragraph copyable>
-                            8AiVx-VNNV8NbEZ69qHfRDD27WbUZCndjEJp6COc{' '}
-                        </Paragraph>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="write Nodes" span={2}>
+                    <Descriptions.Item label="System">
                         <Descriptions
                             className="db3-descriptions"
                             layout="vertical"
                         >
-                            <Descriptions.Item label="Addr">
+                            <Descriptions.Item label="Admin Addr">
                                 <Paragraph copyable>
-                                    8AiVx-VNNV8NbEZ69qHfRDD27WbUZCndjEJp6COc{' '}
+                                    {rollupStatus?.adminAddr}
+                                </Paragraph>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Network Id">
+                                <Paragraph copyable>{networkId}</Paragraph>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Version">
+                                <Paragraph copyable>
+                                    {rollupStatus?.version?.versionLabel}@
+                                    {rollupStatus?.version?.buildTime}
+                                </Paragraph>
+                            </Descriptions.Item>
+                        </Descriptions>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Rollup Node" span={2}>
+                        <Descriptions
+                            className="db3-descriptions"
+                            layout="vertical"
+                        >
+                            <Descriptions.Item label="Evm Addr">
+                                <Paragraph copyable>
+                                    {rollupStatus?.evmAccount}
+                                </Paragraph>
+                            </Descriptions.Item>
+                            <Descriptions.Item label="Arweave Addr">
+                                <Paragraph copyable>
+                                    {rollupStatus?.arAccount}
                                 </Paragraph>
                             </Descriptions.Item>
                             <Descriptions.Item label="Endpoint">
-                                <Paragraph copyable>127.0.0.1 </Paragraph>
+                                <Paragraph copyable>
+                                    {rollupStatus?.nodeUrl}{' '}
+                                </Paragraph>
+                            </Descriptions.Item>
+                        </Descriptions>
+                    </Descriptions.Item>
+                    <Descriptions.Item label="Index Node" span={2}>
+                        <Descriptions
+                            className="db3-descriptions"
+                            layout="vertical"
+                        >
+                            <Descriptions.Item label="Endpoint">
+                                <Paragraph copyable>
+                                    {indexStatus?.nodeUrl}{' '}
+                                </Paragraph>
                             </Descriptions.Item>
                         </Descriptions>
                     </Descriptions.Item>
                 </Descriptions>
             </div>
             <div className="db3-box">
-                <div className="db3-box-title">Indexer Nodes</div>
-                <Table
-                    dataSource={tableData}
-                    pagination={false}
-                    className="index-table"
-                >
-                    <Table.Column
-                        width={180}
-                        title="Addr"
-                        dataIndex="addr"
-                        render={(text, record, index) => <Input value={text} />}
-                    />
-                    <Table.Column
-                        width={180}
-                        title="Endpoint"
-                        dataIndex="endpoint"
-                        render={(text, record, index) => <Input value={text} />}
-                    />
-                </Table>
-            </div>
-            <div className="db3-box">
-                <div className="db3-box-title">Roll-Up Rule</div>
-                <Form layout="vertical">
-                    <Form.Item
-                        label="Size"
-                        help="Min. size recommended: 10Mb, AR requires 1Mb at min,DB3 will compress 10Mb to 1Mb."
-                    >
-                        <Input suffix="Mb" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Time"
-                        help="Min. 1 min, data size should be > 10Mb first."
-                    >
-                        <Input suffix="Min" />
-                    </Form.Item>
+                <div className="db3-box-title">Rollup Settings</div>
+                <div className="step-box-item">
+                    <div className="step-box-item-title">Data Network</div>
+                    <div className="step-box-item-content">
+                        <Space size="large">
+                            <Input value={networkId} disabled />
+                            <div className="input-unit"></div>
+                        </Space>
+                    </div>
+                    <div className="step-box-item-tips">
+                        The data network that you have created
+                    </div>
+                </div>
+                <div className="step-box-item">
+                    <div className="step-box-item-title">Evm Node Rpc</div>
+                    <div className="step-box-item-content">
+                        <Space>
+                            <Input
+                                value={systemConfig.evmNodeUrl}
+                                onChange={(e) =>
+                                    setSystemConfig({
+                                        ...systemConfig,
+                                        evmNodeUrl: e.target.value,
+                                    })
+                                }
+                            />
+                            <div className="input-unit"></div>
+                        </Space>
+                    </div>
+                    <div className="step-box-item-tips">
+                        the data rollup node needs a node to interact the
+                        blockchain
+                    </div>
+                </div>
+                <div className="step-box-item">
+                    <div className="step-box-item-title">Arweave Node Url</div>
+                    <div className="step-box-item-content">
+                        <Space>
+                            <Input
+                                value={systemConfig.arNodeUrl}
+                                onChange={(e) =>
+                                    setSystemConfig({
+                                        ...systemConfig,
+                                        arNodeUrl: e.target.value,
+                                    })
+                                }
+                            />
+                            <div className="input-unit"></div>
+                        </Space>
+                    </div>
+                    <div className="step-box-item-tips">
+                        the data rollup node needs a arweave node to send data
+                        tansaction
+                    </div>
+                </div>
 
-                    <Form.Item
-                        label="Interval Time for Rollup"
-                        help="Set the time frequency for the rollup."
+                <div className="step-box-item">
+                    <div className="step-box-item-title">
+                        Min Rollup Data Size
+                    </div>
+                    <div className="step-box-item-content">
+                        <Space>
+                            <Input
+                                defaultValue={minRollupSizeReadableNum(
+                                    rollupStatus?.config?.minRollupSize
+                                )}
+                                onChange={(e) =>
+                                    setSystemConfig({
+                                        ...systemConfig,
+                                        minRollupSize: (
+                                            BigInt(e.target.value) *
+                                            BigInt(1024 * 1024)
+                                        ).toString(),
+                                    })
+                                }
+                            />
+                            <div className="input-unit">MB</div>
+                        </Space>
+                    </div>
+                    <div className="step-box-item-tips">
+                        the min data rollup size and 10MB is recommended
+                    </div>
+                </div>
+                <div className="step-box-item">
+                    <div className="step-box-item-title">Rollup Interval</div>
+                    <div className="step-box-item-content">
+                        <Space>
+                            <Input
+                                defaultValue={rollupIntervalReadableNum(
+                                    rollupStatus?.config?.rollupInterval
+                                )}
+                                onChange={(e) =>
+                                    setSystemConfig({
+                                        ...systemConfig,
+                                        rollupInterval: (
+                                            BigInt(e.target.value) *
+                                            BigInt(60000)
+                                        ).toString(),
+                                    })
+                                }
+                            />
+                            <div className="input-unit">Min</div>
+                        </Space>
+                    </div>
+                    <div className="step-box-item-tips">
+                        Min. 1 min, data size should be {'>'} 10MB first.{' '}
+                    </div>
+                </div>
+                <div className="step-box-item">
+                    <div className="step-box-item-title">
+                        Rollup Max Interval
+                    </div>
+                    <div className="step-box-item-content">
+                        <Space>
+                            <Input
+                                defaultValue={rollupMaxIntervalReadableNum(
+                                    rollupStatus?.config?.rollupMaxInterval
+                                )}
+                                onChange={(e) =>
+                                    setSystemConfig({
+                                        ...systemConfig,
+                                        rollupMaxInterval: (
+                                            BigInt(e.target.value) *
+                                            BigInt(24 * 60 * 60 * 1000)
+                                        ).toString(),
+                                    })
+                                }
+                            />
+                            <div className="input-unit">Day</div>
+                        </Space>
+                    </div>
+                    <div className="step-box-item-tips">
+                        At least roll-up once before the period of time
+                    </div>
+                    <Button
+                        type="primary"
+                        loading={setupState.loading}
+                        onClick={() => setupHandle()}
+                        disabled={!client}
                     >
-                        <Input suffix="Min" />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" size="large">
-                            Save
-                        </Button>
-                    </Form.Item>
-                </Form>
+                        Save
+                    </Button>
+                </div>
             </div>
         </div>
     )

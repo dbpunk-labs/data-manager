@@ -12,6 +12,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 
 const LeftSider: React.FC<{}> = memo((props) => {
     const [currentKey, setCurrentKey] = React.useState('Home')
+    const location = useLocation()
     const items = [
         {
             key: 'Home',
@@ -46,21 +47,29 @@ const LeftSider: React.FC<{}> = memo((props) => {
         },
         {
             key: 'Node',
-            label: <Link to="/node">Node</Link>,
+            label: <Link to="/node/dashboard">Node</Link>,
             icon: (
                 <img src={currentKey === 'Node' ? nodeActiveIcon : nodeIcon} />
             ),
         },
     ]
-    const navigate = useNavigate()
-    useEffect(() => {
-        navigate('/home')
-    }, [])
+    useEffect(()=>{
+        if (location.pathname.startsWith("/home")) {
+            setCurrentKey("Home")
+        }else if (location.pathname.startsWith("/database")) {
+            setCurrentKey("Database")
+        }
+        else if (location.pathname.startsWith("/eventdb")) {
+            setCurrentKey("EventDB")
+        }
+        else if (location.pathname.startsWith("/node")) {
+            setCurrentKey("Node")
+        }
+    }, [location])
     return (
         <div className="left-sider">
             <Menu
                 className="left-menu"
-                defaultSelectedKeys={['Home']}
                 onSelect={({ key }) => setCurrentKey(key)}
                 mode="inline"
                 items={items}
