@@ -62,6 +62,23 @@
     flex: 1;
     max-width: 262px;
     background-color: #222324;
+    .left-menu {
+        height:95%;
+    }
+    .left-footer {
+        flex:0;
+        display:block;
+        .social-icon {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 18px;
+        }
+        padding: 0 24px;
+        .version {
+            padding-top: 10px;
+            font-size:12px;
+            display:block;
+        }
+    }
     .ant-menu {
         background-color: #222324;
         border-right: none;
