@@ -1,7 +1,7 @@
 import React, { memo, useEffect } from 'react'
 import { showDatabase, showCollection } from 'db3.js'
 import { Alert, Dropdown, Input, MenuProps, Modal, Tree } from 'antd'
-import { useNavigate, Outlet, Link } from 'react-router-dom'
+import { useLocation, useNavigate, Outlet, Link } from 'react-router-dom'
 import {
     DownOutlined,
     DatabaseOutlined,
@@ -90,6 +90,8 @@ const TreeTitle: React.FC<TreeTitleProps> = (props) => {
 }
 
 const Events: React.FC<{}> = memo((props) => {
+    const location = useLocation()
+    const navigate = useNavigate()
     const { address, isConnecting, isDisconnected } = useAccount()
     const [treeData, setTreeData] = React.useState<DataNode[]>([])
     const { client } = usePageContext()
@@ -134,6 +136,12 @@ const Events: React.FC<{}> = memo((props) => {
                     })
                 )
                 setTreeData(treeData)
+                if (
+                    location.pathname === '/eventdb' &&
+                    eventDatabases.length > 0
+                ) {
+                    navigate('/eventdb/' + eventDatabases[0].addr)
+                }
             } catch (e) {
                 console.log(e)
             }
