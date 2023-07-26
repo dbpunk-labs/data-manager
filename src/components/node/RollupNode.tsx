@@ -110,7 +110,7 @@ const RollupNode: React.FC<{}> = memo((props) => {
                             mutationCount: record.mutationCount,
                             time: timeDifference(current, record.time),
                             arweaveTx: record.arweaveTx,
-                            cost,
+                            cost:"$" + cost.toString(),
                             evmTx: record.evmTx,
                             pending: record.arweaveTx.length == 0,
                         } as RollupRecord
@@ -201,7 +201,7 @@ const RollupNode: React.FC<{}> = memo((props) => {
                     sortIcon={() => <img src={sortSrc} />}
                 />
                 <Table.Column
-                    title="$Fees"
+                    title="Fees"
                     dataIndex="cost"
                     sorter={true}
                     sortIcon={() => <img src={sortSrc} />}

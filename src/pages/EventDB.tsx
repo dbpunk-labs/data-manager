@@ -14,8 +14,14 @@ const EventDB: React.FC<{}> = memo((props) => {
             children: <Events />,
         },
         {
-            key: 'Index',
-            label: 'Index Progress',
+            key: 'Playground',
+            label: 'Playground',
+            children: <EventsPlayground />,
+        },
+
+        {
+            key: 'Progress',
+            label: 'Progress',
             children: <Events />,
         },
     ]
