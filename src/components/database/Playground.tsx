@@ -244,6 +244,7 @@ const Playground: React.FC<{}> = memo((props) => {
                     <a
                         className="docs-link"
                         href="https://docs.db3.network/functions/addDoc.html"
+                        target="_blank"
                     >
                         <img src={doclink} />
                         Docs
@@ -298,6 +299,7 @@ const Playground: React.FC<{}> = memo((props) => {
                     <a
                         className="docs-link"
                         href="https://docs.db3.network/functions/queryDoc.html"
+                        target="_blank"
                     >
                         <img src={doclink} />
                         Docs
