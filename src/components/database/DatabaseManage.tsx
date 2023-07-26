@@ -17,7 +17,7 @@ import {
     TableOutlined,
 } from '@ant-design/icons'
 import { DataNode } from 'antd/es/tree'
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAsyncFn } from 'react-use'
 import { showDatabase, showCollection } from 'db3.js'
 import { useAccount } from 'wagmi'
@@ -57,6 +57,8 @@ export const TreeTitle: React.FC<TreeTitleProps> = (props) => {
 }
 
 const DatabaseManage: React.FC<{}> = memo((props) => {
+    const location = useLocation()
+    const navigate = useNavigate()
     const { address, isConnecting, isDisconnected } = useAccount()
     const [treeData, setTreeData] = React.useState<DataNode[]>([])
     const { client } = usePageContext()
@@ -67,6 +69,7 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
                 const docDatabases = databases.filter(
                     (item) => item.internal?.database?.oneofKind === 'docDb'
                 )
+
                 const treeData = await Promise.all(
                     docDatabases.map(async (item) => {
                         try {
@@ -101,12 +104,18 @@ const DatabaseManage: React.FC<{}> = memo((props) => {
                     })
                 )
                 setTreeData(treeData)
+                if (
+                    location.pathname === '/database' &&
+                    docDatabases.length > 0
+                ) {
+                    navigate('/database/' + docDatabases[0].addr)
+                    return
+                }
             } catch (e) {
                 console.log(e)
             }
         }
-    }, [address, client])
-
+    }, [address, client, location, navigate])
     useEffect(() => {
         getTreeData()
     }, [client])

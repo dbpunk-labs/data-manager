@@ -110,7 +110,7 @@ const RollupNode: React.FC<{}> = memo((props) => {
                             mutationCount: record.mutationCount,
                             time: timeDifference(current, record.time),
                             arweaveTx: record.arweaveTx,
-                            cost:"$" + cost.toString(),
+                            cost: '$' + cost.toString(),
                             evmTx: record.evmTx,
                             pending: record.arweaveTx.length == 0,
                         } as RollupRecord

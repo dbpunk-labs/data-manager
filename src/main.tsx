@@ -29,7 +29,6 @@ import Home from './pages/Home'
 import EventDB from './pages/EventDB'
 import Node from './pages/Node'
 import Database from './pages/Database'
-import Setup from './pages/Setup'
 
 import './reset.scss'
 import './index.css'
@@ -37,6 +36,7 @@ import '@rainbow-me/rainbowkit/styles.css'
 import Collections from './components/database/Collections'
 import DatabaseAccount from './components/database/DatabaseAccount'
 import EventList from './components/EventDB/EventList'
+import DocumentList from './components/EventDB/DocumentList'
 import CreateContractIndexs from './components/EventDB/CreateContractIndexs'
 
 const router = createBrowserRouter([
@@ -47,10 +47,6 @@ const router = createBrowserRouter([
             {
                 path: 'home',
                 element: <Home />,
-            },
-            {
-                path: 'setup',
-                element: <Setup />,
             },
             {
                 path: '/database',
@@ -71,8 +67,12 @@ const router = createBrowserRouter([
                 element: <EventDB />,
                 children: [
                     {
-                        path: '',
+                        path: '/eventdb/:addr',
                         element: <EventList />,
+                    },
+                    {
+                        path: '/eventdb/:addr/:name',
+                        element: <DocumentList />,
                     },
                 ],
             },

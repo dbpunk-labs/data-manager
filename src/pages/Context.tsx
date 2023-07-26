@@ -74,7 +74,7 @@ function PageContextProvider({ children }) {
         {} as IPageContext
     )
     const { chain } = useNetwork()
-    const { isDisconnected } = useAccount()
+    const { address } = useAccount()
     const [initState, initHandle] = useAsyncFn(async () => {
         const node = chainToNodes.find((item) => {
             return item.chainId == defaultChainId
@@ -88,8 +88,8 @@ function PageContextProvider({ children }) {
                 const rollupStatus = await getStorageNodeStatus(client)
                 const indexStatus = await getIndexNodeStatus(client)
                 setPageContext({
+                    ...pageContext,
                     readClient: client,
-                    client: undefined,
                     selectedChain: chainList.find(
                         (item) => item.id === defaultChainId
                     ),
@@ -103,7 +103,7 @@ function PageContextProvider({ children }) {
                 console.log(e)
             }
         }
-    })
+    }, [pageContext])
 
     const [doLoginState, doLogin] = useAsyncFn(async () => {
         if (chain) {
@@ -159,7 +159,7 @@ function PageContextProvider({ children }) {
     })
     if (!inited) {
         setInited(true)
-        if (isDisconnected) {
+        if (!address) {
             initHandle()
         }
     }

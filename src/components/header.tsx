@@ -3,7 +3,9 @@ import logo from '../assets/logo.svg'
 import help from '../assets/help.svg'
 import btnLink from '../assets/btn-link.svg'
 import { Button } from 'antd'
+import { useConnectModal } from '@rainbow-me/rainbowkit'
 export const Header = () => {
+    const { openConnectModal } = useConnectModal()
     return (
         <div className="header">
             <div className="logo">
@@ -12,12 +14,15 @@ export const Header = () => {
             </div>
             <div className="header-right">
                 <img style={{ width: 20 }} src={help} />
-                <Button
-                    style={{ marginLeft: 10 }}
-                    icon={<img style={{ width: 16 }} src={btnLink} />}
-                >
-                    ConnectWallet
-                </Button>
+                {openConnectModal && (
+                    <Button
+                        style={{ marginLeft: 10 }}
+                        icon={<img style={{ width: 16 }} src={btnLink} />}
+                        onClick={openConnectModal}
+                    >
+                        ConnectWallet
+                    </Button>
+                )}
             </div>
         </div>
     )
