@@ -32,7 +32,7 @@ zkSyncTestnet
 } from 'viem/chains'
 
 export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'
-export const defaultChainId = 1337
+export const defaultChainId = 280
 
 export const chainToNodes = [
     {
