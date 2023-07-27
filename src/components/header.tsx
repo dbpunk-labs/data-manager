@@ -86,36 +86,6 @@ export const Header = () => {
                                                         alignItems: 'center',
                                                     }}
                                                 >
-                                                    {chain.hasIcon && (
-                                                        <div
-                                                            style={{
-                                                                background:
-                                                                    chain.iconBackground,
-                                                                width: 12,
-                                                                height: 12,
-                                                                borderRadius: 999,
-                                                                overflow:
-                                                                    'hidden',
-                                                                marginRight: 4,
-                                                            }}
-                                                        >
-                                                            {chain.iconUrl && (
-                                                                <img
-                                                                    alt={
-                                                                        chain.name ??
-                                                                        'Chain icon'
-                                                                    }
-                                                                    src={
-                                                                        chain.iconUrl
-                                                                    }
-                                                                    style={{
-                                                                        with: 12,
-                                                                        height: 12,
-                                                                    }}
-                                                                />
-                                                            )}
-                                                        </div>
-                                                    )}
                                                     {chain.name}
                                                 </Button>
 
