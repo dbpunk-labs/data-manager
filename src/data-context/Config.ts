@@ -73,8 +73,8 @@ export const chainToNodes = [
     },
     {
         chainId: 280,
-        dataRollupUrl: 'http://zksync.rollup.testnet.db3.network',
-        dataIndexUrl: 'http://zksync.index.testnet.db3.network',
+        dataRollupUrl: 'https://zksync.rollup.testnet.db3.network',
+        dataIndexUrl: 'https://zksync.index.testnet.db3.network',
         name: 'ZkSync Testnet',
         logo: zkSyncSrc,
         contractAddr: '0xB4Ec19674A67dB002fFDeB83e14f9849DA3D1020',
