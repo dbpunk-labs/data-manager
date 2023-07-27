@@ -18,6 +18,7 @@ const LeftSider: React.FC<{}> = memo((props) => {
     const [currentKey, setCurrentKey] = React.useState('Home')
     const { rollupStatus } = usePageContext()
     const location = useLocation()
+    const navigate = useNavigate()
     const items = [
         {
             key: 'Home',
@@ -59,6 +60,11 @@ const LeftSider: React.FC<{}> = memo((props) => {
         },
     ]
     useEffect(() => {
+        if (location.pathname === "/") {
+            setCurrentKey('Home')
+            navigate("/home")
+            return
+        }
         if (location.pathname.startsWith('/home')) {
             setCurrentKey('Home')
         } else if (location.pathname.startsWith('/database')) {
