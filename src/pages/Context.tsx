@@ -163,6 +163,10 @@ function PageContextProvider({ children }) {
             initHandle()
         }
     }
+    useEffect(() => {
+        doLogin()
+    }, [chain])
+
     return (
         <PageContext.Provider value={pageContext}>
             {children}

@@ -12,6 +12,7 @@ import nodeActiveIcon from '../assets/node-active.svg'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { usePageContext } from '../pages/Context'
 import { GithubFilled, TwitterOutlined } from '@ant-design/icons'
+import { chainToNodes, chainList } from '../data-context/Config'
 
 const LeftSider: React.FC<{}> = memo((props) => {
     const [currentKey, setCurrentKey] = React.useState('Home')
@@ -94,6 +95,35 @@ const LeftSider: React.FC<{}> = memo((props) => {
                             <TwitterOutlined className="social-icon" />
                         </Link>
                     </Col>
+                    {rollupStatus && rollupStatus.hasInited && (
+                        <Col span={6}>
+                            <Link
+                                target="_blank"
+                                to={`${
+                                    chainList.find(
+                                        (item) =>
+                                            item.id ===
+                                            rollupStatus.config.chainId
+                                    )?.blockExplorers?.default?.url
+                                }/address/${rollupStatus?.config.contractAddr}`}
+                            >
+                                <img
+                                    style={{
+                                        width: 16,
+                                    }}
+                                    src={
+                                        rollupStatus &&
+                                        rollupStatus.hasInited &&
+                                        chainToNodes.find(
+                                            (item) =>
+                                                item.chainId ===
+                                                rollupStatus.config.chainId
+                                        )?.logo
+                                    }
+                                />
+                            </Link>
+                        </Col>
+                    )}
                 </Row>
                 <Row>
                     <Col span={6} className="social-icon">

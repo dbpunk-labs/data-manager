@@ -4,6 +4,8 @@ import help from '../assets/help.svg'
 import btnLink from '../assets/btn-link.svg'
 import { Button } from 'antd'
 import { useConnectModal } from '@rainbow-me/rainbowkit'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+
 export const Header = () => {
     const { openConnectModal } = useConnectModal()
     return (
@@ -14,15 +16,125 @@ export const Header = () => {
             </div>
             <div className="header-right">
                 <img style={{ width: 20 }} src={help} />
-                {openConnectModal && (
-                    <Button
-                        style={{ marginLeft: 10 }}
-                        icon={<img style={{ width: 16 }} src={btnLink} />}
-                        onClick={openConnectModal}
-                    >
-                        ConnectWallet
-                    </Button>
-                )}
+                <div
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                    }}
+                >
+                    <ConnectButton.Custom>
+                        {({
+                            account,
+                            chain,
+                            openAccountModal,
+                            openChainModal,
+                            openConnectModal,
+                            mounted,
+                        }) => {
+                            return (
+                                <div
+                                    {...(!mounted && {
+                                        'aria-hidden': true,
+                                        style: {
+                                            opacity: 0,
+                                            pointerEvents: 'none',
+                                            userSelect: 'none',
+                                        },
+                                    })}
+                                >
+                                    {(() => {
+                                        if (!mounted || !account || !chain) {
+                                            return (
+                                                <Button
+                                                    style={{ marginLeft: 10 }}
+                                                    icon={
+                                                        <img
+                                                            style={{
+                                                                width: 16,
+                                                            }}
+                                                            src={btnLink}
+                                                        />
+                                                    }
+                                                    onClick={openConnectModal}
+                                                >
+                                                    ConnectWallet
+                                                </Button>
+                                            )
+                                        }
+
+                                        if (chain.unsupported) {
+                                            return (
+                                                <button
+                                                    onClick={openChainModal}
+                                                    type="button"
+                                                >
+                                                    Wrong network
+                                                </button>
+                                            )
+                                        }
+
+                                        return (
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    gap: 12,
+                                                }}
+                                            >
+                                                <Button
+                                                    onClick={openChainModal}
+                                                    style={{
+                                                        alignItems: 'center',
+                                                    }}
+                                                >
+                                                    {chain.hasIcon && (
+                                                        <div
+                                                            style={{
+                                                                background:
+                                                                    chain.iconBackground,
+                                                                width: 12,
+                                                                height: 12,
+                                                                borderRadius: 999,
+                                                                overflow:
+                                                                    'hidden',
+                                                                marginRight: 4,
+                                                            }}
+                                                        >
+                                                            {chain.iconUrl && (
+                                                                <img
+                                                                    alt={
+                                                                        chain.name ??
+                                                                        'Chain icon'
+                                                                    }
+                                                                    src={
+                                                                        chain.iconUrl
+                                                                    }
+                                                                    style={{
+                                                                        with: 12,
+                                                                        height: 12,
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                    {chain.name}
+                                                </Button>
+
+                                                <Button
+                                                    onClick={openAccountModal}
+                                                >
+                                                    {account.displayName}
+                                                    {account.displayBalance
+                                                        ? ` (${account.displayBalance})`
+                                                        : ''}
+                                                </Button>
+                                            </div>
+                                        )
+                                    })()}
+                                </div>
+                            )
+                        }}
+                    </ConnectButton.Custom>
+                </div>
             </div>
         </div>
     )

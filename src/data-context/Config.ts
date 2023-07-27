@@ -85,11 +85,11 @@ export const chainList = [
         rpcUrls: {
             default: {
                 http: ['https://zksync2-testnet.zksync.dev'],
-                webSocket: ['wss://goerli-events.zksync.io/'],
+                webSocket: ['wss://testnet.era.zksync.dev/ws'],
             },
             public: {
                 http: ['https://zksync2-testnet.zksync.dev'],
-                webSocket: ['wss://goerli-events.zksync.io/'],
+                webSocket: ['wss://testnet.era.zksync.dev/ws'],
             },
         },
         blockExplorers: {
