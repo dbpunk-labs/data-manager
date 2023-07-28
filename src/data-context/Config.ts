@@ -24,11 +24,11 @@ import lineaSrc from '../assets/linea.svg'
 import zkSyncSrc from '../assets/zksync.png'
 import localhostSrc from '../assets/localhost.png'
 import {
-localhost,
-lineaTestnet,
-polygonMumbai,
-scrollTestnet,
-zkSyncTestnet
+    localhost,
+    lineaTestnet,
+    polygonMumbai,
+    scrollTestnet,
+    zkSyncTestnet,
 } from 'viem/chains'
 
 export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'
@@ -42,7 +42,7 @@ export const chainToNodes = [
         name: 'Localtest',
         logo: localhostSrc,
         contractAddr: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-        arScanUrl:'https://viewblock.io/arweave/tx/'
+        arScanUrl: 'https://viewblock.io/arweave/tx/',
     },
     {
         chainId: 80001,
@@ -51,7 +51,7 @@ export const chainToNodes = [
         name: 'Mumbai',
         logo: polygonSrc,
         contractAddr: '0x0d33fD31b322e122FFd9d7a9725e813a2824D9D6',
-        arScanUrl:'https://viewblock.io/arweave/tx/'
+        arScanUrl: 'https://viewblock.io/arweave/tx/',
     },
     {
         chainId: 534353,
@@ -60,7 +60,7 @@ export const chainToNodes = [
         name: 'Scroll Testnet',
         logo: scrollSrc,
         contractAddr: '0x91B4BB6c2e6F70F93D89B04c049bFB2D36839d9A',
-        arScanUrl:'https://viewblock.io/arweave/tx/'
+        arScanUrl: 'https://viewblock.io/arweave/tx/',
     },
     {
         chainId: 59140,
@@ -69,7 +69,7 @@ export const chainToNodes = [
         name: 'Linea Testnet',
         logo: lineaSrc,
         contractAddr: '0xfFe5128735D2EFC1bFDF2eD18A99D1eD8d096D94',
-        arScanUrl:'https://viewblock.io/arweave/tx/'
+        arScanUrl: 'https://viewblock.io/arweave/tx/',
     },
     {
         chainId: 280,
@@ -78,10 +78,15 @@ export const chainToNodes = [
         name: 'ZkSync Testnet',
         logo: zkSyncSrc,
         contractAddr: '0xB4Ec19674A67dB002fFDeB83e14f9849DA3D1020',
-        arScanUrl:'https://viewblock.io/arweave/tx/'
+        arScanUrl: 'https://viewblock.io/arweave/tx/',
     },
 ]
 
 export const chainList = [
-    localhost, lineaTestnet, polygonMumbai, scrollTestnet, zkSyncTestnet
+    // testnet
+    localhost,
+    lineaTestnet,
+    polygonMumbai,
+    scrollTestnet,
+    zkSyncTestnet,
 ]
