@@ -1,6 +1,7 @@
 import React, { memo, useEffect } from 'react'
 import { Col, Descriptions, Typography, List, Row, Space, Table } from 'antd'
 import { usePageContext } from '../../pages/Context'
+import { AR_SCAN_URL } from '../../data-context/Config'
 import { useAsyncFn } from 'react-use'
 import Icon from '@ant-design/icons'
 import type { MutationHeader, RollupRecord, Dashboard } from './Types'
@@ -313,18 +314,24 @@ const NodeDashboard: React.FC<{}> = memo((props) => {
                                             </Space>
                                         ) : (
                                             <Space size="large">
-                                                <a>
+                                                <Link
+                                                    target="_blank"
+                                                    to={`${AR_SCAN_URL}/${item.arweaveTx}`}
+                                                >
                                                     {shortString(
                                                         item.arweaveTx,
                                                         12
                                                     )}
-                                                </a>
-                                                <a>
+                                                </Link>
+                                                <Link
+                                                    target="_blank"
+                                                    to={`${selectedChain?.blockExplorers?.default?.url}/tx/${item.evmTx}`}
+                                                >
                                                     {shortString(
                                                         item.evmTx,
                                                         12
                                                     )}
-                                                </a>
+                                                </Link>
                                             </Space>
                                         )}
                                     </div>

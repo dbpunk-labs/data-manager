@@ -60,9 +60,9 @@ const LeftSider: React.FC<{}> = memo((props) => {
         },
     ]
     useEffect(() => {
-        if (location.pathname === "/") {
+        if (location.pathname === '/') {
             setCurrentKey('Home')
-            navigate("/home")
+            navigate('/home')
             return
         }
         if (location.pathname.startsWith('/home')) {

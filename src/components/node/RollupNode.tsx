@@ -4,6 +4,7 @@ import sortSrc from '../../assets/sort.svg'
 import { scanRollupRecords, getMutationState } from 'db3.js'
 import { useAsyncFn } from 'react-use'
 import { usePageContext } from '../../pages/Context'
+import { AR_SCAN_URL } from '../../data-context/Config'
 import type { RollupRecord } from './Types'
 import {
     getSingleRollupCost,

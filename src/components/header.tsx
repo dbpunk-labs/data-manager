@@ -64,12 +64,12 @@ export const Header = () => {
 
                                         if (chain.unsupported) {
                                             return (
-                                                <button
+                                                <Button
+                                                    style={{ marginLeft: 10 }}
                                                     onClick={openChainModal}
-                                                    type="button"
                                                 >
                                                     Wrong network
-                                                </button>
+                                                </Button>
                                             )
                                         }
 
