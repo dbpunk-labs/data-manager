@@ -32,7 +32,7 @@ zkSyncTestnet
 } from 'viem/chains'
 
 export const AR_SCAN_URL: string = 'https://viewblock.io/arweave/tx/'
-export const defaultChainId = 1337
+export const defaultChainId = 280
 
 export const chainToNodes = [
     {
@@ -73,8 +73,8 @@ export const chainToNodes = [
     },
     {
         chainId: 280,
-        dataRollupUrl: 'http://testnet.db3.network:26100',
-        dataIndexUrl: 'http://testnet.db3.network:26101',
+        dataRollupUrl: 'https://zksync.rollup.testnet.db3.network',
+        dataIndexUrl: 'https://zksync.index.testnet.db3.network',
         name: 'ZkSync Testnet',
         logo: zkSyncSrc,
         contractAddr: '0xB4Ec19674A67dB002fFDeB83e14f9849DA3D1020',
