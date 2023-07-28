@@ -28,6 +28,7 @@ const MutaitionsTable: React.FC<{}> = memo((props) => {
                             time: timeDifference(current, item.time),
                             size: bytesToReadableNum(item.size),
                             action: MutationAction[item.action],
+                            block: item.blockId
                         } as MutationHeader
                     })
                     setMutations(mutations)
@@ -50,6 +51,7 @@ const MutaitionsTable: React.FC<{}> = memo((props) => {
         <div className="mutations-table">
             <Table dataSource={mutations}>
                 <Table.Column title="No." dataIndex="id" sorter={true} />
+                <Table.Column title="Block" dataIndex="block" sorter={true} />
                 <Table.Column title="Type" dataIndex="action" sorter={true} />
                 <Table.Column title="Time" dataIndex="time" sorter={true} />
                 <Table.Column title="Sender" dataIndex="sender" />
