@@ -2,13 +2,13 @@ import {
     RainbowKitProvider,
     connectorsForWallets,
     darkTheme,
+    getDefaultWallets,
 } from '@rainbow-me/rainbowkit'
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { polygonMumbai } from 'viem/chains'
 import { WagmiConfig, configureChains, createConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
-import { injectedWallet } from '@rainbow-me/rainbowkit/wallets'
 import './App.scss'
 import { Header } from './components/header'
 import LeftSider from './components/LeftSider'
@@ -22,17 +22,18 @@ export const App = () => {
     const { chains, publicClient } = configureChains(chainList, [
         publicProvider(),
     ])
-    const connectors = connectorsForWallets([
-        {
-            groupName: 'Recommended',
-            wallets: [injectedWallet({ chains })],
-        },
-    ])
+
+    const { connectors } = getDefaultWallets({
+      appName: 'DB3 Network',
+      projectId: '169f8d0376c922533256a707b401c6ce',
+      chains
+    });
     const wagmiConfig = createConfig({
         autoConnect: true,
         connectors,
         publicClient,
     })
+
     return (
         <RecoilRoot>
             <WagmiConfig config={wagmiConfig}>

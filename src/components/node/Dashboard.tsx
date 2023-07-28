@@ -336,7 +336,7 @@ const NodeDashboard: React.FC<{}> = memo((props) => {
                                         )}
                                     </div>
                                     <div className="list-item-info">
-                                        <Space>
+                                        <Space size="small">
                                             <div className="list-item-size">
                                                 ${item.cost}
                                             </div>
